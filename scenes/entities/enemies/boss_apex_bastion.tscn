@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://boss_apex_bastion_scene_01"]
+[gd_scene load_steps=26 format=3 uid="uid://boss_apex_bastion_scene_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/enemies/boss_apex_bastion.gd" id="1_boss"]
 [ext_resource type="Script" path="res://scenes/entities/enemies/boss_turret_module.gd" id="2_turret"]
@@ -7,42 +7,102 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_hull"]
 size = Vector3(8.0, 3.5, 22.0)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_warship"]
-albedo_color = Color(0.18, 0.22, 0.25, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_warship_hull"]
+albedo_color = Color(0.105882, 0.12549, 0.14902, 1)
 metallic = 0.85
-roughness = 0.3
+roughness = 0.28
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_waterline"]
+albedo_color = Color(0.48, 0.12, 0.12, 1)
+metallic = 0.4
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_deck"]
+albedo_color = Color(0.145, 0.172, 0.21, 1)
+metallic = 0.8
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_steel"]
+albedo_color = Color(0.06, 0.07, 0.09, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emissive_red"]
+albedo_color = Color(0.85098, 0.219608, 0.117647, 1)
+emission_enabled = true
+emission = Color(0.85098, 0.219608, 0.117647, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_hull"]
-material = SubResource("StandardMaterial3D_warship")
-size = Vector3(7.8, 3.2, 21.5)
+material = SubResource("StandardMaterial3D_warship_hull")
+size = Vector3(7.6, 2.8, 21.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_waterline_band"]
+material = SubResource("StandardMaterial3D_waterline")
+size = Vector3(7.7, 0.35, 21.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_deck"]
+material = SubResource("StandardMaterial3D_deck")
+size = Vector3(7.2, 0.3, 20.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_superstructure"]
+material = SubResource("StandardMaterial3D_warship_hull")
+size = Vector3(5.6, 1.2, 12.0)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_turret"]
 height = 1.8
 radius = 2.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_turret"]
-albedo_color = Color(0.28, 0.3, 0.32, 1)
-metallic = 0.9
-roughness = 0.25
+[sub_resource type="CylinderMesh" id="CylinderMesh_barbette"]
+material = SubResource("StandardMaterial3D_dark_steel")
+top_radius = 1.8
+bottom_radius = 1.95
+height = 0.5
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_turret"]
-material = SubResource("StandardMaterial3D_turret")
-top_radius = 1.6
-bottom_radius = 1.9
-height = 1.6
+[sub_resource type="BoxMesh" id="BoxMesh_turret_house"]
+material = SubResource("StandardMaterial3D_warship_hull")
+size = Vector3(3.2, 1.4, 3.6)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cannon_barrel"]
+material = SubResource("StandardMaterial3D_dark_steel")
+top_radius = 0.14
+bottom_radius = 0.16
+height = 3.6
+
+[sub_resource type="BoxMesh" id="BoxMesh_ciws_house"]
+material = SubResource("StandardMaterial3D_warship_hull")
+size = Vector3(2.8, 1.3, 3.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_quad_barrels"]
+material = SubResource("StandardMaterial3D_dark_steel")
+size = Vector3(0.8, 0.35, 2.4)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ciws_radar"]
+material = SubResource("StandardMaterial3D_emissive_red")
+radius = 0.35
+height = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_core"]
 size = Vector3(4.0, 2.5, 4.0)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_core"]
-albedo_color = Color(0.1, 0.12, 0.15, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_bridge_base"]
+material = SubResource("StandardMaterial3D_warship_hull")
+size = Vector3(3.8, 2.2, 3.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_armor_panel"]
+material = SubResource("StandardMaterial3D_dark_steel")
+size = Vector3(0.35, 1.8, 2.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_reactor_core"]
+albedo_color = Color(0.12, 0.05, 0.02, 1)
 emission_enabled = true
 emission = Color(0.9, 0.3, 0.1, 1)
 emission_energy_multiplier = 3.0
 
-[sub_resource type="BoxMesh" id="BoxMesh_core"]
-material = SubResource("StandardMaterial3D_core")
-size = Vector3(3.8, 2.2, 3.8)
+[sub_resource type="SphereMesh" id="SphereMesh_reactor"]
+material = SubResource("StandardMaterial3D_reactor_core")
+radius = 1.2
+height = 2.4
 
 [node name="BossApexBastion" type="Node3D" node_paths=PackedStringArray("bow_turret", "stern_turret", "core_health") groups=["boss", "enemies"]]
 script = ExtResource("1_boss")
@@ -58,9 +118,23 @@ collision_mask = 7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("BoxShape3D_hull")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="HullStaticBody"]
+[node name="ModelContainer" type="Node3D" parent="HullStaticBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="MainHull" type="MeshInstance3D" parent="HullStaticBody/ModelContainer"]
 mesh = SubResource("BoxMesh_hull")
+
+[node name="WaterlineTrim" type="MeshInstance3D" parent="HullStaticBody/ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0, 0)
+mesh = SubResource("BoxMesh_waterline_band")
+
+[node name="Deck" type="MeshInstance3D" parent="HullStaticBody/ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+mesh = SubResource("BoxMesh_deck")
+
+[node name="SuperstructureBase" type="MeshInstance3D" parent="HullStaticBody/ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05, 0)
+mesh = SubResource("BoxMesh_superstructure")
 
 [node name="BowTurret" type="StaticBody3D" parent="." groups=["enemies", "structures"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -6.5)
@@ -73,8 +147,28 @@ is_bow_turret = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="BowTurret"]
 shape = SubResource("CylinderShape3D_turret")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="BowTurret"]
-mesh = SubResource("CylinderMesh_turret")
+[node name="TurretBarbette" type="MeshInstance3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 0)
+mesh = SubResource("CylinderMesh_barbette")
+
+[node name="TurretHouse" type="MeshInstance3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_turret_house")
+
+[node name="BarrelLeft" type="MeshInstance3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.65, 0.35, -2.2)
+mesh = SubResource("CylinderMesh_cannon_barrel")
+
+[node name="BarrelRight" type="MeshInstance3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.65, 0.35, -2.2)
+mesh = SubResource("CylinderMesh_cannon_barrel")
+
+[node name="OpticsSensor" type="MeshInstance3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, -0.8)
+mesh = SubResource("SphereMesh_ciws_radar")
+
+[node name="Muzzle" type="Marker3D" parent="BowTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -4.0)
 
 [node name="HealthComponent" type="Node" parent="BowTurret"]
 script = ExtResource("3_health")
@@ -92,8 +186,24 @@ is_bow_turret = false
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SternTurret"]
 shape = SubResource("CylinderShape3D_turret")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="SternTurret"]
-mesh = SubResource("CylinderMesh_turret")
+[node name="TurretBarbette" type="MeshInstance3D" parent="SternTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.65, 0)
+mesh = SubResource("CylinderMesh_barbette")
+
+[node name="CIWSHouse" type="MeshInstance3D" parent="SternTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+mesh = SubResource("BoxMesh_ciws_house")
+
+[node name="QuadBarrels" type="MeshInstance3D" parent="SternTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 1.4)
+mesh = SubResource("BoxMesh_quad_barrels")
+
+[node name="CIWSRadar" type="MeshInstance3D" parent="SternTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -0.3)
+mesh = SubResource("SphereMesh_ciws_radar")
+
+[node name="Muzzle" type="Marker3D" parent="SternTurret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 2.6)
 
 [node name="HealthComponent" type="Node" parent="SternTurret"]
 script = ExtResource("3_health")
@@ -101,15 +211,27 @@ max_health = 800.0
 current_health = 800.0
 
 [node name="CoreBridge" type="StaticBody3D" parent="." groups=["boss_core", "enemies", "structures"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
 collision_layer = 4
 collision_mask = 7
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CoreBridge"]
 shape = SubResource("BoxShape3D_core")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CoreBridge"]
-mesh = SubResource("BoxMesh_core")
+[node name="BridgeBase" type="MeshInstance3D" parent="CoreBridge"]
+mesh = SubResource("BoxMesh_bridge_base")
+
+[node name="RetractableArmorLeft" type="MeshInstance3D" parent="CoreBridge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95, 0.1, 0)
+mesh = SubResource("BoxMesh_armor_panel")
+
+[node name="RetractableArmorRight" type="MeshInstance3D" parent="CoreBridge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.95, 0.1, 0)
+mesh = SubResource("BoxMesh_armor_panel")
+
+[node name="CoreReactorMesh" type="MeshInstance3D" parent="CoreBridge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("SphereMesh_reactor")
 
 [node name="CoreHealth" type="Node" parent="."]
 script = ExtResource("3_health")
