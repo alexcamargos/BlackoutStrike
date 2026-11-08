@@ -134,3 +134,64 @@ func test_heavy_explosion_two_stages_and_gravity_debris() -> void:
 	var debris_mat: ParticleProcessMaterial = debris_particles.process_material as ParticleProcessMaterial
 	assert_not_null(debris_mat, "DebrisParticles deve ter ParticleProcessMaterial configurado.")
 	assert_lt(debris_mat.gravity.y, 0.0, "Destrocos devem ter fisica de gravidade ativada (gravity.y < 0).")
+
+
+func test_rotor_wash_intensity_altitude_modulation() -> void:
+	var scene: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	assert_not_null(scene, "Cena player_helicopter.tscn deve existir.")
+	var helo: PlayerHelicopter = scene.instantiate() as PlayerHelicopter
+	add_child_autofree(helo)
+	
+	var wash_mesh: MeshInstance3D = helo.get_node_or_null("RotorWashMesh") as MeshInstance3D
+	assert_not_null(wash_mesh, "Helicoptero deve conter RotorWashMesh.")
+	
+	# Altitude baixa de resgate / pairamento (Y <= 1.8m)
+	var int_low: float = helo.update_rotor_wash(1.2)
+	var mat: ShaderMaterial = wash_mesh.get_active_material(0) as ShaderMaterial
+	assert_not_null(mat, "RotorWashMesh deve conter ShaderMaterial.")
+	assert_almost_eq(int_low, 1.0, 0.01, "Em altitude Y <= 1.8m, intensidade do rotor wash deve ser maxima (1.0).")
+	assert_almost_eq(mat.get_shader_parameter("intensity"), 1.0, 0.01, "Parametro do shader deve ser 1.0.")
+	assert_true(wash_mesh.visible, "Malha do rotor wash deve estar visivel em altitude de resgate.")
+	
+	# Altitude de transicao (Y = 2.9m)
+	var int_mid: float = helo.update_rotor_wash(2.9)
+	assert_almost_eq(int_mid, 0.5, 0.05, "Em transicao (2.9m), intensidade deve ser metade (0.5).")
+	assert_almost_eq(mat.get_shader_parameter("intensity"), 0.5, 0.05, "Parametro do shader deve refletir 0.5.")
+	
+	# Altitude de cruzeiro (Y >= 4.0m)
+	var int_high: float = helo.update_rotor_wash(4.2)
+	assert_almost_eq(int_high, 0.0, 0.01, "Em altitude de cruzeiro (Y >= 4.0m), decalque deve desvanecer completamente (0.0).")
+	assert_almost_eq(mat.get_shader_parameter("intensity"), 0.0, 0.01, "Parametro do shader deve ser 0.0.")
+	assert_false(wash_mesh.visible, "Malha deve ficar oculta em altitude de cruzeiro.")
+
+
+func test_rescue_ring_shader_and_immediate_enemy_suppression_response() -> void:
+	var sensor: RescueSensorArea = RescueSensorArea.new()
+	var cargo_comp: CargoComponent = CargoComponent.new()
+	add_child_autofree(cargo_comp)
+	sensor.cargo_component = cargo_comp
+	add_child_autofree(sensor)
+	
+	var civ_scene: PackedScene = load("res://scenes/entities/npcs/civilian.tscn")
+	var civ: Civilian = civ_scene.instantiate() as Civilian
+	add_child_autofree(civ)
+	civ.global_position = Vector3(0, 0, 0)
+	
+	sensor.global_position = Vector3(0, 1.0, 0)
+	sensor._on_body_entered(civ)
+	sensor.step(0.5)
+	
+	var ring_mat: ShaderMaterial = sensor.ring_material
+	assert_not_null(ring_mat, "RescueSensorArea deve ter ring_material configurado.")
+	assert_false(ring_mat.get_shader_parameter("is_suppressed"), "is_suppressed deve ser falso sem inimigos.")
+	assert_almost_eq(ring_mat.get_shader_parameter("progress"), 0.25, 0.05, "Progresso do shader deve coincidir com o embarque.")
+	
+	# Inimigo se aproxima a 6m (dentro do perimetro de 10m)
+	var enemy: Node3D = Node3D.new()
+	enemy.add_to_group("enemies")
+	add_child_autofree(enemy)
+	enemy.global_position = Vector3(6, 0, 0)
+	
+	sensor.step(0.016)
+	assert_true(sensor.is_suppressed, "Sensor deve acusar supressao imediata na presenca de inimigo.")
+	assert_true(ring_mat.get_shader_parameter("is_suppressed"), "Shader parameter is_suppressed deve refletir supressao imediatamente.")
