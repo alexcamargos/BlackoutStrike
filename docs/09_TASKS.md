@@ -127,3 +127,98 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Arquivos:** `res://assets/shaders/ocean_pbr.gdshader`, `res://assets/shaders/rotor_wash.gdshader`, `res://scenes/core/world_environment.tres`, `res://scenes/core/tactical_camera.tscn`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Integração da cena principal da Missão 1 com câmera oblíqua ($68^\circ$, $FOV = 36^\circ$), shader de água com profundidade e espuma, decalque de `rotor_wash` sob o helicóptero e configuração de `WorldEnvironment` com Bloom Filmic e SSAO.
   - **Critério de Aceite:** A cena principal `mission_01_midway.tscn` carrega sem erros ou artefatos visuais no modo Forward+ e todas as suítes do GUT passam com código de saída `0`.
+
+
+---
+
+## Sprint 6: Superfícies PBR, Shaders e Cenário Litorâneo
+
+- [ ] **TASK-060: Normal Maps Procedurais e Ativação Plena do Oceano PBR**
+  - **Dependência:** TASK-052.
+  - **Arquivos:** `res://assets/textures/water/ocean_wave_normal_1.tres`, `res://assets/textures/water/ocean_wave_normal_2.tres`, `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Gerar e vincular duas texturas de normais contínuas cruzadas aos uniforms `wave_normal_1` e `wave_normal_2` do material em `ocean_pbr.gdshader`. Calibrar a atenuação ótica pela profundidade (Beer-Lambert de turquesa raso `#14A6B8` a azul-marinho abissal `#031438`) e afinar a faixa de espuma de intersecção (`foam_intersection_depth = 0.45`).
+  - **Critério de Aceite:** O oceano exibe micro-reflexos especulares solares dinâmicos em movimento contínuo e gera bordas de espuma suave no contato com a terra; testes automatizados continuam passando sem erros.
+
+- [ ] **TASK-061: Terreno Litorâneo Modular e Topografia da Ilha Midway**
+  - **Dependência:** TASK-042, TASK-060.
+  - **Arquivos:** `res://scenes/environment/island_terrain_midway.tscn`, `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Substituir o bloco cúbico de areia por malha de relevo costeiro dividida em 3 cotas: faixa de praia rasa com declive suave ($Y \in [-0.2, 0.3]\text{ m}$), falésias rochosas com sombras nítidas ($Y \in [0.5, 6.0]\text{ m}$) e platôs industriais planos ($Y = 0.5\text{ m}$). Preservar a camada de física estática (`collision_layer = 1`) e os marcadores de posição do `SpawnDirector`.
+  - **Critério de Aceite:** Aeronave em voo rasante e projéteis colidem normalmente com o terreno; civis e tanques mantêm navegação terrestre estável; `test_spawn_director.gd` e `test_rescue_area.gd` passam sem regressão.
+
+- [ ] **TASK-062: Decoração de Cenário e Escala com MultiMeshInstance3D**
+  - **Dependência:** TASK-061.
+  - **Arquivos:** `res://scenes/environment/island_props.tscn`, `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Implementar instanciamento em lote via `MultiMeshInstance3D` para vegetação litorânea (palmeiras estilizadas), contêineres marítimos da Aetheris e guindastes portuários, estabelecendo contraste de escala entre a ilha e a aeronave sem adicionar sobrecarga de draw calls na GPU.
+  - **Critério de Aceite:** Adição de elementos de ambientação sem interferir na malha de navegação terrestre nem nos volumes de colisão de resgate.
+
+---
+
+## Sprint 7: Modelos 3D de Entidades, Malhas Modulares e Animações
+
+- [ ] **TASK-070: Modelo PBR e Articulação do R-9X Mohawk III**
+  - **Dependência:** TASK-013, TASK-052.
+  - **Arquivos:** `res://scenes/entities/player/player_helicopter.tscn`, `res://assets/models/vehicles/r9x_mohawk.glb`.
+  - **Lógica:** Substituir os cubos de fuselagem por modelo 3D dedicado de helicóptero militar. Aplicar material PBR padrão JTF Vanguard: pintura azul-chumbo (`#2A3847`), metalicidade $0.8$, rugosidade $0.25$ e canopy escurecido reflexivo. Separar e articular o rotor principal e de cauda com rotação contínua e blur estético, preservando os marcadores `MuzzleMarkers` e os nós de subsistema intactos.
+  - **Critério de Aceite:** A suíte `test_flight_inertia.gd` passa integralmente; rotações de yaw e inclinação cosmética de até $22^\circ$ funcionam sem desalinhamento das armas.
+
+- [ ] **TASK-071: Modelos Modulares dos 5 Arquétipos Inimigos (Aetheris)**
+  - **Dependência:** TASK-050.
+  - **Arquivos:** `res://scenes/entities/enemies/mercenary_squad.tscn`, `res://scenes/entities/enemies/hunter_drone.tscn`, `res://scenes/entities/enemies/patrol_boat.tscn`, `res://scenes/entities/enemies/light_tank_ifv.tscn`, `res://scenes/entities/enemies/turret_sam.tscn`.
+  - **Lógica:** Importar e configurar malhas dos pacotes CC0 (*Kenney Military Kit* e *Vehicle Kit*) aplicando a paleta antracite (`#1F2226`) com óticas e miras laser emissivas em vermelho-alaranjado (`#D9381E`) em HDR. Manter nós móveis de torreta desacoplados para apontamento angular em direção ao alvo.
+  - **Critério de Aceite:** `test_enemy_ai.gd` passa com todos os 5 arquétipos operacionais; rotação visual das armas coincide com o vetor de disparo dos projéteis.
+
+- [ ] **TASK-072: Modelo Modular de Guerra Naval: Chefe Apex Bastion**
+  - **Dependência:** TASK-051.
+  - **Arquivos:** `res://scenes/entities/enemies/boss_apex_bastion.tscn`.
+  - **Lógica:** Substituir os blocos do chefe por modelo naval detalhado com separação em nós de topo: casco principal com linhas de flutuação, Torreta de Proa (canhão 76mm móvel), Torreta de Popa (CIWS quádruplo) e Núcleo Central de Comando com blindagem retrátil e pulso emissivo ativado na Fase 2.
+  - **Critério de Aceite:** Suíte `test_boss_logic.gd` passa 100% verde; destruição de cada módulo desativa a torreta correspondente e altera o material para malha avariada/enfumaçada.
+
+- [ ] **TASK-073: Malhas de Civis, Cientistas e Abrigos Destrutíveis**
+  - **Dependência:** TASK-030.
+  - **Arquivos:** `res://scenes/entities/npcs/civilian.tscn`, `res://scenes/entities/npcs/rescue_shelter.tscn`.
+  - **Lógica:** Integrar modelos de cientistas e engenheiros (Kay Lousberg CC0) com uniformes de alta visibilidade contrastante. Implementar abrigo com textura de concreto reforçado e gerar peças fragmentadas de escombros instanciadas na destruição do edifício.
+  - **Critério de Aceite:** Civis são liberados no solo no raio de $2.5\text{ m}$ sem colisões anômalas; suítes `test_rescue_shelter.gd` e `test_rescue_area.gd` verdes.
+
+---
+
+## Sprint 8: Efeitos Visuais (VFX GPU), Balística Emissiva e Feedback de Combate
+
+- [ ] **TASK-080: Balística Hiper-Visível e Traçantes Emissivos de Canhões e Mísseis**
+  - **Dependência:** TASK-020, TASK-022.
+  - **Arquivos:** `res://scenes/weapons/projectile_vulcan.tscn`, `res://scenes/weapons/projectile_hydra.tscn`, `res://scenes/weapons/projectile_hellfire.tscn`, `res://scenes/weapons/projectile_enemy_*.tscn`.
+  - **Lógica:** Configurar tiros do Vulcan como cápsulas alongadas traçantes com emissão amarela intensa (energia $\ge 4.0$). Adicionar nó `GPUParticles3D` nos foguetes Hydra e mísseis Hellfire com emissão de pluma de fumaça cinza e fagulhas incandescentes na esteira. Projéteis hostis estilizados em plasma carmesim/laranja com Bloom destacado.
+  - **Critério de Aceite:** Projéteis claramente legíveis contra o mar e solo; `test_projectile.gd` e `test_homing_missile.gd` passam sem alterações.
+
+- [ ] **TASK-081: Sistemas de Partículas GPU de Impacto, Explosão e Destroços**
+  - **Dependência:** TASK-020, TASK-080.
+  - **Arquivos:** `res://scenes/vfx/impact_effect.tscn`, `res://scenes/vfx/explosion_heavy.tscn`, `res://scenes/vfx/water_splash.tscn`.
+  - **Lógica:** Implementar sistema de impacto discriminado por superfície: faíscas metálicas em blindagens, impacto de poeira no solo e borrifos verticais (`water_splash`) no mar. Criar prefab de explosão pesada em duas etapas para veículos e estruturas destruídas (clarão pontual, bola de fogo volumétrica expansiva e fragmentos com física simples de gravidade).
+  - **Critério de Aceite:** Efeitos possuem ciclo de vida finito com desalocação automática da memória (`one_shot = true` e limpeza de nós sem vazamentos).
+
+- [ ] **TASK-082: Refinamento do Rotor Wash e Anel de Resgate Holográfico**
+  - **Dependência:** TASK-031, TASK-052.
+  - **Arquivos:** `res://assets/shaders/rescue_ring.gdshader`, `res://assets/shaders/rotor_wash.gdshader`, `res://scenes/entities/player/player_helicopter.tscn`.
+  - **Lógica:** Modular a intensidade do `rotor_wash.gdshader` dinamicamente conforme a altitude do R-9X ($Y \le 1.8\text{ m}$ projeta anel de ondas visível na água; altitudes maiores desvanecem o decalque). Calibrar emissão HDR do anel de resgate ($2.5$) para contraste sobre areia e asfalto, com transição de cor para carmesim pulsante em $14\text{ rad/s}$ quando suprimido.
+  - **Critério de Aceite:** `test_rescue_area.gd` passa sem erros; resposta visual imediata na presença de inimigos a menos de $10\text{ m}$.
+
+---
+
+## Sprint 9: Iluminação Tropical, Atmosfera e Interface Retrô-Moderna
+
+- [ ] **TASK-090: Calibração de Luz Solar, Sombras em Cascata e Atmosfera Oceânica**
+  - **Dependência:** TASK-052, TASK-060.
+  - **Arquivos:** `res://scenes/core/world_environment.tres`, `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Configurar a `DirectionalLight3D` com ângulo rasante quente ($55^\circ$ elevação, $-40^\circ$ azimute, cor `#FFF0D9`), sombras direcionais PSSM 4 Splits com distância máxima de corte calibrada para $180\text{ m}$. Ajustar névoa de distância volumétrica no `WorldEnvironment` iniciando a $120\text{ m}$ com coloração azul-profundo (`#122233`) para suavizar o horizonte oceânico.
+  - **Critério de Aceite:** Fuselagens metálicas geram brilhos especulares intensos durante as curvas e rolagens; contraste profundo e nítido das sombras sobre as praias e mar.
+
+- [ ] **TASK-091: Estilização do HUD Militar e Efeitos Diegéticos na Caixa de Rádio**
+  - **Dependência:** TASK-023.
+  - **Arquivos:** `res://scenes/ui/hud.tscn`, `res://scenes/ui/radio_transmission_box.tscn`, `res://assets/textures/ui/`.
+  - **Lógica:** Aplicar tema visual unificado militar com recortes em $45^\circ$, barras angulares segmentadas de blindagem e combustível, indicadores de contagem de passageiros e retícula de mira com feedback de travamento de alvos. Adicionar camada de scanlines analógicas e estática nos retratos de comunicação de Nathan Cross e Julian Vane.
+  - **Critério de Aceite:** Suíte `test_hud_and_radio.gd` 100% verde; interface adaptável e legível em resolução 1080p sem corte de informações.
+
+- [ ] **TASK-092: Integração de Áudio Espacial e Bus de Efeitos Acústicos**
+  - **Dependência:** TASK-010, TASK-070, TASK-080.
+  - **Arquivos:** `res://default_bus_layout.tres`, nós `AudioStreamPlayer3D` no helicóptero, armas e inimigos.
+  - **Lógica:** Conectar arquivos sonoros CC0 (`sfx_helo_loop.ogg`, `sfx_vulcan_shot.wav`, `sfx_rocket_launch.wav`) aos buses de áudio configurados (`SFX_Player`, `SFX_Weapons`, `SFX_Combat`, `UI_Alarms`). Aplicar modulação de pitch no rotor do helicóptero vinculada à velocidade linear ($0.95$ a $1.15$) e manter proteções de execução em modo headless para não quebrar a suíte de testes.
+  - **Critério de Aceite:** Execução em `godot --headless` sem falhas de áudio; sons de combate atenuam realisticamente no espaço 3D; `test_base_configuration.gd` passa sem erros.
