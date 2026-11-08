@@ -88,7 +88,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Implementação integral dos schemas definidos em `docs/05_DATA_SCHEMA.md` e criação dos 5 Boons táticos do MVP, 3 armas, 3 upgrades de hangar e tabelas de inimigos/abrigos.
   - **Critério de Aceite:** Todos os recursos `.tres` são carregados via `ResourceLoader.load()` sem erros de sintaxe ou perda de tipagem.
 
-- [ ] **TASK-041: Receptor de Boons (`BoonReceiverComponent.gd`) e Menu Modal de Seleção**
+- [x] **TASK-041: Receptor de Boons (`BoonReceiverComponent.gd`) e Menu Modal de Seleção**
   - **Dependência:** TASK-040.
   - **Arquivos:** `res://scripts/components/boon_receiver_component.gd`, `res://scenes/roguelite/boon_selection_ui.tscn`, `res://scenes/roguelite/data_crate.tscn`, `res://tests/unit/test_boons_math.gd`.
   - **Lógica:** Ao destruir um `DataCrate` ($150.0\text{ HP}$), pausa a árvore de cena, exibe 3 cartas de `BoonData` sorteadas e aplica o modificador escolhido aos componentes do helicóptero via `BoonReceiverComponent`.
