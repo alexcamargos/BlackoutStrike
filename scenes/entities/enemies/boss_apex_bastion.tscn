@@ -1,0 +1,117 @@
+[gd_scene load_steps=12 format=3 uid="uid://boss_apex_bastion_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/entities/enemies/boss_apex_bastion.gd" id="1_boss"]
+[ext_resource type="Script" path="res://scenes/entities/enemies/boss_turret_module.gd" id="2_turret"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hull"]
+size = Vector3(8.0, 3.5, 22.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_warship"]
+albedo_color = Color(0.18, 0.22, 0.25, 1)
+metallic = 0.85
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_hull"]
+material = SubResource("StandardMaterial3D_warship")
+size = Vector3(7.8, 3.2, 21.5)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_turret"]
+height = 1.8
+radius = 2.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_turret"]
+albedo_color = Color(0.28, 0.3, 0.32, 1)
+metallic = 0.9
+roughness = 0.25
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_turret"]
+material = SubResource("StandardMaterial3D_turret")
+top_radius = 1.6
+bottom_radius = 1.9
+height = 1.6
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_core"]
+size = Vector3(4.0, 2.5, 4.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_core"]
+albedo_color = Color(0.1, 0.12, 0.15, 1)
+emission_enabled = true
+emission = Color(0.9, 0.3, 0.1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_core"]
+material = SubResource("StandardMaterial3D_core")
+size = Vector3(3.8, 2.2, 3.8)
+
+[node name="BossApexBastion" type="Node3D" node_paths=PackedStringArray("bow_turret", "stern_turret", "core_health") groups=["boss", "enemies"]]
+script = ExtResource("1_boss")
+bow_turret = NodePath("BowTurret")
+stern_turret = NodePath("SternTurret")
+core_health = NodePath("CoreHealth")
+
+[node name="HullStaticBody" type="StaticBody3D" parent="." groups=["enemies", "structures"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HullStaticBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_hull")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="HullStaticBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_hull")
+
+[node name="BowTurret" type="StaticBody3D" parent="." groups=["enemies", "structures"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -6.5)
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("2_turret")
+max_health = 800.0
+is_bow_turret = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BowTurret"]
+shape = SubResource("CylinderShape3D_turret")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BowTurret"]
+mesh = SubResource("CylinderMesh_turret")
+
+[node name="HealthComponent" type="Node" parent="BowTurret"]
+script = ExtResource("3_health")
+max_health = 800.0
+current_health = 800.0
+
+[node name="SternTurret" type="StaticBody3D" parent="." groups=["enemies", "structures"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 6.5)
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("2_turret")
+max_health = 800.0
+is_bow_turret = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SternTurret"]
+shape = SubResource("CylinderShape3D_turret")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SternTurret"]
+mesh = SubResource("CylinderMesh_turret")
+
+[node name="HealthComponent" type="Node" parent="SternTurret"]
+script = ExtResource("3_health")
+max_health = 800.0
+current_health = 800.0
+
+[node name="CoreBridge" type="StaticBody3D" parent="." groups=["boss_core", "enemies", "structures"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0, 0)
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoreBridge"]
+shape = SubResource("BoxShape3D_core")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CoreBridge"]
+mesh = SubResource("BoxMesh_core")
+
+[node name="CoreHealth" type="Node" parent="."]
+script = ExtResource("3_health")
+max_health = 2400.0
+current_health = 2400.0
