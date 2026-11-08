@@ -63,6 +63,26 @@ func test_shelter_collapse_emits_event_and_spawns_survivors() -> void:
 		assert_almost_eq(dist, 2.5, 0.1, "Cada civil deve ser instanciado no raio de dispersao de 2.5m.")
 
 
+func test_shelter_collapse_prioritizes_dedicated_civilian_container() -> void:
+	var dedicated_container: Node3D = Node3D.new()
+	dedicated_container.add_to_group("civilian_container")
+	add_child_autofree(dedicated_container)
+	
+	var shelter: RescueShelter = shelter_scene.instantiate() as RescueShelter
+	add_child_autofree(shelter)
+	shelter.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	shelter.take_damage(300.0)
+	
+	var in_dedicated: Array[Civilian] = []
+	for child in dedicated_container.get_children():
+		if child is Civilian:
+			in_dedicated.append(child as Civilian)
+	
+	assert_eq(in_dedicated.size(), 4, "Civis liberados devem ser anexados ao container dedicado quando presente.")
+
+
+
 func test_civilian_initial_state() -> void:
 	var civ: Civilian = civilian_scene.instantiate() as Civilian
 	add_child_autofree(civ)

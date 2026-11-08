@@ -81,6 +81,29 @@ func _on_entity_destroyed() -> void:
 	queue_free()
 
 
+## Localiza o no container canônico para os sobreviventes na arvore da cena.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     Node: No pai adequado para alocacao dos civis liberados.
+func _resolve_civilian_container() -> Node:
+	var tree: SceneTree = get_tree()
+	if tree != null:
+		var container_nodes: Array[Node] = tree.get_nodes_in_group("civilian_container")
+		if not container_nodes.is_empty():
+			return container_nodes[0]
+		
+		if tree.current_scene != null:
+			var active_entities: Node = tree.current_scene.get_node_or_null("ActiveEntities/Civilians")
+			if active_entities != null:
+				return active_entities
+	
+	var parent_container: Node = get_parent()
+	return parent_container if parent_container != null else self
+
+
 ## Gera as instancias dos civis distribuindo-as radialmente ao redor do abrigo.
 ##
 ## Args:
@@ -93,9 +116,7 @@ func _spawn_survivors(count: int, radius: float) -> void:
 	if civilian_scene == null or count <= 0:
 		return
 	
-	var parent_container: Node = get_parent()
-	if parent_container == null:
-		parent_container = self
+	var target_container: Node = _resolve_civilian_container()
 	
 	for i in range(count):
 		var survivor_node: Node = civilian_scene.instantiate()
@@ -106,8 +127,8 @@ func _spawn_survivors(count: int, radius: float) -> void:
 		var angle: float = float(i) * (TAU / float(count))
 		var offset: Vector3 = Vector3(cos(angle), 0.0, sin(angle)) * radius
 		
-		if parent_container != self:
-			parent_container.add_child(civilian)
+		if target_container != self:
+			target_container.add_child(civilian)
 			civilian.global_position = global_position + offset
 		else:
 			# Fallback se nao possuir pai anexado na arvore
