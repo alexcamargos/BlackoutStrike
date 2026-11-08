@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://player_helicopter_entity_01"]
+
+[ext_resource type="Script" path="res://scenes/entities/player/player_helicopter.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
+[ext_resource type="Script" path="res://scripts/components/fuel_component.gd" id="4_fuel"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fuselage"]
+size = Vector3(1.8, 1.2, 4.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vanguard_hull"]
+albedo_color = Color(0.231373, 0.301961, 0.368627, 1)
+metallic = 0.8
+roughness = 0.25
+
+[sub_resource type="BoxMesh" id="BoxMesh_fuselage"]
+material = SubResource("StandardMaterial3D_vanguard_hull")
+size = Vector3(1.6, 1.0, 3.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rotor"]
+albedo_color = Color(0.12, 0.14, 0.16, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_rotor_blade"]
+material = SubResource("StandardMaterial3D_rotor")
+size = Vector3(4.8, 0.05, 0.25)
+
+[node name="PlayerHelicopter" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 173
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_fuselage")
+
+[node name="HelicopterMeshContainer" type="Node3D" parent="."]
+
+[node name="FuselageMesh" type="MeshInstance3D" parent="HelicopterMeshContainer"]
+mesh = SubResource("BoxMesh_fuselage")
+
+[node name="MainRotor" type="MeshInstance3D" parent="HelicopterMeshContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0.2)
+mesh = SubResource("BoxMesh_rotor_blade")
+
+[node name="TailRotor" type="MeshInstance3D" parent="HelicopterMeshContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.3, 2.3)
+mesh = SubResource("BoxMesh_rotor_blade")
+
+[node name="MuzzleMarkers" type="Node3D" parent="HelicopterMeshContainer"]
+
+[node name="VulcanMuzzle" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -1.8)
+
+[node name="HydraPodLeft" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, -0.1, -0.6)
+
+[node name="HydraPodRight" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, -0.1, -0.6)
+
+[node name="FlightMovementController" type="Node" parent="."]
+script = ExtResource("2_flight")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("3_health")
+
+[node name="FuelComponent" type="Node" parent="."]
+script = ExtResource("4_fuel")
