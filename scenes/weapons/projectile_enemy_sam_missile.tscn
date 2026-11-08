@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://projectile_enemy_sam_missile_01"]
+
+[ext_resource type="Script" path="res://scripts/weapons/projectile.gd" id="1_proj"]
+[ext_resource type="PackedScene" uid="uid://impact_effect_vfx_01" path="res://scenes/vfx/impact_effect.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_missile_red"]
+albedo_color = Color(0.4, 0.1, 0.1, 1)
+metallic = 0.8
+roughness = 0.3
+emission_enabled = true
+emission = Color(1, 0.15, 0.05, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_sam"]
+material = SubResource("StandardMaterial3D_missile_red")
+top_radius = 0.12
+bottom_radius = 0.16
+height = 1.2
+
+[node name="ProjectileEnemySAMMissile" type="Area3D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_proj")
+damage = 180.0
+speed = 28.0
+lifetime = 4.5
+explosion_radius = 0.0
+is_homing = true
+homing_turn_speed = 2.5
+impact_effect_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_sam")
