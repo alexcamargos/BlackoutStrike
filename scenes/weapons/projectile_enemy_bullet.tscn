@@ -8,13 +8,14 @@ radius = 0.25
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tracer_red"]
 emission_enabled = true
-emission = Color(1, 0.2, 0.1, 1)
-emission_energy_multiplier = 5.0
-albedo_color = Color(1, 0.3, 0.2, 1)
+emission = Color(1, 0.18, 0.05, 1)
+emission_energy_multiplier = 5.5
+albedo_color = Color(1, 0.35, 0.15, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_tracer"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tracer"]
 material = SubResource("StandardMaterial3D_tracer_red")
-size = Vector3(0.12, 0.12, 0.8)
+radius = 0.07
+height = 0.85
 
 [node name="ProjectileEnemyBullet" type="Area3D"]
 collision_layer = 32
@@ -29,4 +30,5 @@ impact_effect_scene = ExtResource("2_impact")
 shape = SubResource("SphereShape3D_hitbox")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_tracer")
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_tracer")
