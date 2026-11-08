@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://enemy_patrol_boat_scene_01"]
+[gd_scene load_steps=15 format=3 uid="uid://enemy_patrol_boat_scene_01"]
 
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
@@ -7,14 +7,53 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
 size = Vector3(2.5, 1.2, 5.0)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boat"]
-albedo_color = Color(0.2, 0.25, 0.28, 1)
-metallic = 0.5
-roughness = 0.4
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_antracite"]
+albedo_color = Color(0.121569, 0.133333, 0.14902, 1)
+metallic = 0.75
+roughness = 0.32
 
-[sub_resource type="BoxMesh" id="BoxMesh_boat_hull"]
-material = SubResource("StandardMaterial3D_boat")
-size = Vector3(2.4, 1.0, 4.8)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_metal"]
+albedo_color = Color(0.08, 0.09, 0.11, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emissive_red"]
+albedo_color = Color(0.85098, 0.219608, 0.117647, 1)
+emission_enabled = true
+emission = Color(0.85098, 0.219608, 0.117647, 1)
+emission_energy_multiplier = 3.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_hull"]
+material = SubResource("StandardMaterial3D_antracite")
+size = Vector3(2.4, 0.85, 4.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bridge"]
+material = SubResource("StandardMaterial3D_dark_metal")
+size = Vector3(1.7, 0.85, 1.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bridge_visor"]
+material = SubResource("StandardMaterial3D_emissive_red")
+size = Vector3(1.5, 0.15, 0.1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_radar_mast"]
+material = SubResource("StandardMaterial3D_dark_metal")
+top_radius = 0.05
+bottom_radius = 0.07
+height = 0.9
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_turret_base"]
+material = SubResource("StandardMaterial3D_dark_metal")
+top_radius = 0.45
+bottom_radius = 0.5
+height = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_gun_barrels"]
+material = SubResource("StandardMaterial3D_dark_metal")
+size = Vector3(0.35, 0.16, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_laser_optic"]
+material = SubResource("StandardMaterial3D_emissive_red")
+size = Vector3(0.12, 0.12, 0.2)
 
 [node name="PatrolBoat" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
 collision_layer = 4
@@ -24,9 +63,40 @@ collision_mask = 7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_hitbox")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("BoxMesh_boat_hull")
+[node name="ModelContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+
+[node name="HullMesh" type="MeshInstance3D" parent="ModelContainer"]
+mesh = SubResource("BoxMesh_hull")
+
+[node name="CabinBridge" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0.8)
+mesh = SubResource("BoxMesh_bridge")
+
+[node name="BridgeOptics" type="MeshInstance3D" parent="ModelContainer/CabinBridge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.82)
+mesh = SubResource("BoxMesh_bridge_visor")
+
+[node name="RadarMast" type="MeshInstance3D" parent="ModelContainer/CabinBridge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0.2)
+mesh = SubResource("CylinderMesh_radar_mast")
+
+[node name="Turret" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -1.2)
+
+[node name="TurretBase" type="MeshInstance3D" parent="Turret"]
+mesh = SubResource("CylinderMesh_turret_base")
+
+[node name="TwinBarrels" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -0.55)
+mesh = SubResource("BoxMesh_gun_barrels")
+
+[node name="TargetingOptic" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.25, -0.3)
+mesh = SubResource("BoxMesh_laser_optic")
+
+[node name="Muzzle" type="Marker3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, -1.25)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("1_health")

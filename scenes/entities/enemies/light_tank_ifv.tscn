@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://enemy_light_tank_scene_01"]
+[gd_scene load_steps=14 format=3 uid="uid://enemy_light_tank_scene_01"]
 
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
@@ -7,14 +7,49 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
 size = Vector3(2.8, 1.6, 4.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tank"]
-albedo_color = Color(0.22, 0.25, 0.2, 1)
-metallic = 0.6
-roughness = 0.5
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_antracite"]
+albedo_color = Color(0.121569, 0.133333, 0.14902, 1)
+metallic = 0.8
+roughness = 0.28
 
-[sub_resource type="BoxMesh" id="BoxMesh_tank_hull"]
-material = SubResource("StandardMaterial3D_tank")
-size = Vector3(2.6, 1.4, 4.2)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_metal"]
+albedo_color = Color(0.08, 0.09, 0.11, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emissive_red"]
+albedo_color = Color(0.85098, 0.219608, 0.117647, 1)
+emission_enabled = true
+emission = Color(0.85098, 0.219608, 0.117647, 1)
+emission_energy_multiplier = 3.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_chassis"]
+material = SubResource("StandardMaterial3D_antracite")
+size = Vector3(2.4, 0.75, 4.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_track"]
+material = SubResource("StandardMaterial3D_dark_metal")
+size = Vector3(0.45, 0.65, 4.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_turret_bustle"]
+material = SubResource("StandardMaterial3D_antracite")
+size = Vector3(1.5, 0.55, 1.7)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_cannon_barrel"]
+material = SubResource("StandardMaterial3D_dark_metal")
+top_radius = 0.08
+bottom_radius = 0.09
+height = 2.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_gun_mantle"]
+material = SubResource("StandardMaterial3D_dark_metal")
+size = Vector3(0.5, 0.35, 0.4)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_optic"]
+material = SubResource("StandardMaterial3D_emissive_red")
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.15
 
 [node name="LightTankIFV" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
 collision_layer = 4
@@ -24,9 +59,42 @@ collision_mask = 7
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("BoxShape3D_hitbox")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
-mesh = SubResource("BoxMesh_tank_hull")
+[node name="ModelContainer" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0)
+
+[node name="ChassisMesh" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_chassis")
+
+[node name="TrackLeft" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.05, 0)
+mesh = SubResource("BoxMesh_track")
+
+[node name="TrackRight" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0.05, 0)
+mesh = SubResource("BoxMesh_track")
+
+[node name="Turret" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -0.2)
+
+[node name="TurretBustle" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_turret_bustle")
+
+[node name="GunMantle" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, -0.85)
+mesh = SubResource("BoxMesh_gun_mantle")
+
+[node name="AutocannonBarrel" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.28, -1.8)
+mesh = SubResource("CylinderMesh_cannon_barrel")
+
+[node name="CommanderOptic" type="MeshInstance3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.58, -0.2)
+mesh = SubResource("CylinderMesh_optic")
+
+[node name="Muzzle" type="Marker3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.28, -2.85)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("1_health")
