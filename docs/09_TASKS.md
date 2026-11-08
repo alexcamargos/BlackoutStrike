@@ -50,7 +50,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Varredura cônica frontal de $40^\circ$ para detecção do inimigo hostil mais próximo; curva de aproximação guiada em direção ao alvo.
   - **Critério de Aceite:** O míssil altera seu vetor de trajetória em direção ao alvo móvel ou segue reto caso não existam entidades na área.
 
-- [ ] **TASK-023: Interface de Usuário (HUD) e Caixa de Rádio Militar**
+- [x] **TASK-023: Interface de Usuário (HUD) e Caixa de Rádio Militar**
   - **Dependência:** TASK-010, TASK-011, TASK-012, TASK-021.
   - **Arquivos:** `res://scenes/ui/hud.tscn`, `res://scenes/ui/radio_transmission_box.tscn`.
   - **Lógica:** Barras de Armor, Fuel, contadores dos 3 slots de armas, alerta *CABIN FULL*, tacômetro de sobreviventes a bordo e caixa de diálogo estilo *radio chatter* acionada via `EventBus.radio_transmission_requested`.
