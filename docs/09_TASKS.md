@@ -60,7 +60,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 3: Resgate, Abrigos e Extração
 
-- [ ] **TASK-030: Estrutura Destrutível e Sobreviventes com Vulnerabilidade a Fogo Cruzado**
+- [x] **TASK-030: Estrutura Destrutível e Sobreviventes com Vulnerabilidade a Fogo Cruzado**
   - **Dependência:** TASK-012.
   - **Arquivos:** `res://scenes/entities/npcs/rescue_shelter.tscn`, `res://scenes/entities/npcs/civilian.tscn`.
   - **Lógica:** Edifício protegido com vida própria ($300.0\text{ HP}$ via `ShelterData`); ao ser destruído, emite `EventBus.shelter_destroyed` e gera no solo 4 instâncias de `Civilian` em raio de $2.5\text{ m}$. Cada civil possui `HealthComponent` ($30.0\text{ HP}$) vulnerável a explosões em área (foguetes Hydra/tanques) e fogo cruzado, emitindo `EventBus.civilian_killed` caso morra.
