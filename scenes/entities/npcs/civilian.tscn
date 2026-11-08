@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://civilian_entity_01"]
+[gd_scene load_steps=15 format=3 uid="uid://civilian_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/npcs/civilian.gd" id="1_civilian"]
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="2_health"]
@@ -7,14 +7,59 @@
 radius = 0.35
 height = 1.6
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_suit"]
-albedo_color = Color(0.95, 0.55, 0.1, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_high_vis_orange"]
+albedo_color = Color(0.960784, 0.486275, 0.05098, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_reflective_stripe"]
+albedo_color = Color(0.92, 0.94, 0.96, 1)
+metallic = 0.7
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_skin"]
+albedo_color = Color(0.91, 0.75, 0.67, 1)
 roughness = 0.6
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
-material = SubResource("StandardMaterial3D_suit")
-radius = 0.3
-height = 1.5
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_safety_yellow"]
+albedo_color = Color(1, 0.835294, 0.05098, 1)
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_visor_blue"]
+albedo_color = Color(0.125, 0.643, 0.953, 1)
+metallic = 0.85
+roughness = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boots_dark"]
+albedo_color = Color(0.12, 0.13, 0.15, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+material = SubResource("StandardMaterial3D_high_vis_orange")
+size = Vector3(0.42, 0.55, 0.28)
+
+[sub_resource type="BoxMesh" id="BoxMesh_reflective_stripe"]
+material = SubResource("StandardMaterial3D_reflective_stripe")
+size = Vector3(0.44, 0.1, 0.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_head"]
+material = SubResource("StandardMaterial3D_skin")
+size = Vector3(0.24, 0.24, 0.24)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hardhat"]
+material = SubResource("StandardMaterial3D_safety_yellow")
+size = Vector3(0.32, 0.14, 0.34)
+
+[sub_resource type="BoxMesh" id="BoxMesh_visor"]
+material = SubResource("StandardMaterial3D_visor_blue")
+size = Vector3(0.22, 0.08, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_legs"]
+material = SubResource("StandardMaterial3D_boots_dark")
+size = Vector3(0.38, 0.5, 0.24)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_high_vis_orange")
+size = Vector3(0.12, 0.48, 0.14)
 
 [node name="Civilian" type="CharacterBody3D"]
 collision_layer = 64
@@ -25,9 +70,39 @@ script = ExtResource("1_civilian")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 shape = SubResource("CapsuleShape3D_hitbox")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
-mesh = SubResource("CapsuleMesh_body")
+[node name="ModelContainer" type="Node3D" parent="."]
+
+[node name="Torso" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+mesh = SubResource("BoxMesh_torso")
+
+[node name="ReflectiveVest" type="MeshInstance3D" parent="ModelContainer/Torso"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+mesh = SubResource("BoxMesh_reflective_stripe")
+
+[node name="Head" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+mesh = SubResource("BoxMesh_head")
+
+[node name="SafetyHardhat" type="MeshInstance3D" parent="ModelContainer/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.14, 0)
+mesh = SubResource("BoxMesh_hardhat")
+
+[node name="SafetyVisor" type="MeshInstance3D" parent="ModelContainer/Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13)
+mesh = SubResource("BoxMesh_visor")
+
+[node name="Legs" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_legs")
+
+[node name="ArmLeft" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.28, 0.75, 0)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="ArmRight" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.28, 0.75, 0)
+mesh = SubResource("BoxMesh_arm")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("2_health")
