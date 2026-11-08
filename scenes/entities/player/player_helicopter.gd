@@ -14,6 +14,8 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var fuel_component: FuelComponent = $FuelComponent
 @onready var weapon_manager: WeaponManager = $WeaponManager
 @onready var target_scanner: TargetScanner = $TargetScanner
+@onready var cargo_component: CargoComponent = $CargoComponent
+@onready var rescue_sensor: RescueSensorArea = $RescueSensorArea
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
@@ -57,6 +59,8 @@ func _ready() -> void:
 			EventBus.player_fuel_changed.emit(fuel_component.current_fuel, fuel_component.max_fuel)
 		if health_component != null:
 			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
+		if cargo_component != null:
+			EventBus.civilian_boarded.emit(cargo_component.current_occupants, cargo_component.max_capacity)
 
 
 ## Executa o ciclo de simulacao fisica, alternando entre voo normal e autorrotacao.
