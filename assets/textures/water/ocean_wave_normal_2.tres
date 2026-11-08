@@ -7,6 +7,8 @@ frequency = 0.03
 fractal_octaves = 4
 
 [resource]
+width = 1024
+height = 1024
 seamless = true
 as_normal_map = true
 bump_strength = 6.0
