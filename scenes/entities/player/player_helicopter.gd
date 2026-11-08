@@ -313,13 +313,35 @@ func _process_flight_controls(delta: float) -> void:
 	if tail_rotor != null:
 		tail_rotor.rotate_x(45.0 * delta)
 	
-	# Atualiza intensidade visual do rotor wash com base na cota de altitude
+	# Atualiza intensidade visual do rotor wash dinamicamente conforme cota de altitude (Y <= 1.8m maxima visibilidade)
+	update_rotor_wash(global_position.y)
+
+
+## Atualiza a intensidade visual do rotor wash com base na cota de altitude informada.
+##
+## Conforme a especificacao, altitudes Y <= 1.8m projetam anel visivel maximo (1.0),
+## decaindo gradualmente ate desvanecer por completo na cota de cruzeiro (Y >= 4.0m).
+##
+## Args:
+##     altitude (float): Cota de altitude vertical em metros.
+##
+## Returns:
+##     float: Intensidade normalizada do shader entre 0.0 e 1.0.
+func update_rotor_wash(altitude: float) -> float:
+	var intensity: float = 0.0
+	if altitude <= 1.8:
+		intensity = 1.0
+	elif altitude < 4.0:
+		intensity = clampf(1.0 - ((altitude - 1.8) / (4.0 - 1.8)), 0.0, 1.0)
+	else:
+		intensity = 0.0
+	
 	if rotor_wash_mesh != null:
-		var alt: float = global_position.y
-		var intensity: float = clampf(1.0 - ((alt - 0.8) / 4.0), 0.2, 1.0)
+		rotor_wash_mesh.visible = intensity > 0.001
 		var mat: ShaderMaterial = rotor_wash_mesh.get_active_material(0) as ShaderMaterial
 		if mat != null:
 			mat.set_shader_parameter("intensity", intensity)
+	return intensity
 
 
 ## Processa a sequencia incontrolavel de queda em autorrotacao apos pane seca.

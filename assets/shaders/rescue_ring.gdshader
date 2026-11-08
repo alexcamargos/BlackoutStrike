@@ -4,7 +4,7 @@ shader_type spatial;
 render_mode blend_add, cull_disabled, unshaded;
 
 uniform vec4 ring_color : source_color = vec4(0.2, 0.8, 1.0, 1.0);
-uniform vec4 suppressed_color : source_color = vec4(1.0, 0.25, 0.1, 1.0);
+uniform vec4 suppressed_color : source_color = vec4(1.0, 0.15, 0.05, 1.0);
 uniform bool is_suppressed = false; // Ativado quando ha inimigos a <= 10m dos civis
 uniform float progress : hint_range(0.0, 1.0) = 0.0; // Controlado via GDScript
 uniform float inner_radius : hint_range(0.1, 1.0) = 0.65;

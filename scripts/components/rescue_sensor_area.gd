@@ -159,11 +159,7 @@ func step(delta: float) -> void:
 	
 	_update_ring_transform()
 	
-	suppression_check_timer += delta
-	if suppression_check_timer >= SUPPRESSION_CHECK_INTERVAL:
-		suppression_check_timer = 0.0
-		_cached_is_suppressed = is_perimeter_suppressed(current_target_civilian.global_position)
-	
+	_cached_is_suppressed = is_perimeter_suppressed(current_target_civilian.global_position)
 	_set_suppression_state(_cached_is_suppressed)
 	
 	if is_suppressed:
@@ -317,6 +313,7 @@ func _update_ring_shader_params() -> void:
 func _set_suppression_state(new_state: bool) -> void:
 	if is_suppressed != new_state:
 		is_suppressed = new_state
+		_update_ring_shader_params()
 		if EventBus != null:
 			EventBus.rescue_zone_suppressed.emit(is_suppressed)
 
