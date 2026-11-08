@@ -48,6 +48,8 @@ var has_aim_target: bool = false
 func _ready() -> void:
 	add_to_group("player")
 	
+	apply_meta_progression()
+	
 	if fuel_component != null:
 		fuel_component.fuel_depleted.connect(_on_fuel_depleted)
 		fuel_component.fuel_changed.connect(_on_fuel_changed)
@@ -64,6 +66,65 @@ func _ready() -> void:
 			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
 		if cargo_component != null:
 			EventBus.civilian_boarded.emit(cargo_component.current_occupants, cargo_component.max_capacity)
+
+
+## Aplica os aprimoramentos permanentes salvos no MetaProgression a aeronave.
+##
+## Atualiza a capacidade de passageiros da cabine, a blindagem maxima e a reserva de municao.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func apply_meta_progression() -> void:
+	if MetaProgression == null:
+		return
+	
+	# 1. Cabine Estendida (expand_cabin)
+	var cabin_lvl: int = MetaProgression.get_upgrade_level("expand_cabin")
+	if cabin_lvl > 0 and cargo_component != null:
+		var cabin_path: String = "res://scripts/data/upgrade_expand_cabin.tres"
+		if ResourceLoader.exists(cabin_path):
+			var cabin_upgrade: Resource = ResourceLoader.load(cabin_path)
+			if cabin_upgrade is HangarUpgradeData and cabin_lvl <= cabin_upgrade.value_per_level.size():
+				cargo_component.max_capacity = int(round(cabin_upgrade.value_per_level[cabin_lvl - 1]))
+			else:
+				cargo_component.max_capacity = 5 + cabin_lvl
+		else:
+			cargo_component.max_capacity = 5 + cabin_lvl
+		if EventBus != null:
+			EventBus.civilian_boarded.emit(cargo_component.current_occupants, cargo_component.max_capacity)
+	
+	# 2. Reforco de Blindagem (reinforce_armor)
+	var armor_lvl: int = MetaProgression.get_upgrade_level("reinforce_armor")
+	if armor_lvl > 0 and health_component != null:
+		var armor_path: String = "res://scripts/data/upgrade_reinforce_armor.tres"
+		if ResourceLoader.exists(armor_path):
+			var armor_upgrade: Resource = ResourceLoader.load(armor_path)
+			if armor_upgrade is HangarUpgradeData and armor_lvl <= armor_upgrade.value_per_level.size():
+				health_component.max_health = armor_upgrade.value_per_level[armor_lvl - 1]
+			else:
+				health_component.max_health = 1000.0 + (100.0 * float(armor_lvl))
+		else:
+			health_component.max_health = 1000.0 + (100.0 * float(armor_lvl))
+		health_component.current_health = health_component.max_health
+		if EventBus != null:
+			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
+	
+	# 3. Logistica de Calibre (ammo_logistics)
+	var ammo_lvl: int = MetaProgression.get_upgrade_level("ammo_logistics")
+	if ammo_lvl > 0 and weapon_manager != null:
+		var ammo_path: String = "res://scripts/data/upgrade_ammo_logistics.tres"
+		var mult: float = 1.0 + (0.2 * float(ammo_lvl))
+		if ResourceLoader.exists(ammo_path):
+			var ammo_upgrade: Resource = ResourceLoader.load(ammo_path)
+			if ammo_upgrade is HangarUpgradeData and ammo_lvl <= ammo_upgrade.value_per_level.size():
+				mult = ammo_upgrade.value_per_level[ammo_lvl - 1]
+		weapon_manager.apply_ammo_capacity_multiplier(mult)
 
 
 ## Executa o ciclo de simulacao fisica, alternando entre voo normal e autorrotacao.
