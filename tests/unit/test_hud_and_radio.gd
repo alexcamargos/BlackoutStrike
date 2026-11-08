@@ -49,6 +49,14 @@ func test_hud_cabin_full_alert_toggle() -> void:
 	assert_true(hud.cargo_label.text.contains("2 / 5"), "O tacometro deve atualizar para '2 / 5'.")
 
 
+func test_hud_dynamic_cargo_capacity_on_extraction() -> void:
+	EventBus.civilian_boarded.emit(4, 8)
+	assert_true(hud.cargo_label.text.contains("4 / 8"), "O tacometro deve refletir a capacidade expandida de 8.")
+	
+	EventBus.civilian_extracted.emit(4)
+	assert_true(hud.cargo_label.text.contains("0 / 8"), "Apos a extracao, o tacometro deve manter o teto dinamico de 8.")
+
+
 func test_hud_target_lock_indicator() -> void:
 	assert_false(hud.lock_indicator.visible, "O indicador de travamento de alvo deve iniciar invisivel.")
 	

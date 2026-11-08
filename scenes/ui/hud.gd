@@ -34,6 +34,9 @@ extends Control
 ## Indice da arma ativa atualmente na interface.
 var active_slot_index: int = 0
 
+## Capacidade maxima de passageiros informada dinamicamente pelo componente de carga.
+var max_passenger_capacity: int = 5
+
 
 ## Conecta o HUD aos eventos do EventBus e configura os estados visuais iniciais.
 ##
@@ -124,6 +127,7 @@ func _on_weapon_ammo_changed(slot_index: int, current: int, max_ammo: int) -> vo
 ## Returns:
 ##     void
 func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
+	max_passenger_capacity = max_cargo
 	cargo_label.text = "PASSENGERS: %d / %d" % [current_cargo, max_cargo]
 	cabin_full_alert.visible = (current_cargo >= max_cargo)
 
@@ -136,7 +140,7 @@ func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
 ## Returns:
 ##     void
 func _on_civilian_extracted(_total_rescued: int) -> void:
-	cargo_label.text = "PASSENGERS: 0 / 5"
+	cargo_label.text = "PASSENGERS: 0 / %d" % [max_passenger_capacity]
 	cabin_full_alert.visible = false
 
 
