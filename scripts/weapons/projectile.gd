@@ -167,7 +167,7 @@ func handle_hit(target: Node) -> void:
 	else:
 		_apply_damage_to_node(target, final_damage)
 	
-	_spawn_impact_effect(global_position)
+	_spawn_impact_effect(global_position, target)
 	impacted.emit(global_position, target)
 	
 	if pierce_remaining > 0:
@@ -261,22 +261,37 @@ func _find_health_component(node: Node) -> HealthComponent:
 	return null
 
 
-## Instancia efeito visual ou particula no local do impacto.
+## Instancia efeito visual ou particula no local do impacto conforme a superficie receptora.
 ##
 ## Args:
 ##     spawn_pos (Vector3): Coordenadas globais do efeito.
+##     hit_target (Node): No receptor do impacto (opcional).
 ##
 ## Returns:
 ##     void
-func _spawn_impact_effect(spawn_pos: Vector3) -> void:
+func _spawn_impact_effect(spawn_pos: Vector3, hit_target: Node = null) -> void:
+	var current_tree: SceneTree = get_tree()
+	if current_tree == null or current_tree.current_scene == null:
+		return
+	
+	# Impactos na cota do oceano utilizam o efeito especializado de water splash
+	if spawn_pos.y <= 0.3:
+		var splash_scene: PackedScene = load("res://scenes/vfx/water_splash.tscn") as PackedScene
+		if splash_scene != null:
+			var splash_inst: Node3D = splash_scene.instantiate() as Node3D
+			if splash_inst != null:
+				current_tree.current_scene.add_child(splash_inst)
+				splash_inst.global_position = spawn_pos
+				return
+	
 	if impact_effect_scene == null:
 		return
 	var effect_instance: Node3D = impact_effect_scene.instantiate() as Node3D
 	if effect_instance != null:
-		var current_tree: SceneTree = get_tree()
-		if current_tree != null and current_tree.current_scene != null:
-			current_tree.current_scene.add_child(effect_instance)
-			effect_instance.global_position = spawn_pos
+		current_tree.current_scene.add_child(effect_instance)
+		effect_instance.global_position = spawn_pos
+		if effect_instance.has_method("setup_for_target"):
+			effect_instance.call("setup_for_target", hit_target, spawn_pos)
 
 
 ## Callback disparado quando um corpo fisico entra na area do projetil.

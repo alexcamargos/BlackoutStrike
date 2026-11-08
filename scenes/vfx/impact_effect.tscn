@@ -1,25 +1,69 @@
-[gd_scene load_steps=4 format=3 uid="uid://impact_effect_vfx_01"]
+[gd_scene load_steps=9 format=3 uid="uid://impact_effect_vfx_01"]
 
 [ext_resource type="Script" path="res://scripts/weapons/impact_effect.gd" id="1_impact"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark"]
-emission_enabled = true
-emission = Color(1, 0.78, 0.2, 1)
-emission_energy_multiplier = 4.0
-albedo_color = Color(1, 0.6, 0.1, 1)
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_sparks"]
+direction = Vector3(0, 1, 0)
+spread = 60.0
+initial_velocity_min = 6.0
+initial_velocity_max = 11.0
+gravity = Vector3(0, -9.8, 0)
+scale_min = 0.5
+scale_max = 1.2
+color = Color(1, 0.85, 0.25, 1)
 
-[sub_resource type="SphereMesh" id="SphereMesh_spark"]
-material = SubResource("StandardMaterial3D_spark")
-radius = 0.35
-height = 0.7
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_spark_mesh"]
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.8, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_spark"]
+material = SubResource("StandardMaterial3D_spark_mesh")
+size = Vector3(0.06, 0.06, 0.06)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
+direction = Vector3(0, 1, 0)
+spread = 50.0
+initial_velocity_min = 2.0
+initial_velocity_max = 4.5
+gravity = Vector3(0, -1.0, 0)
+scale_min = 0.8
+scale_max = 1.8
+color = Color(0.72, 0.65, 0.52, 0.65)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust_mesh"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.7, 0.64, 0.52, 0.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dust"]
+material = SubResource("StandardMaterial3D_dust_mesh")
+size = Vector3(0.12, 0.12, 0.12)
 
 [node name="ImpactEffect" type="Node3D"]
 script = ExtResource("1_impact")
-
-[node name="SparkMesh" type="MeshInstance3D" parent="."]
-mesh = SubResource("SphereMesh_spark")
+duration = 0.45
 
 [node name="FlashLight" type="OmniLight3D" parent="."]
-light_color = Color(1, 0.8, 0.3, 1)
-light_energy = 3.0
+light_color = Color(1, 0.85, 0.35, 1)
+light_energy = 4.0
 omni_range = 4.0
+
+[node name="MetalSparksParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 24
+lifetime = 0.35
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_sparks")
+draw_pass_1 = SubResource("BoxMesh_spark")
+
+[node name="DustParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 16
+lifetime = 0.45
+one_shot = true
+explosiveness = 0.8
+process_material = SubResource("ParticleProcessMaterial_dust")
+draw_pass_1 = SubResource("BoxMesh_dust")
