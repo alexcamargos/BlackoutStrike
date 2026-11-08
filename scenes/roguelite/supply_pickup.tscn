@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://supply_pickup_01"]
+
+[ext_resource type="Script" path="res://scenes/roguelite/supply_pickup.gd" id="1_pickup"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pickup_zone"]
+radius = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_crate"]
+size = Vector3(0.8, 0.8, 0.8)
+
+[node name="SupplyPickup" type="Area3D"]
+collision_layer = 128
+collision_mask = 2
+script = ExtResource("1_pickup")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_pickup_zone")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_crate")
