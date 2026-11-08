@@ -65,7 +65,8 @@ PlayerHelicopter (CharacterBody3D) [Camada 2 | Máscaras: 1, 3, 4, 6, 8]
 │   └── MuzzleMarkers (Node3D) [Pontos espaciais de saída de projéteis]
 │       ├── VulcanMuzzle (Marker3D)
 │       ├── HydraPodLeft (Marker3D)
-│       └── HydraPodRight (Marker3D)
+│       ├── HydraPodRight (Marker3D)
+│       └── HellfireHardpoint (Marker3D)
 ├── FlightMovementController (Node) [Script de física vetorial e cálculo de inércia]
 ├── HealthComponent (Node) [Script de controle de integridade de fuselagem]
 ├── FuelComponent (Node) [Script de consumo, estocagem e pane seca]

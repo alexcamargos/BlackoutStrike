@@ -58,6 +58,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, -0.1, -0.6)
 [node name="HydraPodRight" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, -0.1, -0.6)
 
+[node name="HellfireHardpoint" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0.2)
+
 [node name="FlightMovementController" type="Node" parent="."]
 script = ExtResource("2_flight")
 
