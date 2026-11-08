@@ -45,6 +45,24 @@ func is_destroyed() -> bool:
 	return is_dead or (health != null and health.is_destroyed())
 
 
+## Orienta suavemente a torreta em torno do eixo Y em direção ao alvo tático.
+##
+## Args:
+##     target_pos (Vector3): Posição global do alvo visado.
+##     delta (float): Intervalo de tempo físico em segundos.
+##
+## Returns:
+##     void
+func orient_towards(target_pos: Vector3, delta: float) -> void:
+	if is_dead:
+		return
+	var dir: Vector3 = target_pos - global_position
+	dir.y = 0.0
+	if dir.length_squared() > 0.01:
+		var target_basis: Basis = Basis.looking_at(dir.normalized(), Vector3.UP)
+		global_transform.basis = global_transform.basis.slerp(target_basis, clampf(4.0 * delta, 0.0, 1.0))
+
+
 func _on_entity_destroyed() -> void:
 	if is_dead:
 		return

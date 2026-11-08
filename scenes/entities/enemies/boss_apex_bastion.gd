@@ -67,6 +67,14 @@ func _physics_process(delta: float) -> void:
 	
 	_update_target_player()
 	
+	# Orienta as torretas ativas em direção ao jogador
+	if target_player != null and is_instance_valid(target_player):
+		var target_pos: Vector3 = target_player.global_position
+		if bow_turret != null and not bow_turret.is_destroyed():
+			bow_turret.orient_towards(target_pos, delta)
+		if stern_turret != null and not stern_turret.is_destroyed():
+			stern_turret.orient_towards(target_pos, delta)
+	
 	# Verifica transição de fase
 	if current_phase == 1 and core_health != null:
 		var ratio: float = core_health.current_health / core_health.max_health
@@ -203,11 +211,16 @@ func _fire_double_cannon() -> void:
 		return
 	var boss_pos: Vector3 = global_position if is_inside_tree() else position
 	var spawn_pos: Vector3 = bow_turret.global_position if (bow_turret != null and bow_turret.is_inside_tree()) else (boss_pos + Vector3(0, 2, -5))
-	for offset_x in [-1.0, 1.0]:
+	var muzzle: Marker3D = bow_turret.get_node_or_null("Muzzle") as Marker3D if bow_turret != null else null
+	if muzzle != null and muzzle.is_inside_tree():
+		spawn_pos = muzzle.global_position
+	
+	var right_vec: Vector3 = bow_turret.global_transform.basis.x.normalized() if (bow_turret != null and bow_turret.is_inside_tree()) else Vector3.RIGHT
+	for offset_mult in [-0.65, 0.65]:
 		var proj: Projectile = cannon_projectile_scene.instantiate() as Projectile
 		if proj != null:
 			proj.source = self
-			var fire_pos: Vector3 = spawn_pos + Vector3(offset_x, 0, 0)
+			var fire_pos: Vector3 = spawn_pos + right_vec * offset_mult
 			_add_projectile_to_scene(proj, fire_pos, _get_aim_direction(fire_pos))
 
 
@@ -258,6 +271,9 @@ func _fire_missile_salvo() -> void:
 		return
 	var boss_pos: Vector3 = global_position if is_inside_tree() else position
 	var origin: Vector3 = stern_turret.global_position if (stern_turret != null and stern_turret.is_inside_tree()) else (boss_pos + Vector3(0, 2, 4))
+	var muzzle: Marker3D = stern_turret.get_node_or_null("Muzzle") as Marker3D if stern_turret != null else null
+	if muzzle != null and muzzle.is_inside_tree():
+		origin = muzzle.global_position
 	for i in range(4):
 		var missile: Projectile = missile_projectile_scene.instantiate() as Projectile
 		if missile != null:
