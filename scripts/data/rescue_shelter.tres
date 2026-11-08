@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ShelterData" load_steps=2 format=3 uid="uid://rescue_shelter_res_01"]
+
+[ext_resource type="Script" path="res://scripts/data/shelter_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "rescue_shelter_standard"
+max_health = 300.0
+survivor_count = 4
+survivor_max_health = 30.0
+spawn_scatter_radius = 2.5
