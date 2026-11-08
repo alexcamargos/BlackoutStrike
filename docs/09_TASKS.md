@@ -72,7 +72,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Ao pairar em altitude $Y \le 1.2\text{ m}$ sobre o civil, projeta o disco holográfico. Se houver inimigos terrestres vivos em raio $\le 10.0\text{ m}$, o anel entra em estado `is_suppressed = true` (cor vermelho-alerta e progresso congelado). Sem supressão, preenche de $0^\circ$ a $360^\circ$ em $2.0\text{ s}$ e embarca 1 passageiro até o limite de 5.
   - **Critério de Aceite:** Supressão congela o embarque; subir acima de $Y > 1.2\text{ m}$ reseta o progresso; atingir 5 passageiros emite alerta e impede novos embarques (`test_cargo_component.gd` e `test_rescue_area.gd` verdes).
 
-- [ ] **TASK-032: Heliponto Aliado de Desembarque, Manutenção e Suprimentos de Campo**
+- [x] **TASK-032: Heliponto Aliado de Desembarque, Manutenção e Suprimentos de Campo**
   - **Dependência:** TASK-011, TASK-012, TASK-031.
   - **Arquivos:** `res://scenes/environment/ally_helipad.tscn`, `res://scenes/roguelite/supply_pickup.tscn`.
   - **Lógica:** `Area3D` do heliponto que detecta pouso ($Y \le 1.2\text{ m}$), descarrega passageiros incrementando `MetaProgression.personnel_tokens`, reabastece combustível ($15\text{ u/s}$) e conserta blindagem ($40\text{ HP/s}$); implementação de `AmmoCrate` ($+25\%$ munição) e `FuelDrum` ($+30.0$ combustível).
