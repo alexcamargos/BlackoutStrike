@@ -105,6 +105,7 @@ func test_player_helicopter_scene_structure() -> void:
 	assert_not_null(helicopter.get_node_or_null("HealthComponent"), "Deve conter o nó HealthComponent.")
 	assert_not_null(helicopter.get_node_or_null("FuelComponent"), "Deve conter o nó FuelComponent.")
 	assert_not_null(helicopter.get_node_or_null("WeaponManager"), "Deve conter o nó WeaponManager.")
+	assert_not_null(helicopter.get_node_or_null("TargetScanner"), "Deve conter o nó TargetScanner.")
 	assert_not_null(helicopter.get_node_or_null("HelicopterMeshContainer"), "Deve conter HelicopterMeshContainer.")
 	
 	# Hardpoints de armamento sob MuzzleMarkers

@@ -13,6 +13,7 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var fuel_component: FuelComponent = $FuelComponent
 @onready var weapon_manager: WeaponManager = $WeaponManager
+@onready var target_scanner: TargetScanner = $TargetScanner
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
@@ -102,6 +103,14 @@ func _process_weapon_controls() -> void:
 	
 	if Input.is_action_pressed("fire_primary"):
 		fire_active_weapon()
+	
+	# Varredura automatica de alvos para misseis Hellfire (Slot 2)
+	if target_scanner != null and is_inside_tree():
+		if weapon_manager.current_slot_index == 2:
+			current_locked_target = target_scanner.scan_from_node(self, get_tree())
+		elif target_scanner.current_target != null:
+			target_scanner.clear_target()
+			current_locked_target = null
 
 
 ## Aciona o disparo da arma selecionada a partir do seu respectivo ponto espacial de saida.
