@@ -120,3 +120,27 @@ func test_meta_progression_tokens_and_upgrades() -> void:
 	
 	var lvl: int = MetaProgression.get_upgrade_level("expand_cabin")
 	assert_eq(lvl, 0, "Nivel de upgrade expand_cabin inicial deve ser 0.")
+
+
+const MainLoopCoordinatorScript = preload("res://scripts/core/main.gd")
+const Mission01MidwayScript = preload("res://scenes/core/mission_01_midway.gd")
+
+
+func test_main_loop_coordinator_lifecycle() -> void:
+	var main_coordinator: Node3D = MainLoopCoordinatorScript.new()
+	add_child_autofree(main_coordinator)
+	
+	assert_eq(main_coordinator.current_state, main_coordinator.ScreenState.HANGAR, "Main deve iniciar na tela de Hangar.")
+	assert_not_null(main_coordinator.current_scene_instance, "Instancia do Hangar deve existir.")
+	assert_true(main_coordinator.current_scene_instance is HangarScreen, "Tela inicial deve ser do tipo HangarScreen.")
+	
+	# Aciona o inicio de missao
+	main_coordinator.start_mission()
+	assert_eq(main_coordinator.current_state, main_coordinator.ScreenState.MISSION, "Main deve transicionar para estado MISSION.")
+	assert_not_null(main_coordinator.current_scene_instance, "Instancia da missao deve existir.")
+	assert_true(main_coordinator.current_scene_instance.get_script() == Mission01MidwayScript, "Tela deve ser do tipo Mission01Midway.")
+	
+	# Retorna para o Hangar
+	main_coordinator.show_hangar()
+	assert_eq(main_coordinator.current_state, main_coordinator.ScreenState.HANGAR, "Main deve retornar ao estado HANGAR.")
+	assert_true(main_coordinator.current_scene_instance is HangarScreen, "Tela ativa deve ser HangarScreen.")
