@@ -36,7 +36,7 @@ void fragment() {
     vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
     view.xyz /= view.w;
     float linear_depth = -view.z;
-    float water_depth = linear_depth - VERTEX.z;
+    float water_depth = linear_depth + VERTEX.z;
 
     // Gradiente de atenuação de cor
     float depth_factor = clamp(water_depth / depth_distance, 0.0, 1.0);
@@ -54,7 +54,7 @@ void fragment() {
     vec3 final_color = mix(base_water.rgb, foam_color.rgb, foam_edge);
 
     ALBEDO = final_color;
-    NORMAL_MAP = normal_blended;
+    NORMAL_MAP = normal_blended * 0.5 + 0.5;
     ROUGHNESS = roughness;
     METALLIC = metallic;
     SPECULAR = 0.8;
