@@ -131,9 +131,32 @@ func transition_to_phase(new_phase: int) -> void:
 	if current_phase == new_phase:
 		return
 	current_phase = new_phase
+	
+	if current_phase == 2:
+		_activate_phase_2_visuals()
+	
 	phase_changed.emit(current_phase)
 	if EventBus != null:
 		EventBus.boss_phase_changed.emit("Apex Bastion", current_phase)
+
+
+## Retrai as placas de blindagem do núcleo de comando e ativa o pulso emissivo do reator na Fase 2.
+func _activate_phase_2_visuals() -> void:
+	var left_armor: Node3D = get_node_or_null("CoreBridge/RetractableArmorLeft") as Node3D
+	if left_armor != null:
+		left_armor.position.x = -2.8
+	var right_armor: Node3D = get_node_or_null("CoreBridge/RetractableArmorRight") as Node3D
+	if right_armor != null:
+		right_armor.position.x = 2.8
+	
+	var reactor: MeshInstance3D = get_node_or_null("CoreBridge/CoreReactorMesh") as MeshInstance3D
+	if reactor != null and reactor.mesh != null:
+		var mat: StandardMaterial3D = reactor.mesh.material as StandardMaterial3D
+		if mat != null:
+			mat.emission_enabled = true
+			mat.emission = Color(1.0, 0.28, 0.08, 1.0)
+			mat.emission_energy_multiplier = 4.5
+
 
 
 func _process_phase_1(delta: float) -> void:
@@ -156,6 +179,13 @@ func _process_phase_2(delta: float) -> void:
 	ciws_timer += delta
 	missile_timer += delta
 	
+	# Pulso dinâmico do núcleo na Fase 2
+	var reactor: MeshInstance3D = get_node_or_null("CoreBridge/CoreReactorMesh") as MeshInstance3D
+	if reactor != null and reactor.mesh != null:
+		var mat: StandardMaterial3D = reactor.mesh.material as StandardMaterial3D
+		if mat != null and mat.emission_enabled:
+			mat.emission_energy_multiplier = 4.2 + 1.6 * sin(float(Time.get_ticks_msec()) * 0.008)
+	
 	# CIWS leque a cada 3.0s
 	if ciws_timer >= 3.0:
 		ciws_timer = 0.0
@@ -165,6 +195,7 @@ func _process_phase_2(delta: float) -> void:
 	if missile_timer >= 7.0:
 		missile_timer = 0.0
 		_fire_missile_salvo()
+
 
 
 func _fire_double_cannon() -> void:

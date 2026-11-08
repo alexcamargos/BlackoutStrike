@@ -9,6 +9,9 @@ signal turret_destroyed()
 @export var max_health: float = 800.0
 @export var is_bow_turret: bool = true
 
+## Material PBR aplicado às malhas da torreta após colapso estrutural (avariada/enfumaçada).
+@export var damaged_material: StandardMaterial3D = null
+
 @onready var health: HealthComponent = $HealthComponent
 
 var is_dead: bool = false
@@ -17,6 +20,15 @@ var is_dead: bool = false
 func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("structures")
+	
+	if damaged_material == null:
+		damaged_material = StandardMaterial3D.new()
+		damaged_material.albedo_color = Color(0.08, 0.08, 0.08, 1.0) # Preto carbonizado
+		damaged_material.metallic = 0.2
+		damaged_material.roughness = 0.9
+		damaged_material.emission_enabled = true
+		damaged_material.emission = Color(0.35, 0.12, 0.04, 1.0) # Brasas residuais
+		damaged_material.emission_energy_multiplier = 0.8
 	
 	if health != null:
 		health.max_health = max_health
@@ -37,4 +49,18 @@ func _on_entity_destroyed() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	set_physics_process(false)
+	_apply_damaged_material()
 	turret_destroyed.emit()
+
+
+## Aplica o material carbonizado/avariado a todas as malhas pertencentes ao módulo da torreta.
+func _apply_damaged_material() -> void:
+	var stack: Array[Node] = [self]
+	while not stack.is_empty():
+		var curr: Node = stack.pop_back()
+		if curr is MeshInstance3D:
+			curr.set_surface_override_material(0, damaged_material)
+		for child in curr.get_children():
+			stack.append(child)
+
