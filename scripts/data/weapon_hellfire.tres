@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://weapon_hellfire_res_01"]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://projectile_hellfire_01" path="res://scenes/weapons/projectile_hellfire.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = "hellfire_agm"
+display_name = "Missil Hellfire"
+projectile_scene = ExtResource("2_scene")
+max_ammo = 6
+fire_rate = 1.0
+base_damage = 650.0
+projectile_speed = 50.0
+spread_angle_deg = 0.0
+explosion_radius = 2.5
+is_homing = true
+homing_cone_deg = 40.0
+homing_turn_speed = 6.0

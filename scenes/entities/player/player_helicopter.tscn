@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://player_helicopter_entity_01"]
+[gd_scene load_steps=13 format=3 uid="uid://player_helicopter_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/player/player_helicopter.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://scripts/components/fuel_component.gd" id="4_fuel"]
 [ext_resource type="Script" path="res://scripts/weapons/weapon_manager.gd" id="5_weapon"]
 [ext_resource type="Script" path="res://scripts/weapons/target_scanner.gd" id="6_scanner"]
+[ext_resource type="Resource" uid="uid://weapon_vulcan_res_01" path="res://scripts/data/weapon_vulcan.tres" id="7_vulcan"]
+[ext_resource type="Resource" uid="uid://weapon_hydra_res_01" path="res://scripts/data/weapon_hydra.tres" id="8_hydra"]
+[ext_resource type="Resource" uid="uid://weapon_hellfire_res_01" path="res://scripts/data/weapon_hellfire.tres" id="9_hellfire"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fuselage"]
 size = Vector3(1.8, 1.2, 4.2)
@@ -74,6 +77,7 @@ script = ExtResource("4_fuel")
 
 [node name="WeaponManager" type="Node" parent="."]
 script = ExtResource("5_weapon")
+weapon_slots = [ExtResource("7_vulcan"), ExtResource("8_hydra"), ExtResource("9_hellfire")]
 
 [node name="TargetScanner" type="Node" parent="."]
 script = ExtResource("6_scanner")
