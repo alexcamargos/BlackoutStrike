@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://mission_01_midway_scene_01"]
+[gd_scene load_steps=21 format=3 uid="uid://mission_01_midway_scene_01"]
 
 [ext_resource type="Environment" uid="uid://world_environment_midway_01" path="res://scenes/core/world_environment.tres" id="1_env"]
 [ext_resource type="Shader" path="res://assets/shaders/ocean_pbr.gdshader" id="2_water_shader"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://ocean_wave_normal_1_res" path="res://assets/textures/water/ocean_wave_normal_1.tres" id="12_norm1"]
 [ext_resource type="Texture2D" uid="uid://ocean_wave_normal_2_res" path="res://assets/textures/water/ocean_wave_normal_2.tres" id="13_norm2"]
 [ext_resource type="PackedScene" uid="uid://island_terrain_midway_scene_01" path="res://scenes/environment/island_terrain_midway.tscn" id="14_terrain"]
+[ext_resource type="PackedScene" uid="uid://island_props_scene_01" path="res://scenes/environment/island_props.tscn" id="15_props"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -53,6 +54,8 @@ directional_shadow_mode = 2
 mesh = SubResource("PlaneMesh_ocean")
 
 [node name="IslandTerrain" parent="." instance=ExtResource("14_terrain")]
+
+[node name="IslandProps" parent="." instance=ExtResource("15_props")]
 
 [node name="SpawnDirector" type="Node3D" parent="." node_paths=PackedStringArray("enemies_container", "shelters_container", "crates_container")]
 script = ExtResource("3_director")
