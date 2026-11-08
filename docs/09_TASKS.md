@@ -145,7 +145,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Substituir o bloco cúbico de areia por malha de relevo costeiro dividida em 3 cotas: faixa de praia rasa com declive suave ($Y \in [-0.2, 0.3]\text{ m}$), falésias rochosas com sombras nítidas ($Y \in [0.5, 6.0]\text{ m}$) e platôs industriais planos ($Y = 0.5\text{ m}$). Preservar a camada de física estática (`collision_layer = 1`) e os marcadores de posição do `SpawnDirector`.
   - **Critério de Aceite:** Aeronave em voo rasante e projéteis colidem normalmente com o terreno; civis e tanques mantêm navegação terrestre estável; `test_spawn_director.gd` e `test_rescue_area.gd` passam sem regressão.
 
-- [ ] **TASK-062: Decoração de Cenário e Escala com MultiMeshInstance3D**
+- [x] **TASK-062: Decoração de Cenário e Escala com MultiMeshInstance3D**
   - **Dependência:** TASK-061.
   - **Arquivos:** `res://scenes/environment/island_props.tscn`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Implementar instanciamento em lote via `MultiMeshInstance3D` para vegetação litorânea (palmeiras estilizadas), contêineres marítimos da Aetheris e guindastes portuários, estabelecendo contraste de escala entre a ilha e a aeronave sem adicionar sobrecarga de draw calls na GPU.

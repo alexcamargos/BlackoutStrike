@@ -5,6 +5,7 @@ extends GutTest
 ## Testes unitarios para superficies PBR e shaders costeiros (Sprint 6).
 
 const IslandTerrainMidwayScript = preload("res://scenes/environment/island_terrain_midway.gd")
+const IslandPropsScript = preload("res://scenes/environment/island_props.gd")
 
 
 func test_ocean_wave_normal_textures_exist_and_configured() -> void:
@@ -122,4 +123,75 @@ func test_mission_midway_uses_modular_island_terrain() -> void:
 	assert_not_null(terrain_node, "O no IslandTerrain deve existir na missao.")
 	assert_true(terrain_node.get_script() == IslandTerrainMidwayScript, "IslandTerrain deve usar o script island_terrain_midway.gd.")
 	assert_eq(terrain_node.get("collision_layer"), 1, "IslandTerrain na missao deve ter collision_layer = 1.")
+
+
+func test_island_props_multimesh_instancing() -> void:
+	var path_props: String = "res://scenes/environment/island_props.tscn"
+	assert_true(ResourceLoader.exists(path_props), "A cena island_props.tscn deve existir.")
+	
+	var scene: PackedScene = load(path_props) as PackedScene
+	var props_node: Node3D = scene.instantiate() as Node3D
+	add_child_autofree(props_node)
+	
+	assert_not_null(props_node, "IslandProps deve ser instanciado sem erros.")
+	assert_true(props_node.get_script() == IslandPropsScript, "IslandProps deve usar o script island_props.gd.")
+	
+	var palms: MultiMeshInstance3D = props_node.get("palms_instance") as MultiMeshInstance3D
+	var containers: MultiMeshInstance3D = props_node.get("containers_instance") as MultiMeshInstance3D
+	var cranes: MultiMeshInstance3D = props_node.get("cranes_instance") as MultiMeshInstance3D
+	
+	assert_not_null(palms, "palms_instance deve estar referenciado.")
+	assert_not_null(containers, "containers_instance deve estar referenciado.")
+	assert_not_null(cranes, "cranes_instance deve estar referenciado.")
+	
+	assert_not_null(palms.multimesh, "Palms deve possuir um MultiMesh atribuido.")
+	assert_gt(palms.multimesh.instance_count, 0, "Deve haver palmeiras instanciadas no MultiMesh.")
+	assert_eq(palms.multimesh.transform_format, MultiMesh.TRANSFORM_3D, "Formato de transform do MultiMesh deve ser TRANSFORM_3D.")
+	
+	assert_not_null(containers.multimesh, "Containers deve possuir um MultiMesh atribuido.")
+	assert_gt(containers.multimesh.instance_count, 0, "Deve haver conteineres instanciados no MultiMesh.")
+	assert_eq(containers.multimesh.transform_format, MultiMesh.TRANSFORM_3D, "Formato de transform de conteineres deve ser TRANSFORM_3D.")
+	
+	assert_not_null(cranes.multimesh, "Cranes deve possuir um MultiMesh atribuido.")
+	assert_gt(cranes.multimesh.instance_count, 0, "Deve haver guindastes instanciados no MultiMesh.")
+	assert_eq(cranes.multimesh.transform_format, MultiMesh.TRANSFORM_3D, "Formato de transform de guindastes deve ser TRANSFORM_3D.")
+
+
+func test_island_props_does_not_interfere_with_rescue_zones_or_helipad() -> void:
+	var path_props: String = "res://scenes/environment/island_props.tscn"
+	var scene: PackedScene = load(path_props) as PackedScene
+	var props_node: Node3D = scene.instantiate() as Node3D
+	add_child_autofree(props_node)
+	
+	# Pontos de abrigo conhecidos na missao 1
+	var shelter_points: Array[Vector3] = [
+		Vector3(-70, 0.5, -50),
+		Vector3(-40, 0.5, 45),
+		Vector3(50, 0.5, -60),
+		Vector3(65, 0.5, 30),
+		Vector3(-15, 0.5, -85),
+		Vector3(20, 0.5, 75)
+	]
+	
+	# Heliponto da base aliada
+	var helipad_pos: Vector3 = Vector3(0, 0.5, -115)
+	
+	# Verifica que nenhum prop fica a menos de 10.0m de qualquer abrigo (evitando supressao indevida)
+	for s_pos in shelter_points:
+		var is_near: bool = props_node.call("is_point_near_prop", s_pos, 10.0)
+		assert_false(is_near, "Nenhum prop pode estar a <= 10m do abrigo em %s." % str(s_pos))
+	
+	# Verifica que nenhum prop obstrui a zona de pouso do heliponto (raio de 8m)
+	assert_false(props_node.call("is_point_near_prop", helipad_pos, 8.0), "Nenhum prop deve obstruir o heliponto.")
+
+
+func test_mission_midway_contains_island_props() -> void:
+	var scene: PackedScene = load("res://scenes/core/mission_01_midway.tscn") as PackedScene
+	var mission_node: Node3D = scene.instantiate() as Node3D
+	add_child_autofree(mission_node)
+	
+	var props_node: Node3D = mission_node.get_node_or_null("IslandProps") as Node3D
+	assert_not_null(props_node, "O no IslandProps deve existir na arvore da Missao 1.")
+	assert_true(props_node.get_script() == IslandPropsScript, "IslandProps na missao deve usar o script island_props.gd.")
+
 
