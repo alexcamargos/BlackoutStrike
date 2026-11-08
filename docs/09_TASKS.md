@@ -116,7 +116,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Implementação do controlador parametrizado por `EnemyStatsData.BehaviorType` (`STATIC_TURRET`, `GROUND_PATROL`, `NAVAL_PATROL`, `AIR_INTERCEPTOR`), verificação de supressão de resgate ($\le 10.0\text{ m}$) e instanciação dos 5 inimigos regulares da Missão 1.
   - **Critério de Aceite:** Todos os 5 arquétipos operam seus padrões de movimento/disparo, aplicam supressão quando configurados (`test_enemy_ai.gd` verde) e sorteiam drop de suprimentos ($35\%$) ao serem destruídos.
 
-- [ ] **TASK-051: Chefe da Missão: Canhoneiro Litorâneo *Apex Bastion***
+- [x] **TASK-051: Chefe da Missão: Canhoneiro Litorâneo *Apex Bastion***
   - **Dependências:** TASK-012, TASK-020, TASK-050.
   - **Arquivos:** `res://scenes/entities/enemies/boss_apex_bastion.tscn`, `res://tests/integration/test_boss_logic.gd`.
   - **Lógica:** Entidade com 3 módulos de colisão e vida distintos: Torreta Dupla de Proa ($800\text{ HP}$), Torreta Quádrupla de Popa ($800\text{ HP}$) e Núcleo Central de Comando ($2400\text{ HP}$). Implementação das Fases 1 (canhão 76mm + minas navais) e 2 (CIWS em leque + salva de 4 mísseis teleguiados).
