@@ -1,0 +1,127 @@
+[gd_scene load_steps=15 format=3 uid="uid://island_terrain_midway_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/environment/island_terrain_midway.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beach"]
+albedo_color = Color(0.82, 0.76, 0.56, 1)
+roughness = 0.85
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_beach"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(290, 0.5, 290)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_beach"]
+size = Vector3(290, 0.5, 290)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plateau"]
+albedo_color = Color(0.52, 0.5, 0.44, 1)
+roughness = 0.88
+
+[sub_resource type="BoxMesh" id="BoxMesh_plateau"]
+material = SubResource("StandardMaterial3D_plateau")
+size = Vector3(245, 1, 245)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_plateau"]
+size = Vector3(245, 1, 245)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_runway"]
+albedo_color = Color(0.32, 0.33, 0.35, 1)
+metallic = 0.1
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="BoxMesh_runway"]
+material = SubResource("StandardMaterial3D_runway")
+size = Vector3(45, 0.02, 160)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cliff"]
+albedo_color = Color(0.28, 0.26, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_cliff_ne"]
+material = SubResource("StandardMaterial3D_cliff")
+size = Vector3(20, 4.5, 16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cliff_ne"]
+size = Vector3(20, 4.5, 16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cliff_w"]
+material = SubResource("StandardMaterial3D_cliff")
+size = Vector3(18, 5, 36)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cliff_w"]
+size = Vector3(18, 5, 36)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cliff_e"]
+material = SubResource("StandardMaterial3D_cliff")
+size = Vector3(22, 5.2, 28)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cliff_e"]
+size = Vector3(22, 5.2, 28)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cliff_s"]
+material = SubResource("StandardMaterial3D_cliff")
+size = Vector3(28, 4, 18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cliff_s"]
+size = Vector3(28, 4, 18)
+
+[node name="IslandTerrainMidway" type="StaticBody3D" node_paths=PackedStringArray("plateau_mesh", "beach_mesh", "cliffs_container") groups=["world_static"]]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+plateau_mesh = NodePath("PlateauMesh")
+beach_mesh = NodePath("BeachMesh")
+cliffs_container = NodePath("Cliffs")
+
+[node name="BeachMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+mesh = SubResource("BoxMesh_beach")
+
+[node name="BeachCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("BoxShape3D_beach")
+
+[node name="PlateauMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_plateau")
+
+[node name="PlateauCol" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_plateau")
+
+[node name="IndustrialRunway" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, -20)
+mesh = SubResource("BoxMesh_runway")
+
+[node name="Cliffs" type="Node3D" parent="."]
+
+[node name="CliffNorthEastMesh" type="MeshInstance3D" parent="Cliffs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.75, 12)
+mesh = SubResource("BoxMesh_cliff_ne")
+
+[node name="CliffNorthEastCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.75, 12)
+shape = SubResource("BoxShape3D_cliff_ne")
+
+[node name="CliffWestMesh" type="MeshInstance3D" parent="Cliffs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 3, -10)
+mesh = SubResource("BoxMesh_cliff_w")
+
+[node name="CliffWestCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -112, 3, -10)
+shape = SubResource("BoxShape3D_cliff_w")
+
+[node name="CliffEastMesh" type="MeshInstance3D" parent="Cliffs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105, 3.1, -55)
+mesh = SubResource("BoxMesh_cliff_e")
+
+[node name="CliffEastCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105, 3.1, -55)
+shape = SubResource("BoxShape3D_cliff_e")
+
+[node name="CliffSouthMesh" type="MeshInstance3D" parent="Cliffs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 2.5, 80)
+mesh = SubResource("BoxMesh_cliff_s")
+
+[node name="CliffSouthCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 2.5, 80)
+shape = SubResource("BoxShape3D_cliff_s")
