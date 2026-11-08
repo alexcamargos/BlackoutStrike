@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://island_props_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/environment/island_props.gd" id="1_props_script"]
+
+[node name="IslandProps" type="Node3D" node_paths=PackedStringArray("palms_instance", "containers_instance", "cranes_instance")]
+script = ExtResource("1_props_script")
+palms_instance = NodePath("Palms")
+containers_instance = NodePath("Containers")
+cranes_instance = NodePath("Cranes")
+
+[node name="Palms" type="MultiMeshInstance3D" parent="."]
+
+[node name="Containers" type="MultiMeshInstance3D" parent="."]
+
+[node name="Cranes" type="MultiMeshInstance3D" parent="."]
