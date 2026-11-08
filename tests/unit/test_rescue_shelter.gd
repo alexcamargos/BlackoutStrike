@@ -84,6 +84,7 @@ func test_civilian_death_emits_civilian_killed_signal() -> void:
 	civ.take_damage(30.0)
 	
 	assert_true(civ.is_dead, "O civil deve ser marcado como morto.")
+	assert_false(civ.is_rescued, "O civil morto nao deve ter status de resgatado.")
 	assert_signal_emitted(EventBus, "civilian_killed", "EventBus.civilian_killed deve ser emitido ao morrer.")
 
 

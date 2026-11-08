@@ -11,8 +11,25 @@ const GRAVITY: float = 9.8
 ## Referencia ao componente de integridade fisica.
 @onready var health_component: HealthComponent = $HealthComponent
 
-## Flag para evitar processamento duplicado de eliminacao.
-var is_dead: bool = false
+## Estados de ciclo de vida do sobrevivente em campo.
+enum CivilianState {
+	WAITING,
+	RESCUED,
+	KILLED
+}
+
+## Estado operacional atual da entidade.
+var state: CivilianState = CivilianState.WAITING
+
+## Propriedade de conveniencia indicando se a entidade foi eliminada por dano.
+var is_dead: bool:
+	get:
+		return state == CivilianState.KILLED
+
+## Propriedade de conveniencia indicando se o civil foi resgatado com sucesso a bordo.
+var is_rescued: bool:
+	get:
+		return state == CivilianState.RESCUED
 
 
 ## Inicializa a entidade conectando sinais de vida e registrando no grupo de civis.
@@ -54,7 +71,7 @@ func _physics_process(delta: float) -> void:
 ## Returns:
 ##     void
 func take_damage(amount: float, source: Node3D = null) -> void:
-	if is_dead:
+	if state != CivilianState.WAITING:
 		return
 	if health_component != null:
 		health_component.take_damage(amount, source)
@@ -68,9 +85,9 @@ func take_damage(amount: float, source: Node3D = null) -> void:
 ## Returns:
 ##     void
 func rescue() -> void:
-	if is_dead:
+	if state != CivilianState.WAITING:
 		return
-	is_dead = true
+	state = CivilianState.RESCUED
 	queue_free()
 
 
@@ -82,9 +99,9 @@ func rescue() -> void:
 ## Returns:
 ##     void
 func _on_entity_destroyed() -> void:
-	if is_dead:
+	if state != CivilianState.WAITING:
 		return
-	is_dead = true
+	state = CivilianState.KILLED
 	
 	if GameState != null:
 		GameState.register_killed_civilian(1)
