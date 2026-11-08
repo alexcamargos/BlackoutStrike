@@ -11,6 +11,9 @@ extends StaticBody3D
 ## Cena instanciada para cada sobrevivente liberado no colapso.
 @export var civilian_scene: PackedScene
 
+## Cena dos escombros instanciados na destruicao estrutural.
+@export var debris_scene: PackedScene = preload("res://scenes/entities/npcs/shelter_debris.tscn")
+
 ## Referencia ao componente de integridade estrutural.
 @onready var health_component: HealthComponent = $HealthComponent
 
@@ -78,7 +81,39 @@ func _on_entity_destroyed() -> void:
 		EventBus.shelter_destroyed.emit(global_position, survivor_count)
 	
 	_spawn_survivors(survivor_count, scatter_radius)
+	_spawn_debris()
 	queue_free()
+
+
+## Gera pecas fragmentadas de escombros de concreto ao redor da fundacao do abrigo.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _spawn_debris() -> void:
+	if debris_scene == null:
+		return
+	var target_parent: Node = get_parent()
+	if target_parent == null:
+		return
+	
+	for i in range(6):
+		var debris_inst: Node = debris_scene.instantiate()
+		var rb: RigidBody3D = debris_inst as RigidBody3D
+		if rb == null:
+			debris_inst.queue_free()
+			continue
+		
+		var angle: float = float(i) * (TAU / 6.0)
+		var offset: Vector3 = Vector3(cos(angle), 0.8, sin(angle)) * 1.5
+		var impulse: Vector3 = Vector3(cos(angle) * randf_range(2.0, 4.5), randf_range(3.0, 5.5), sin(angle) * randf_range(2.0, 4.5))
+		
+		target_parent.add_child(rb)
+		rb.global_position = global_position + offset
+		rb.apply_central_impulse(impulse)
+
 
 
 ## Localiza o no container canônico para os sobreviventes na arvore da cena.

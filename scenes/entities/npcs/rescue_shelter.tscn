@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://rescue_shelter_entity_01"]
+[gd_scene load_steps=15 format=3 uid="uid://rescue_shelter_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/npcs/rescue_shelter.gd" id="1_shelter"]
 [ext_resource type="Resource" uid="uid://rescue_shelter_res_01" path="res://scripts/data/rescue_shelter.tres" id="2_data"]
@@ -9,13 +9,43 @@
 size = Vector3(4.0, 3.0, 4.0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_concrete"]
-albedo_color = Color(0.35, 0.38, 0.42, 1)
-roughness = 0.8
-metallic = 0.2
+albedo_color = Color(0.360784, 0.388235, 0.419608, 1)
+metallic = 0.18
+roughness = 0.88
 
-[sub_resource type="BoxMesh" id="BoxMesh_bunker"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_concrete"]
+albedo_color = Color(0.28, 0.31, 0.34, 1)
+metallic = 0.15
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_blast_door"]
+albedo_color = Color(0.12, 0.14, 0.16, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hazard_trim"]
+albedo_color = Color(0.85, 0.65, 0.1, 1)
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_foundation"]
 material = SubResource("StandardMaterial3D_concrete")
-size = Vector3(4.0, 3.0, 4.0)
+size = Vector3(4.4, 0.5, 4.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_walls"]
+material = SubResource("StandardMaterial3D_concrete")
+size = Vector3(3.8, 2.2, 3.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_roof"]
+material = SubResource("StandardMaterial3D_dark_concrete")
+size = Vector3(4.2, 0.4, 4.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_door_frame"]
+material = SubResource("StandardMaterial3D_hazard_trim")
+size = Vector3(1.6, 2.0, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_door"]
+material = SubResource("StandardMaterial3D_blast_door")
+size = Vector3(1.4, 1.8, 0.15)
 
 [node name="RescueShelter" type="StaticBody3D"]
 collision_layer = 4
@@ -28,9 +58,27 @@ civilian_scene = ExtResource("3_civilian")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 shape = SubResource("BoxShape3D_bunker")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="ModelContainer" type="Node3D" parent="."]
+
+[node name="BunkerFoundation" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_foundation")
+
+[node name="BunkerWalls" type="MeshInstance3D" parent="ModelContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
-mesh = SubResource("BoxMesh_bunker")
+mesh = SubResource("BoxMesh_walls")
+
+[node name="BlastRoof" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0)
+mesh = SubResource("BoxMesh_roof")
+
+[node name="DoorHazardTrim" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -1.92)
+mesh = SubResource("BoxMesh_door_frame")
+
+[node name="BlastDoor" type="MeshInstance3D" parent="ModelContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -1.98)
+mesh = SubResource("BoxMesh_door")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("4_health")
