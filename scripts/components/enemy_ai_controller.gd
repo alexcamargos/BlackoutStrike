@@ -437,6 +437,7 @@ func _on_entity_destroyed() -> void:
 		var death_pos: Vector3 = parent_body.global_position if parent_body.is_inside_tree() else parent_body.position
 		enemy_killed.emit(parent_body)
 		_try_spawn_supply_drop(death_pos)
+		_spawn_heavy_explosion(death_pos)
 		parent_body.queue_free()
 
 
@@ -492,3 +493,28 @@ func _load_default_projectile() -> void:
 		projectile_scene = load("res://scenes/weapons/projectile_enemy_sam_missile.tscn") as PackedScene
 	else:
 		projectile_scene = load("res://scenes/weapons/projectile_enemy_bullet.tscn") as PackedScene
+
+
+## Instancia a explosao pesada de duas etapas no ponto de destruicao da entidade.
+##
+## Args:
+##     epicenter (Vector3): Coordenadas espaciais da detonacao.
+##
+## Returns:
+##     void
+func _spawn_heavy_explosion(epicenter: Vector3) -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	var root: Node = tree.current_scene
+	if root == null and parent_body != null and parent_body.get_parent() != null:
+		root = parent_body.get_parent()
+	if root == null:
+		return
+	
+	var explosion_scene: PackedScene = load("res://scenes/vfx/explosion_heavy.tscn") as PackedScene
+	if explosion_scene != null:
+		var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
+		if explosion_inst != null:
+			root.add_child(explosion_inst)
+			explosion_inst.global_position = epicenter

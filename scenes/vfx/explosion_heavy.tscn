@@ -1,0 +1,69 @@
+[gd_scene load_steps=9 format=3 uid="uid://explosion_heavy_vfx_01"]
+
+[ext_resource type="Script" path="res://scripts/vfx/explosion_heavy.gd" id="1_expl"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fireball"]
+direction = Vector3(0, 1, 0)
+spread = 90.0
+initial_velocity_min = 4.0
+initial_velocity_max = 9.0
+gravity = Vector3(0, 1.5, 0)
+scale_min = 1.0
+scale_max = 2.5
+color = Color(1, 0.45, 0.1, 0.9)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fireball_mesh"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.5, 0.15, 0.85)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fireball"]
+material = SubResource("StandardMaterial3D_fireball_mesh")
+size = Vector3(0.35, 0.35, 0.35)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_debris"]
+direction = Vector3(0, 1, 0)
+spread = 70.0
+initial_velocity_min = 7.0
+initial_velocity_max = 14.0
+gravity = Vector3(0, -9.8, 0)
+scale_min = 0.7
+scale_max = 1.5
+color = Color(0.25, 0.25, 0.25, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_debris_mesh"]
+albedo_color = Color(0.2, 0.22, 0.24, 1)
+metallic = 0.8
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_debris"]
+material = SubResource("StandardMaterial3D_debris_mesh")
+size = Vector3(0.18, 0.18, 0.18)
+
+[node name="ExplosionHeavy" type="Node3D"]
+script = ExtResource("1_expl")
+duration = 1.2
+
+[node name="FlashLight" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.75, 0.3, 1)
+light_energy = 8.0
+omni_range = 10.0
+
+[node name="FireballParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 40
+lifetime = 0.75
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("ParticleProcessMaterial_fireball")
+draw_pass_1 = SubResource("BoxMesh_fireball")
+
+[node name="DebrisParticles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 24
+lifetime = 1.0
+one_shot = true
+explosiveness = 0.9
+process_material = SubResource("ParticleProcessMaterial_debris")
+draw_pass_1 = SubResource("BoxMesh_debris")
