@@ -161,7 +161,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Substituir os cubos de fuselagem por modelo 3D dedicado de helicóptero militar. Aplicar material PBR padrão JTF Vanguard: pintura azul-chumbo (`#2A3847`), metalicidade $0.8$, rugosidade $0.25$ e canopy escurecido reflexivo. Separar e articular o rotor principal e de cauda com rotação contínua e blur estético, preservando os marcadores `MuzzleMarkers` e os nós de subsistema intactos.
   - **Critério de Aceite:** A suíte `test_flight_inertia.gd` passa integralmente; rotações de yaw e inclinação cosmética de até $22^\circ$ funcionam sem desalinhamento das armas.
 
-- [ ] **TASK-071: Modelos Modulares dos 5 Arquétipos Inimigos (Aetheris)**
+- [x] **TASK-071: Modelos Modulares dos 5 Arquétipos Inimigos (Aetheris)**
   - **Dependência:** TASK-050.
   - **Arquivos:** `res://scenes/entities/enemies/mercenary_squad.tscn`, `res://scenes/entities/enemies/hunter_drone.tscn`, `res://scenes/entities/enemies/patrol_boat.tscn`, `res://scenes/entities/enemies/light_tank_ifv.tscn`, `res://scenes/entities/enemies/turret_sam.tscn`.
   - **Lógica:** Importar e configurar malhas dos pacotes CC0 (*Kenney Military Kit* e *Vehicle Kit*) aplicando a paleta antracite (`#1F2226`) com óticas e miras laser emissivas em vermelho-alaranjado (`#D9381E`) em HDR. Manter nós móveis de torreta desacoplados para apontamento angular em direção ao alvo.

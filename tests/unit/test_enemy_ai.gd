@@ -128,3 +128,85 @@ func test_all_five_archetype_scenes_instantiate_cleanly() -> void:
 		
 		var hc: HealthComponent = instance.get_node_or_null("HealthComponent") as HealthComponent
 		assert_not_null(hc, "A cena %s deve conter um HealthComponent." % scene_path)
+
+
+func test_enemy_archetypes_modular_pbr_and_emissive_palette() -> void:
+	var archetypes: Array[String] = [
+		"res://scenes/entities/enemies/mercenary_squad.tscn",
+		"res://scenes/entities/enemies/hunter_drone.tscn",
+		"res://scenes/entities/enemies/patrol_boat.tscn",
+		"res://scenes/entities/enemies/light_tank_ifv.tscn",
+		"res://scenes/entities/enemies/turret_sam.tscn"
+	]
+	
+	for scene_path in archetypes:
+		var scene_res: PackedScene = load(scene_path) as PackedScene
+		var instance: Node3D = scene_res.instantiate() as Node3D
+		add_child_autofree(instance)
+		
+		# Verifica nó de torreta desacoplada e muzzle
+		var turret: Node3D = instance.get_node_or_null("Turret") as Node3D
+		assert_not_null(turret, "O arquétipo %s deve possuir nó Turret desacoplado." % scene_path)
+		var muzzle: Marker3D = turret.get_node_or_null("Muzzle") as Marker3D
+		assert_not_null(muzzle, "A torreta de %s deve conter um Marker3D Muzzle." % scene_path)
+		
+		# Varre malhas para validar paleta antracite (#1F2226) e optica emissiva (#D9381E)
+		var found_antracite: bool = false
+		var found_emissive_red: bool = false
+		
+		var meshes_to_check: Array[MeshInstance3D] = []
+		var stack: Array[Node] = [instance]
+		while not stack.is_empty():
+			var curr: Node = stack.pop_back()
+			if curr is MeshInstance3D and curr.mesh != null and curr.mesh.material is StandardMaterial3D:
+				meshes_to_check.append(curr)
+			for child in curr.get_children():
+				stack.append(child)
+		
+		for mi in meshes_to_check:
+			var mat: StandardMaterial3D = mi.mesh.material as StandardMaterial3D
+			if mat != null:
+				# Checa antracite #1F2226
+				if absf(mat.albedo_color.r - 0.122) < 0.03 and absf(mat.albedo_color.b - 0.149) < 0.03:
+					found_antracite = true
+				# Checa ótica emissiva vermelha-alaranjada #D9381E
+				if mat.emission_enabled and mat.emission_energy_multiplier >= 2.5:
+					if absf(mat.emission.r - 0.851) < 0.03 and absf(mat.emission.g - 0.220) < 0.03:
+						found_emissive_red = true
+		
+		assert_true(found_antracite, "Arquétipo %s deve conter peças com pintura antracite (#1F2226)." % scene_path)
+		assert_true(found_emissive_red, "Arquétipo %s deve conter ótica emissiva vermelho-alaranjada (#D9381E HDR)." % scene_path)
+
+
+func test_enemy_turret_aiming_and_projectile_coincidence() -> void:
+	var tank_res: PackedScene = load("res://scenes/entities/enemies/light_tank_ifv.tscn")
+	var tank: Node3D = tank_res.instantiate() as Node3D
+	add_child_autofree(tank)
+	tank.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	var ai: EnemyAIController = tank.get_node_or_null("EnemyAIController") as EnemyAIController
+	assert_not_null(ai, "Deve possuir EnemyAIController.")
+	
+	# Alvo tático a 45 graus no plano XZ
+	var target: Node3D = Node3D.new()
+	add_child_autofree(target)
+	target.global_position = Vector3(20.0, 0.0, 20.0)
+	
+	# Simula apontamento angular desacoplado da torreta
+	ai._orient_towards(target.global_position, 1.0)
+	
+	var turret: Node3D = tank.get_node_or_null("Turret") as Node3D
+	assert_not_null(turret, "LightTankIFV deve possuir torreta.")
+	
+	# Dispara projetil
+	var proj: Projectile = ai.fire_weapon_at(target)
+	if proj != null:
+		autoqfree(proj)
+		assert_not_null(proj, "Deve disparar projétil.")
+		
+		# O vetor de disparo deve coincidir com a linha de visada para o alvo
+		var expected_dir: Vector3 = (target.global_position - turret.global_position).normalized()
+		var proj_forward: Vector3 = -proj.global_transform.basis.z.normalized()
+		var dot_prod: float = proj_forward.dot(expected_dir)
+		assert_true(dot_prod > 0.95, "O vetor de disparo do projétil deve coincidir com a orientação angular do alvo (dot: " + str(dot_prod) + ").")
+
