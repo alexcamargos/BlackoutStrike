@@ -11,6 +11,10 @@ const GRAVITY: float = 9.8
 ## Referencia ao componente de integridade fisica.
 @onready var health_component: HealthComponent = $HealthComponent
 
+## Referências aos membros para animação procedural de socorro.
+@onready var arm_left: Node3D = get_node_or_null("ModelContainer/ArmLeft") as Node3D
+@onready var arm_right: Node3D = get_node_or_null("ModelContainer/ArmRight") as Node3D
+
 ## Estados de ciclo de vida do sobrevivente em campo.
 enum CivilianState {
 	WAITING,
@@ -60,6 +64,24 @@ func _physics_process(delta: float) -> void:
 		velocity.y = 0.0
 	
 	move_and_slide()
+	
+	if state == CivilianState.WAITING:
+		_process_waving_animation(delta)
+
+
+## Animação procedural de socorro com braços erguidos acenando para a aeronave.
+##
+## Args:
+##     delta (float): Intervalo de tempo físico em segundos.
+##
+## Returns:
+##     void
+func _process_waving_animation(_delta: float) -> void:
+	var t: float = float(Time.get_ticks_msec()) * 0.006
+	if arm_left != null:
+		arm_left.rotation.z = deg_to_rad(140.0) + sin(t) * deg_to_rad(25.0)
+	if arm_right != null:
+		arm_right.rotation.z = -deg_to_rad(140.0) - sin(t + PI * 0.5) * deg_to_rad(25.0)
 
 
 ## Aplica dano direto ou em area a entidade repassando ao HealthComponent.
