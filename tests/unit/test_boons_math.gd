@@ -79,6 +79,29 @@ func test_apply_chaff_flare_system_and_cooldown() -> void:
 	assert_true(boon_receiver.try_trigger_chaff(), "Disparo de Chaff deve ter sucesso apos termino da recarga.")
 
 
+func test_chaff_active_homing_missile_lock_break() -> void:
+	var boon: BoonData = preload("res://scripts/data/boon_chaff_flare_system.tres")
+	boon_receiver.apply_boon(boon)
+	
+	# Cria projetil hostil teleguiado
+	var missile: Projectile = Projectile.new()
+	missile.is_homing = true
+	missile.homing_target = player
+	add_child_autofree(missile)
+	missile.add_to_group("homing_missiles")
+	
+	assert_true(missile.is_homing, "Missil deve iniciar teleguiado.")
+	assert_not_null(missile.homing_target, "Alvo teleguiado do missil deve estar definido.")
+	
+	# Dispara contramedidas
+	var triggered: bool = boon_receiver.try_trigger_chaff()
+	assert_true(triggered, "Chaff deve disparar com sucesso.")
+	
+	# O travamento do missil deve ser quebrado
+	assert_false(missile.is_homing, "O modo teleguiado do missil deve ser quebrado pelo Chaff.")
+	assert_null(missile.homing_target, "O alvo do missil deve ser removido.")
+
+
 func test_boons_math_safety_guards() -> void:
 	var custom_boon: BoonData = BoonData.new()
 	custom_boon.id = "infinite_edge"

@@ -66,9 +66,15 @@ func _process(delta: float) -> void:
 		return
 	if chaff_timer > 0.0:
 		chaff_timer = maxf(0.0, chaff_timer - delta)
+	
+	if auto_chaff_enabled and chaff_timer <= 0.0:
+		_check_incoming_homing_threats()
 
 
 ## Tenta acionar uma contramedida de Chaff/Flare automatica caso habilitada.
+##
+## Se acionado com sucesso, desvia e quebra o travamento de todos os misseis hostis
+## teleguiados direcionados ao helicoptero no perimetro proximo.
 ##
 ## Args:
 ##     Nenhum.
@@ -84,7 +90,77 @@ func try_trigger_chaff() -> bool:
 	if chaff_timer > 0.0:
 		return false
 	chaff_timer = chaff_cooldown
+	_deploy_chaff_countermeasures()
 	return true
+
+
+## Verifica se ha ameacas de misseis teleguiados hostis travados no helicoptero.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func _check_incoming_homing_threats() -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	
+	var parent_node: Node = get_parent()
+	if parent_node == null:
+		return
+	
+	var missiles: Array[Node] = tree.get_nodes_in_group("homing_missiles")
+	for m in missiles:
+		if m is Projectile and is_instance_valid(m):
+			var proj: Projectile = m as Projectile
+			if proj.is_homing and proj.source != parent_node:
+				if proj.homing_target == parent_node or (parent_node is Node3D and (parent_node as Node3D).is_inside_tree() and proj.is_inside_tree() and proj.global_position.distance_to((parent_node as Node3D).global_position) <= 35.0):
+					try_trigger_chaff()
+					return
+
+
+## Desvia e neutraliza o teleguiamento de misseis hostis proximos a aeronave.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func _deploy_chaff_countermeasures() -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+	
+	var parent_node: Node = get_parent()
+	var origin: Vector3 = Vector3.ZERO
+	if parent_node is Node3D and (parent_node as Node3D).is_inside_tree():
+		origin = (parent_node as Node3D).global_position
+	
+	var missiles: Array[Node] = tree.get_nodes_in_group("homing_missiles")
+	for m in missiles:
+		if m is Projectile and is_instance_valid(m):
+			var proj: Projectile = m as Projectile
+			if proj.is_homing and proj.source != parent_node:
+				var dist: float = 0.0
+				if origin != Vector3.ZERO and proj.is_inside_tree():
+					dist = proj.global_position.distance_to(origin)
+				if dist <= 50.0:
+					proj.break_homing_lock()
+	
+	if EventBus != null:
+		EventBus.radio_transmission_requested.emit(
+			"system",
+			"SISTEMA",
+			"Contramedidas Chaff/Flare liberadas! Travamento de missil hostil quebrado.",
+			2.5
+		)
 
 
 ## Aplica um BoonData aos componentes correspondentes da aeronave.

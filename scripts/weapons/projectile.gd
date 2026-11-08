@@ -60,6 +60,8 @@ var has_impacted: bool = false
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
+	if is_homing:
+		add_to_group("homing_missiles")
 
 
 ## Executa o avanco da simulacao fisica a cada quadro do motor.
@@ -122,6 +124,23 @@ func _process_homing(delta: float) -> void:
 	
 	var step_forward: Vector3 = -global_transform.basis.z.normalized()
 	global_position += step_forward * speed * delta
+
+
+## Quebra o travamento de teleguiamento do projetil (ex: acionado por contramedidas de Chaff).
+##
+## Desativa o modo teleguiado e remove o alvo atual, fazendo o projetil seguir em linha reta.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func break_homing_lock() -> void:
+	is_homing = false
+	homing_target = null
 
 
 ## Processa o impacto com um alvo fisico ou estrutura receptora de dano.
