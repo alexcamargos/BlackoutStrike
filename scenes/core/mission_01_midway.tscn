@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://mission_01_midway_scene_01"]
+[gd_scene load_steps=22 format=3 uid="uid://mission_01_midway_scene_01"]
 
 [ext_resource type="Environment" uid="uid://world_environment_midway_01" path="res://scenes/core/world_environment.tres" id="1_env"]
 [ext_resource type="Shader" path="res://assets/shaders/ocean_pbr.gdshader" id="2_water_shader"]
@@ -11,15 +11,19 @@
 [ext_resource type="PackedScene" uid="uid://boon_selection_ui_01" path="res://scenes/roguelite/boon_selection_ui.tscn" id="9_boon_ui"]
 [ext_resource type="PackedScene" uid="uid://radio_box_ui_01" path="res://scenes/ui/radio_transmission_box.tscn" id="10_radio"]
 [ext_resource type="Script" path="res://scenes/core/mission_01_midway.gd" id="11_mission"]
+[ext_resource type="Texture2D" uid="uid://ocean_wave_normal_1_res" path="res://assets/textures/water/ocean_wave_normal_1.tres" id="12_norm1"]
+[ext_resource type="Texture2D" uid="uid://ocean_wave_normal_2_res" path="res://assets/textures/water/ocean_wave_normal_2.tres" id="13_norm2"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
 shader = ExtResource("2_water_shader")
-shader_parameter/shallow_color = Color(0.08, 0.65, 0.72, 1)
-shader_parameter/deep_color = Color(0.01, 0.08, 0.22, 1)
+shader_parameter/shallow_color = Color(0.0784314, 0.65098, 0.721569, 1)
+shader_parameter/deep_color = Color(0.0117647, 0.0784314, 0.219608, 1)
 shader_parameter/depth_distance = 4.0
 shader_parameter/foam_color = Color(0.95, 0.98, 1, 1)
 shader_parameter/foam_intersection_depth = 0.45
+shader_parameter/wave_normal_1 = ExtResource("12_norm1")
+shader_parameter/wave_normal_2 = ExtResource("13_norm2")
 shader_parameter/wave_speed_1 = Vector2(0.02, 0.01)
 shader_parameter/wave_speed_2 = Vector2(-0.01, 0.03)
 shader_parameter/roughness = 0.12
