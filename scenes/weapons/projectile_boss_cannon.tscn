@@ -19,7 +19,7 @@ height = 0.8
 
 [node name="ProjectileBossCannon" type="Area3D"]
 collision_layer = 32
-collision_mask = 3
+collision_mask = 67
 script = ExtResource("1_proj")
 damage = 120.0
 speed = 55.0
