@@ -1,0 +1,35 @@
+# Godot 4.x engine cache and imports
+.godot/
+.import/
+export_presets.cfg
+
+# Imported media / temporary files
+*.translation
+
+# Mono / C# (se aplicável futuramente)
+.mono/
+*.csproj
+*.sln
+
+# Ambiente volátil de testes, rascunhos e scratch
+scratch/
+
+# Ambientes virtuais e pacotes Python (utilitários e ferramentas)
+.venv/
+__pycache__/
+*.pyc
+
+# Configurações de ambiente e segredos
+.env
+*.local
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operacional
+Thumbs.db
+.DS_Store
