@@ -111,3 +111,36 @@ func test_replenish_ammo_clamps_at_max() -> void:
 	weapon_mgr.ammo_counts[0] = 1150
 	weapon_mgr.replenish_ammo_fraction(0.25) # Tentaria somar +300
 	assert_eq(weapon_mgr.ammo_counts[0], 1200, "A contagem nao pode ultrapassar o teto de max_ammo.")
+
+
+func test_default_slots_instantiate_and_fire_all_weapons() -> void:
+	var default_mgr: WeaponManager = WeaponManager.new()
+	add_child_autofree(default_mgr)
+	
+	assert_eq(default_mgr.weapon_slots.size(), 3, "Devem existir 3 slots configurados por padrao.")
+	for i in range(3):
+		var w_data: WeaponData = default_mgr.weapon_slots[i]
+		assert_not_null(w_data, "Slot %d deve possuir WeaponData valido." % i)
+		assert_not_null(w_data.projectile_scene, "Slot %d deve possuir projectile_scene configurada." % i)
+	
+	var spawned_projectiles: Array[Projectile] = []
+	default_mgr.shot_fired.connect(func(_slot: int, proj: Projectile) -> void:
+		if proj != null:
+			spawned_projectiles.append(proj)
+			autofree(proj)
+	)
+	
+	# Disparo do slot 0 (Vulcan)
+	assert_true(default_mgr.try_fire(Transform3D.IDENTITY), "Tiro do Vulcan deve ser autorizado.")
+	
+	# Reset de cooldown e disparo do slot 1 (Hydra)
+	default_mgr.cooldown_timer = 0.0
+	default_mgr.select_slot(1)
+	assert_true(default_mgr.try_fire(Transform3D.IDENTITY), "Tiro do Hydra deve ser autorizado.")
+	
+	# Reset de cooldown e disparo do slot 2 (Hellfire)
+	default_mgr.cooldown_timer = 0.0
+	default_mgr.select_slot(2)
+	assert_true(default_mgr.try_fire(Transform3D.IDENTITY), "Tiro do Hellfire deve ser autorizado e instanciar missil.")
+	
+	assert_eq(spawned_projectiles.size(), 3, "Devem ter sido instanciados exatamente 3 projeteis.")
