@@ -43,6 +43,9 @@ func test_core_destruction_emits_boss_defeated_and_mission_accomplished() -> voi
 	assert_true(boss.is_queued_for_deletion(), "O chefe deve ser desalocado da arvore ao morrer.")
 
 func test_boss_phase_attacks_and_mine_dropping_without_errors() -> void:
+	var parent_node: Node = boss.get_parent()
+	var initial_children: Array[Node] = parent_node.get_children() if parent_node != null else []
+	
 	# Valida lancamento de minas e canhoes da Fase 1 sem lancar erros de !is_inside_tree()
 	boss._drop_naval_mine()
 	boss._fire_double_cannon()
@@ -52,6 +55,11 @@ func test_boss_phase_attacks_and_mine_dropping_without_errors() -> void:
 	boss._fire_missile_salvo()
 	
 	assert_true(boss.is_inside_tree(), "O chefe deve permanecer estavel e funcional na arvore.")
+	
+	if parent_node != null:
+		for child in parent_node.get_children():
+			if not initial_children.has(child):
+				autoqfree(child)
 
 
 func test_boss_naval_modular_model_structure() -> void:
