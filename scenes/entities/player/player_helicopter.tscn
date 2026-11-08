@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://player_helicopter_entity_01"]
+[gd_scene load_steps=17 format=3 uid="uid://player_helicopter_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/player/player_helicopter.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://weapon_hellfire_res_01" path="res://scripts/data/weapon_hellfire.tres" id="9_hellfire"]
 [ext_resource type="Script" path="res://scripts/components/cargo_component.gd" id="10_cargo"]
 [ext_resource type="Script" path="res://scripts/components/rescue_sensor_area.gd" id="11_rescue"]
+[ext_resource type="Script" path="res://scripts/components/boon_receiver_component.gd" id="12_boon"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_rescue"]
 height = 6.0
@@ -103,4 +104,7 @@ cargo_component = NodePath("../CargoComponent")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RescueSensorArea"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
 shape = SubResource("CylinderShape3D_rescue")
+
+[node name="BoonReceiverComponent" type="Node" parent="."]
+script = ExtResource("12_boon")
 

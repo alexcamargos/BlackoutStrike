@@ -16,6 +16,7 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var target_scanner: TargetScanner = $TargetScanner
 @onready var cargo_component: CargoComponent = $CargoComponent
 @onready var rescue_sensor: RescueSensorArea = $RescueSensorArea
+@onready var boon_receiver: BoonReceiverComponent = $BoonReceiverComponent if has_node("BoonReceiverComponent") else null
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
