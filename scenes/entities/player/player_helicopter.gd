@@ -12,15 +12,22 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var flight_controller: FlightMovementController = $FlightMovementController
 @onready var health_component: HealthComponent = $HealthComponent
 @onready var fuel_component: FuelComponent = $FuelComponent
+@onready var weapon_manager: WeaponManager = $WeaponManager
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
+@onready var vulcan_muzzle: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/VulcanMuzzle
+@onready var hydra_pod_left: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodLeft
+@onready var hydra_pod_right: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodRight
+@onready var hellfire_hardpoint: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HellfireHardpoint
 
 ## Flags e rastreadores de estado da aeronave.
 var is_autorotating: bool = false
 var autorotation_timer: float = 0.0
 var previous_horizontal_velocity: Vector3 = Vector3.ZERO
 var death_cause: String = "structural_failure"
+var hydra_use_left_pod: bool = true
+var current_locked_target: Node3D = null
 
 ## Coordenada de mira no plano horizontal de voo (modo mira com cursor do mouse).
 var aim_target_world: Vector3 = Vector3.ZERO
@@ -70,6 +77,62 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	_process_flight_controls(delta)
+	_process_weapon_controls()
+
+
+## Processa comandos de selecao e disparo de armamentos.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _process_weapon_controls() -> void:
+	if weapon_manager == null:
+		return
+	
+	if Input.is_action_just_pressed("weapon_slot_1"):
+		weapon_manager.select_slot(0)
+	elif Input.is_action_just_pressed("weapon_slot_2"):
+		weapon_manager.select_slot(1)
+	elif Input.is_action_just_pressed("weapon_slot_3"):
+		weapon_manager.select_slot(2)
+	elif Input.is_action_just_pressed("weapon_cycle_next"):
+		weapon_manager.cycle_next_slot()
+	
+	if Input.is_action_pressed("fire_primary"):
+		fire_active_weapon()
+
+
+## Aciona o disparo da arma selecionada a partir do seu respectivo ponto espacial de saida.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     bool: True se o projetil foi disparado com exito.
+func fire_active_weapon() -> bool:
+	if weapon_manager == null:
+		return false
+	
+	var muzzle_xform: Transform3D = global_transform
+	match weapon_manager.current_slot_index:
+		0:
+			if vulcan_muzzle != null:
+				muzzle_xform = vulcan_muzzle.global_transform
+		1:
+			if hydra_use_left_pod and hydra_pod_left != null:
+				muzzle_xform = hydra_pod_left.global_transform
+			elif hydra_pod_right != null:
+				muzzle_xform = hydra_pod_right.global_transform
+		2:
+			if hellfire_hardpoint != null:
+				muzzle_xform = hellfire_hardpoint.global_transform
+	
+	var success: bool = weapon_manager.try_fire(muzzle_xform, current_locked_target)
+	if success and weapon_manager.current_slot_index == 1:
+		hydra_use_left_pod = not hydra_use_left_pod
+	return success
 
 
 ## Configura o ponto focal de mira da aeronave no plano 3D de combate.

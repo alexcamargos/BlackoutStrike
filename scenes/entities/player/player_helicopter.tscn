@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="3_health"]
 [ext_resource type="Script" path="res://scripts/components/fuel_component.gd" id="4_fuel"]
+[ext_resource type="Script" path="res://scripts/weapons/weapon_manager.gd" id="5_weapon"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fuselage"]
 size = Vector3(1.8, 1.2, 4.2)
@@ -69,3 +70,6 @@ script = ExtResource("3_health")
 
 [node name="FuelComponent" type="Node" parent="."]
 script = ExtResource("4_fuel")
+
+[node name="WeaponManager" type="Node" parent="."]
+script = ExtResource("5_weapon")
