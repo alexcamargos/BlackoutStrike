@@ -4,5 +4,12 @@
 extends Node3D
 
 
+## Inicializa a cena principal do jogo.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
 func _ready() -> void:
 	pass
