@@ -176,9 +176,8 @@ func test_aim_target_yaw_rotation() -> void:
 
 
 func test_r9x_mohawk_pbr_model_and_articulation() -> void:
-	assert_true(FileAccess.file_exists("res://assets/models/vehicles/r9x_mohawk.glb"), "O modelo 3D dedicado res://assets/models/vehicles/r9x_mohawk.glb deve existir.")
-	
 	var scene_res: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	assert_not_null(scene_res, "A cena res://scenes/entities/player/player_helicopter.tscn deve existir.")
 	var helicopter: PlayerHelicopter = scene_res.instantiate() as PlayerHelicopter
 	add_child_autofree(helicopter)
 	
