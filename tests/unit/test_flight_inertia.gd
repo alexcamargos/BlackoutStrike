@@ -105,6 +105,14 @@ func test_player_helicopter_scene_structure() -> void:
 	assert_not_null(helicopter.get_node_or_null("HealthComponent"), "Deve conter o nó HealthComponent.")
 	assert_not_null(helicopter.get_node_or_null("FuelComponent"), "Deve conter o nó FuelComponent.")
 	assert_not_null(helicopter.get_node_or_null("HelicopterMeshContainer"), "Deve conter HelicopterMeshContainer.")
+	
+	# Hardpoints de armamento sob MuzzleMarkers
+	var markers: Node3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers") as Node3D
+	assert_not_null(markers, "Deve conter o nó agrupador MuzzleMarkers.")
+	assert_not_null(markers.get_node_or_null("VulcanMuzzle"), "Muzzle Vulcan deve estar presente.")
+	assert_not_null(markers.get_node_or_null("HydraPodLeft"), "Pod Hydra esquerdo deve estar presente.")
+	assert_not_null(markers.get_node_or_null("HydraPodRight"), "Pod Hydra direito deve estar presente.")
+	assert_not_null(markers.get_node_or_null("HellfireHardpoint"), "Hardpoint Hellfire deve estar presente.")
 
 
 func test_autorotation_sequence_on_fuel_depleted() -> void:
@@ -126,3 +134,40 @@ func test_autorotation_sequence_on_fuel_depleted() -> void:
 	helicopter._physics_process(1.5)
 	assert_false(helicopter.is_autorotating, "Autorrotacao deve encerrar apos atingir 3 segundos.")
 	assert_true(helicopter.health_component.is_destroyed(), "Aeronave deve colidir e ser destruida ao final da autorrotacao.")
+
+
+func test_single_death_signal_with_fuel_exhaustion() -> void:
+	var scene_res: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	var helicopter: PlayerHelicopter = scene_res.instantiate() as PlayerHelicopter
+	add_child_autofree(helicopter)
+	
+	watch_signals(EventBus)
+	
+	# Aciona pane seca e completa os 3 segundos de autorrotacao
+	helicopter.fuel_component.consume_active(100.0)
+	helicopter._physics_process(3.0)
+	
+	assert_signal_emitted(EventBus, "player_died", "EventBus deve emitir player_died no desfecho da autorrotacao.")
+	assert_signal_emit_count(EventBus, "player_died", 1, "EventBus deve emitir player_died exatamente uma vez.")
+	
+	var sig_args: Array = get_signal_parameters(EventBus, "player_died")
+	assert_eq(sig_args[0], "fuel_exhaustion", "A causa de morte informada deve ser estritamente fuel_exhaustion.")
+
+
+func test_aim_target_yaw_rotation() -> void:
+	var scene_res: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	var helicopter: PlayerHelicopter = scene_res.instantiate() as PlayerHelicopter
+	add_child_autofree(helicopter)
+	helicopter.global_position = Vector3(0.0, 4.0, 0.0)
+	helicopter.rotation = Vector3.ZERO
+	
+	# Alvo apontado para o Leste (+X = 20m)
+	helicopter.set_aim_target(Vector3(20.0, 4.0, 0.0))
+	assert_true(helicopter.has_aim_target, "has_aim_target deve ser true apos set_aim_target.")
+	
+	# Executa quadro fisico: deve rotacionar Yaw em direcao a -PI/2 (Leste)
+	helicopter._physics_process(0.2)
+	assert_true(helicopter.rotation.y < 0.0, "O angulo de Yaw deve girar em direcao ao alvo no quadrante Leste.")
+	
+	helicopter.clear_aim_target()
+	assert_false(helicopter.has_aim_target, "has_aim_target deve ser false apos clear_aim_target.")

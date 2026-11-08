@@ -20,8 +20,20 @@ const AUTOROTATION_DURATION: float = 3.0
 var is_autorotating: bool = false
 var autorotation_timer: float = 0.0
 var previous_horizontal_velocity: Vector3 = Vector3.ZERO
+var death_cause: String = "structural_failure"
+
+## Coordenada de mira no plano horizontal de voo (modo mira com cursor do mouse).
+var aim_target_world: Vector3 = Vector3.ZERO
+var has_aim_target: bool = false
 
 
+## Inicializa a entidade conectando sinais de subsistemas e publicando telemetria inicial.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
 func _ready() -> void:
 	if fuel_component != null:
 		fuel_component.fuel_depleted.connect(_on_fuel_depleted)
@@ -39,6 +51,13 @@ func _ready() -> void:
 			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
 
 
+## Executa o ciclo de simulacao fisica, alternando entre voo normal e autorrotacao.
+##
+## Args:
+##     delta (float): Intervalo de tempo fisico em segundos.
+##
+## Returns:
+##     void
 func _physics_process(delta: float) -> void:
 	if delta <= 0.0:
 		return
@@ -51,6 +70,49 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	_process_flight_controls(delta)
+
+
+## Configura o ponto focal de mira da aeronave no plano 3D de combate.
+##
+## Args:
+##     target (Vector3): Ponto alvo projetado no espaco tridimensional.
+##
+## Returns:
+##     void
+func set_aim_target(target: Vector3) -> void:
+	aim_target_world = target
+	has_aim_target = true
+
+
+## Remove o alvo fixo de mira, restaurando o alinhamento da proa com o vetor de deslocamento.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func clear_aim_target() -> void:
+	has_aim_target = false
+
+
+## Projeta o cursor da tela sobre o plano horizontal de cruzeiro e atualiza a mira.
+##
+## Args:
+##     camera (Camera3D): Camera ativa da cena.
+##     mouse_pos (Vector2): Coordenadas do mouse na tela.
+##     plane_y (float): Cota de altitude do plano de interceptacao (padrao 4.0 m).
+##
+## Returns:
+##     void
+func update_mouse_aim(camera: Camera3D, mouse_pos: Vector2, plane_y: float = 4.0) -> void:
+	if camera == null:
+		return
+	var plane: Plane = Plane(Vector3.UP, -plane_y)
+	var ray_origin: Vector3 = camera.project_ray_origin(mouse_pos)
+	var ray_normal: Vector3 = camera.project_ray_normal(mouse_pos)
+	var hit: Variant = plane.intersects_ray(ray_origin, ray_normal)
+	if hit != null:
+		set_aim_target(hit as Vector3)
 
 
 ## Processa comandos de voo, consumo de combustivel e cinemática inercial.
@@ -71,9 +133,9 @@ func _process_flight_controls(delta: float) -> void:
 		else:
 			fuel_component.consume_passive(delta)
 	
-	# Calculo de aceleracao linear para inclinacao cosmética
+	# Calculo de aceleracao linear para inclinacao cosmética no espaco local
 	var current_h_vel: Vector3 = Vector3(velocity.x, 0.0, velocity.z)
-	var accel_vector: Vector3 = (current_h_vel - previous_horizontal_velocity) / delta
+	var global_accel: Vector3 = (current_h_vel - previous_horizontal_velocity) / delta
 	previous_horizontal_velocity = current_h_vel
 	
 	if flight_controller != null:
@@ -81,14 +143,26 @@ func _process_flight_controls(delta: float) -> void:
 	
 	move_and_slide()
 	
-	# Orientacao horizontal (Yaw) em direcao ao comando ativo
-	if input_dir.length_squared() > 0.01 and flight_controller != null:
-		var target_yaw: float = atan2(-input_dir.x, -input_dir.y)
+	# Orientacao horizontal (Yaw): prioriza ponto de mira do cursor; caso ausente, usa vetor de movimento
+	var target_yaw: float = rotation.y
+	var should_rotate: bool = false
+	if has_aim_target:
+		var aim_dir: Vector3 = aim_target_world - global_position
+		aim_dir.y = 0.0
+		if aim_dir.length_squared() > 0.04:
+			target_yaw = atan2(-aim_dir.x, -aim_dir.z)
+			should_rotate = true
+	elif input_dir.length_squared() > 0.01:
+		target_yaw = atan2(-input_dir.x, -input_dir.y)
+		should_rotate = true
+	
+	if should_rotate and flight_controller != null:
 		rotation.y = rotate_toward(rotation.y, target_yaw, flight_controller.yaw_turn_speed * delta)
 	
-	# Inclinacao cosmética dinâmica da malha (Roll e Pitch)
+	# Inclinacao cosmética dinâmica da malha (Roll e Pitch) calculada no espaco local
 	if mesh_container != null and flight_controller != null:
-		var target_tilt: Vector3 = flight_controller.compute_cosmetic_tilt(accel_vector)
+		var local_accel: Vector3 = global_transform.basis.inverse() * global_accel
+		var target_tilt: Vector3 = flight_controller.compute_cosmetic_tilt(local_accel)
 		mesh_container.rotation.x = lerpf(mesh_container.rotation.x, target_tilt.x, 10.0 * delta)
 		mesh_container.rotation.z = lerpf(mesh_container.rotation.z, target_tilt.z, 10.0 * delta)
 	
@@ -125,10 +199,9 @@ func _process_autorotation(delta: float) -> void:
 	
 	if autorotation_timer >= AUTOROTATION_DURATION:
 		is_autorotating = false
+		death_cause = "fuel_exhaustion"
 		if health_component != null:
 			health_component.take_damage(health_component.max_health)
-		if EventBus != null:
-			EventBus.player_died.emit("fuel_exhaustion")
 
 
 ## Callback acionado pelo sinal de pane seca do componente de combustivel.
@@ -182,4 +255,4 @@ func _on_health_changed(current: float, max_hp: float) -> void:
 func _on_entity_destroyed() -> void:
 	set_physics_process(false)
 	if EventBus != null:
-		EventBus.player_died.emit("structural_failure")
+		EventBus.player_died.emit(death_cause)
