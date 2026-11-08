@@ -94,7 +94,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Ao destruir um `DataCrate` ($150.0\text{ HP}$), pausa a árvore de cena, exibe 3 cartas de `BoonData` sorteadas e aplica o modificador escolhido aos componentes do helicóptero via `BoonReceiverComponent`.
   - **Critério de Aceite:** A escolha selecionada atualiza imediatamente as variáveis da entidade sem gerar divisões por zero (`test_boons_math.gd` verde) e retoma a execução normal do jogo.
 
-- [ ] **TASK-042: Diretor de Instanciação Híbrida e Ondas Reativas (`SpawnDirector.gd`)**
+- [x] **TASK-042: Diretor de Instanciação Híbrida e Ondas Reativas (`SpawnDirector.gd`)**
   - **Dependência:** TASK-030, TASK-032, TASK-041.
   - **Arquivo:** `res://scripts/procedural/spawn_director.gd`.
   - **Lógica:** No início da run, sorteia coordenadas pré-marcadas na ilha fixa para posicionar 3 abrigos + 3 `MercenarySquad` (entre 6 pontos), 4 `TurretSAM` (entre 8 pontos), 2 `LightTank_IFV`, 2 `PatrolBoat` e 2 `DataCrate` (entre 4 pontos). Escuta `EventBus.shelter_destroyed` e `EventBus.data_crate_opened` para disparar ondas reativas (*The Reactive Grid*: 2 `HunterDrone` aéreos + 1 `MercenarySquad` terrestre).
