@@ -100,7 +100,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** No início da run, sorteia coordenadas pré-marcadas na ilha fixa para posicionar 3 abrigos + 3 `MercenarySquad` (entre 6 pontos), 4 `TurretSAM` (entre 8 pontos), 2 `LightTank_IFV`, 2 `PatrolBoat` e 2 `DataCrate` (entre 4 pontos). Escuta `EventBus.shelter_destroyed` e `EventBus.data_crate_opened` para disparar ondas reativas (*The Reactive Grid*: 2 `HunterDrone` aéreos + 1 `MercenarySquad` terrestre).
   - **Critério de Aceite:** Alocação inicial sem sobreposição e disparo imediato de reforços ao destruir abrigos ou crates de dados.
 
-- [ ] **TASK-043: Tela de Hangar e Aplicação da Meta-Progressão Permanente**
+- [x] **TASK-043: Tela de Hangar e Aplicação da Meta-Progressão Permanente**
   - **Dependência:** TASK-032, TASK-040.
   - **Arquivo:** `res://scenes/roguelite/hangar_screen.tscn`.
   - **Lógica:** Interface conectada ao `MetaProgression.gd` permitindo gastar *Personnel Tokens* nos 3 upgrades permanentes (`expand_cabin`, `reinforce_armor`, `ammo_logistics`) e aplicar os bônus no início de cada nova incursão.
