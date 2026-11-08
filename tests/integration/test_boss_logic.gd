@@ -17,7 +17,7 @@ func test_core_takes_damage_after_at_least_one_turret_falls() -> void:
 	boss.bow_turret.health.take_damage(9999.0) # Destroi a torreta frontal
 	assert_true(boss.bow_turret.is_destroyed(), "A torreta frontal deve estar destruida.")
 	
-	boss.damage_core(100.0)
+	boss.take_damage(100.0) # Valida despacho via take_damage padrão de entidade
 	assert_lt(boss.core_health.current_health, boss.core_health.max_health, "O reator deve ficar vulneravel apos a queda da primeira torreta.")
 	assert_eq(boss.core_health.current_health, 2300.0, "Deve descontar exatamente 100 de dano do reator.")
 

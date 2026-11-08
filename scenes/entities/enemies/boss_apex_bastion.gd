@@ -90,6 +90,18 @@ func _update_target_player() -> void:
 		target_player = players[0] as Node3D
 
 
+## Encaminha danos genéricos sofridos pela entidade para a avaliação do reator central.
+##
+## Args:
+##     amount (float): Quantidade de dano infligido.
+##     source (Node3D): Entidade de origem do disparo.
+##
+## Returns:
+##     void
+func take_damage(amount: float, source: Node3D = null) -> void:
+	damage_core(amount, source)
+
+
 ## Aplica dano ao núcleo central, respeitando invulnerabilidade caso as duas torretas estejam intactas.
 func damage_core(amount: float, source: Node3D = null) -> void:
 	if is_dead or core_health == null or amount <= 0.0:
