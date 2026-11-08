@@ -15,7 +15,11 @@ enum PickupType {
 signal collected(type: PickupType)
 
 ## Tipo do suprimento instanciado.
-@export var pickup_type: PickupType = PickupType.AMMO_CRATE
+@export var pickup_type: PickupType = PickupType.AMMO_CRATE:
+	set(value):
+		pickup_type = value
+		if is_node_ready():
+			_apply_visual_styling()
 
 ## Fracao de reposicao de municao para todos os slots (padrao: 0.25 = +25%).
 @export var ammo_fraction: float = 0.25
@@ -84,6 +88,8 @@ func collect(player: Node) -> bool:
 ## Returns:
 ##     void
 func _apply_visual_styling() -> void:
+	if mesh_instance == null:
+		mesh_instance = get_node_or_null("MeshInstance3D") as MeshInstance3D
 	if mesh_instance == null:
 		return
 	

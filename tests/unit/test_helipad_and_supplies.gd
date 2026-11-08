@@ -140,3 +140,19 @@ func test_fuel_drum_restores_thirty_fuel() -> void:
 	assert_true(collected, "O tambor de combustivel deve ser coletado com sucesso.")
 	
 	assert_almost_eq(player.fuel_component.current_fuel, 75.0, 0.01, "Combustivel deve aumentar em exatamente +30.0 unidades.")
+
+
+func test_supply_pickup_reactive_type_styling() -> void:
+	var pickup: SupplyPickup = supply_scene.instantiate() as SupplyPickup
+	add_child_autofree(pickup)
+	
+	# Inicialmente Ammo Crate (verde)
+	var mat_ammo: StandardMaterial3D = pickup.mesh_instance.material_override as StandardMaterial3D
+	assert_not_null(mat_ammo, "Material deve estar configurado.")
+	assert_almost_eq(mat_ammo.albedo_color.g, 0.45, 0.05, "Cor albedo inicial deve ser verde.")
+	
+	# Altera dinamicamente para Fuel Drum (dourado/amarelo)
+	pickup.pickup_type = SupplyPickup.PickupType.FUEL_DRUM
+	var mat_fuel: StandardMaterial3D = pickup.mesh_instance.material_override as StandardMaterial3D
+	assert_almost_eq(mat_fuel.albedo_color.r, 0.85, 0.05, "Cor albedo atualizada deve ser amarela.")
+
