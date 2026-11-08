@@ -296,5 +296,6 @@ func _load_default_slots() -> void:
 	m_data.is_homing = true
 	m_data.homing_cone_deg = 40.0
 	m_data.homing_turn_speed = 6.0
+	m_data.projectile_scene = load("res://scenes/weapons/projectile_hellfire.tscn")
 	
 	weapon_slots = [v_data, h_data, m_data]
