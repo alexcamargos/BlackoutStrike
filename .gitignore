@@ -1,35 +1,115 @@
-# Godot 4.x engine cache and imports
+# ==============================================================================
+# Godot 4.x Engine Cache, Imports e Metadados
+# ==============================================================================
 .godot/
 .import/
 export_presets.cfg
 
-# Imported media / temporary files
+# Binarios compilados de traducao
 *.translation
 
-# Mono / C# (se aplicável futuramente)
-.mono/
-*.csproj
-*.sln
+# ==============================================================================
+# Builds, Binarios de Exportacao e Pacotes de Distribuicao
+# ==============================================================================
+bin/
+build/
+dist/
+exports/
+*.exe
+*.pck
+*.apk
+*.aab
+*.dmg
+*.app
+*.zip
+*.tar.gz
 
-# Ambiente volátil de testes, rascunhos e scratch
+# ==============================================================================
+# Logs do Godot, Crash Dumps e Telemetria de Execucao
+# ==============================================================================
+*.log
+godot.log
+crash*.dmp
+*.dmp
+
+# ==============================================================================
+# Framework de Testes Automatizados (GUT) e Relatorios de CI
+# ==============================================================================
+.gutconfig.json
+gut_editor_config.json
+test_results/
+test_reports/
+gut_results*.json
+gut_results*.xml
+
+# ==============================================================================
+# Dados de Usuario, Saves Locais e Persistencia em Execucao
+# ==============================================================================
+user_data/
+app_userdata/
+*.save
+meta_progression.json
+
+# ==============================================================================
+# Ferramentas DCC e Modelagem 3D (Arquivos de Backup e Autosave)
+# ==============================================================================
+*.blend1
+*.blend2
+*.blend3
+*.autosave
+*.bak
+*.tmp
+
+# ==============================================================================
+# Ambiente Volatil e Experimentos Temporarios (SDD Standard)
+# ==============================================================================
 scratch/
 
-# Ambientes virtuais e pacotes Python (utilitários e ferramentas)
+# ==============================================================================
+# Ferramentas Python, Ambientes Virtuais e CI Tooling
+# ==============================================================================
 .venv/
+env/
 __pycache__/
 *.pyc
+.pytest_cache/
+.ruff_cache/
 
-# Configurações de ambiente e segredos
+# ==============================================================================
+# Segredos, Chaves de Assinatura e Variaveis de Ambiente
+# ==============================================================================
 .env
+.env.*
+!*.env.example
 *.local
+*.keystore
+*.jks
+*.p12
 
-# IDEs e editores
+# ==============================================================================
+# IDEs, Editores de Codigo e Metadados de Workspace
+# ==============================================================================
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+*.suo
+*.user
 
-# Sistema operacional
+# ==============================================================================
+# Artefatos Mono / .NET (Caso modulos C# sejam incorporados futuramente)
+# ==============================================================================
+.mono/
+*.csproj
+*.sln
+
+# ==============================================================================
+# Arquivos de Sistema Operacional
+# ==============================================================================
 Thumbs.db
+ehthumbs.db
+desktop.ini
 .DS_Store
+.AppleDouble
+.LSOverride
