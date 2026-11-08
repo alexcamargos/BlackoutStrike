@@ -17,7 +17,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Drenagem passiva ($0.7\text{ u/s}$), drenagem ativa em aceleração ($1.6\text{ u/s}$), emissão do sinal `fuel_changed(current, max_fuel)` e emissão de `fuel_depleted` quando $current \le 0.0$.
   - **Critério de Aceite:** Testes unitários validando transição para $0$ e bloqueio de valores negativos.
 
-- [ ] **TASK-012: Componente de Vida e Blindagem (`HealthComponent.gd`)**
+- [x] **TASK-012: Componente de Vida e Blindagem (`HealthComponent.gd`)**
   - **Dependência:** TASK-010.
   - **Arquivos:** `res://scripts/components/health_component.gd`, `res://tests/unit/test_health_component.gd`.
   - **Lógica:** Gestão de integridade ($1000\text{ HP}$ base), flag `is_invulnerable`, métodos `take_damage(amount, source)` e `repair(amount)`, emissão de `health_changed` e `entity_destroyed`.
