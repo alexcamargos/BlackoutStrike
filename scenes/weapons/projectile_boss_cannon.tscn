@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://projectile_boss_cannon_01"]
+
+[ext_resource type="Script" path="res://scripts/weapons/projectile.gd" id="1_proj"]
+[ext_resource type="PackedScene" uid="uid://impact_effect_vfx_01" path="res://scenes/vfx/impact_effect.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_heavy_shell"]
+emission_enabled = true
+emission = Color(1, 0.45, 0.05, 1)
+emission_energy_multiplier = 4.0
+albedo_color = Color(1, 0.5, 0.1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_heavy"]
+material = SubResource("StandardMaterial3D_heavy_shell")
+radius = 0.4
+height = 0.8
+
+[node name="ProjectileBossCannon" type="Area3D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_proj")
+damage = 120.0
+speed = 55.0
+lifetime = 3.5
+explosion_radius = 2.5
+impact_effect_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_heavy")

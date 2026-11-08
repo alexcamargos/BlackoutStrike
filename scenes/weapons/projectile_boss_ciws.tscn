@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://projectile_boss_ciws_01"]
+
+[ext_resource type="Script" path="res://scripts/weapons/projectile.gd" id="1_proj"]
+[ext_resource type="PackedScene" uid="uid://impact_effect_vfx_01" path="res://scenes/vfx/impact_effect.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ciws_tracer"]
+emission_enabled = true
+emission = Color(1, 0.9, 0.3, 1)
+emission_energy_multiplier = 5.0
+albedo_color = Color(1, 0.9, 0.4, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tracer"]
+material = SubResource("StandardMaterial3D_ciws_tracer")
+size = Vector3(0.08, 0.08, 0.7)
+
+[node name="ProjectileBossCIWS" type="Area3D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_proj")
+damage = 25.0
+speed = 70.0
+lifetime = 2.0
+impact_effect_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_tracer")
