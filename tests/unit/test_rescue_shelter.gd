@@ -128,3 +128,58 @@ func test_civilian_vulnerable_to_explosive_projectile_damage() -> void:
 	rocket._apply_area_damage(rocket.global_position, rocket.damage)
 	
 	assert_true(civ.is_dead, "O civil deve perecer ao ser atingido por raio de explosao de foguete.")
+
+
+func test_civilian_high_visibility_model() -> void:
+	var civ: Civilian = civilian_scene.instantiate() as Civilian
+	add_child_autofree(civ)
+	
+	# Verifica malhas do modelo de cientista/engenheiro de alta visibilidade
+	var torso: MeshInstance3D = civ.get_node_or_null("ModelContainer/Torso") as MeshInstance3D
+	assert_not_null(torso, "Civil deve possuir malha de torso.")
+	var torso_mat: StandardMaterial3D = torso.mesh.material as StandardMaterial3D
+	assert_not_null(torso_mat, "Torso deve conter material PBR.")
+	assert_almost_eq(torso_mat.albedo_color.r, 0.96, 0.05, "Uniforme deve ser laranja de alta visibilidade.")
+	
+	var vest: MeshInstance3D = civ.get_node_or_null("ModelContainer/Torso/ReflectiveVest") as MeshInstance3D
+	assert_not_null(vest, "Civil deve possuir faixa refletiva de seguranca.")
+	
+	var hardhat: MeshInstance3D = civ.get_node_or_null("ModelContainer/Head/SafetyHardhat") as MeshInstance3D
+	assert_not_null(hardhat, "Civil deve possuir capacete de seguranca.")
+	var hardhat_mat: StandardMaterial3D = hardhat.mesh.material as StandardMaterial3D
+	assert_almost_eq(hardhat_mat.albedo_color.r, 1.0, 0.05, "Capacete deve ser amarelo-seguranca.")
+
+
+func test_shelter_reinforced_concrete_model_and_debris_instantiation() -> void:
+	var debris_script: GDScript = preload("res://scenes/entities/npcs/shelter_debris.gd")
+	var parent_container: Node3D = Node3D.new()
+	add_child_autofree(parent_container)
+	
+	var shelter: RescueShelter = shelter_scene.instantiate() as RescueShelter
+	parent_container.add_child(shelter)
+	shelter.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	# Verifica materiais de concreto reforcado e porta blindada
+	var walls: MeshInstance3D = shelter.get_node_or_null("ModelContainer/BunkerWalls") as MeshInstance3D
+	assert_not_null(walls, "Abrigo deve conter paredes de concreto.")
+	var concrete_mat: StandardMaterial3D = walls.mesh.material as StandardMaterial3D
+	assert_true(concrete_mat.roughness >= 0.8, "Concreto reforcado deve possuir alta rugosidade (>= 0.8).")
+	
+	var door: MeshInstance3D = shelter.get_node_or_null("ModelContainer/BlastDoor") as MeshInstance3D
+	assert_not_null(door, "Abrigo deve conter porta blindada.")
+	
+	# Destroi o abrigo
+	shelter.take_damage(300.0)
+	
+	# Verifica que pecas de escombros ShelterDebris foram instanciadas no container pai
+	var debris_count: int = 0
+	for child in parent_container.get_children():
+		if child is RigidBody3D and child.get_script() == debris_script:
+			debris_count += 1
+			# Assegura que escombros nao colidem com civis (collision_layer = 0)
+			assert_eq(child.collision_layer, 0, "Escombros nao devem colidir com a camada de civis (layer deve ser 0).")
+			assert_eq(child.collision_mask, 1, "Escombros devem colidir apenas com World_Static.")
+	
+	assert_true(debris_count >= 4, "A destruicao do abrigo deve instanciar pecas fragmentadas de escombros (contado: %d)." % debris_count)
+
+

@@ -173,7 +173,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Substituir os blocos do chefe por modelo naval detalhado com separação em nós de topo: casco principal com linhas de flutuação, Torreta de Proa (canhão 76mm móvel), Torreta de Popa (CIWS quádruplo) e Núcleo Central de Comando com blindagem retrátil e pulso emissivo ativado na Fase 2.
   - **Critério de Aceite:** Suíte `test_boss_logic.gd` passa 100% verde; destruição de cada módulo desativa a torreta correspondente e altera o material para malha avariada/enfumaçada.
 
-- [ ] **TASK-073: Malhas de Civis, Cientistas e Abrigos Destrutíveis**
+- [x] **TASK-073: Malhas de Civis, Cientistas e Abrigos Destrutíveis**
   - **Dependência:** TASK-030.
   - **Arquivos:** `res://scenes/entities/npcs/civilian.tscn`, `res://scenes/entities/npcs/rescue_shelter.tscn`.
   - **Lógica:** Integrar modelos de cientistas e engenheiros (Kay Lousberg CC0) com uniformes de alta visibilidade contrastante. Implementar abrigo com textura de concreto reforçado e gerar peças fragmentadas de escombros instanciadas na destruição do edifício.
