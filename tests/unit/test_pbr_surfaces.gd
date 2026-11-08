@@ -24,10 +24,14 @@ func test_ocean_wave_normal_textures_exist_and_configured() -> void:
 	assert_true(norm1.seamless, "ocean_wave_normal_1 deve possuir seamless ativado.")
 	assert_true(norm1.as_normal_map, "ocean_wave_normal_1 deve estar configurado como mapa de normais.")
 	assert_gt(norm1.bump_strength, 0.0, "ocean_wave_normal_1 deve ter bump_strength calibrado positivo.")
+	assert_eq(norm1.width, 1024, "ocean_wave_normal_1 deve ter resolucao horizontal de 1024.")
+	assert_eq(norm1.height, 1024, "ocean_wave_normal_1 deve ter resolucao vertical de 1024.")
 	
 	assert_true(norm2.seamless, "ocean_wave_normal_2 deve possuir seamless ativado.")
 	assert_true(norm2.as_normal_map, "ocean_wave_normal_2 deve estar configurado como mapa de normais.")
 	assert_gt(norm2.bump_strength, 0.0, "ocean_wave_normal_2 deve ter bump_strength calibrado positivo.")
+	assert_eq(norm2.width, 1024, "ocean_wave_normal_2 deve ter resolucao horizontal de 1024.")
+	assert_eq(norm2.height, 1024, "ocean_wave_normal_2 deve ter resolucao vertical de 1024.")
 
 
 func test_mission_midway_ocean_material_and_uniforms() -> void:
@@ -108,8 +112,11 @@ func test_island_terrain_midway_three_elevation_zones() -> void:
 			assert_gte(cliff_top_y, 0.5, "Topo da falesia deve ser maior ou igual a 0.5m.")
 			assert_lte(cliff_top_y, 6.0, "Topo da falesia deve ser menor ou igual a 6.0m.")
 	
-	# Verificacao do metodo get_surface_altitude
+	# Verificacao do metodo get_surface_altitude em todas as falesias e cotas
 	assert_almost_eq(terrain.call("get_surface_altitude", 10.0, 10.0), 5.0, 0.1, "Altitude em (10, 10) deve refletir a falesia nordeste.")
+	assert_almost_eq(terrain.call("get_surface_altitude", -112.0, -10.0), 5.5, 0.1, "Altitude em (-112, -10) deve refletir a falesia oeste.")
+	assert_almost_eq(terrain.call("get_surface_altitude", 105.0, -55.0), 5.7, 0.1, "Altitude em (105, -55) deve refletir a falesia leste.")
+	assert_almost_eq(terrain.call("get_surface_altitude", -45.0, 80.0), 4.5, 0.1, "Altitude em (-45, 80) deve refletir a falesia sul.")
 	assert_almost_eq(terrain.call("get_surface_altitude", 0.0, 0.0), 0.5, 0.1, "Altitude no centro deve refletir o plato a 0.5m.")
 	assert_almost_eq(terrain.call("get_surface_altitude", 130.0, 0.0), 0.1, 0.1, "Altitude nos extremos deve refletir a praia rasa.")
 
