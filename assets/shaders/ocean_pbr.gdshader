@@ -1,8 +1,8 @@
 shader_type spatial;
 render_mode cull_back, diffuse_burley, specular_schlick_ggx;
 
-uniform vec4 shallow_color : source_color = vec4(0.08, 0.65, 0.72, 1.0);
-uniform vec4 deep_color : source_color = vec4(0.01, 0.08, 0.22, 1.0);
+uniform vec4 shallow_color : source_color = vec4(0.0784314, 0.65098, 0.721569, 1.0);
+uniform vec4 deep_color : source_color = vec4(0.0117647, 0.0784314, 0.219608, 1.0);
 uniform float depth_distance : hint_range(0.1, 15.0) = 4.0;
 
 uniform vec4 foam_color : source_color = vec4(0.95, 0.98, 1.0, 1.0);

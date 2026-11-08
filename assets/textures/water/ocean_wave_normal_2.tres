@@ -1,0 +1,13 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://ocean_wave_normal_2_res"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wave2"]
+noise_type = 0
+seed = 202
+frequency = 0.03
+fractal_octaves = 4
+
+[resource]
+seamless = true
+as_normal_map = true
+bump_strength = 6.0
+noise = SubResource("FastNoiseLite_wave2")
