@@ -38,6 +38,15 @@ var boarding_timer: float = 0.0
 ## Flag que indica se a operacao esta suprimida por inimigos no perimetro.
 var is_suppressed: bool = false
 
+## Intervalo de tempo entre varreduras ativas de supressao de perimetro (segundos).
+const SUPPRESSION_CHECK_INTERVAL: float = 0.1
+
+## Temporizador para cadenciamento da checagem de supressao.
+var suppression_check_timer: float = 0.1
+
+## Cache do ultimo estado de supressao avaliado para amortizar alocacoes.
+var _cached_is_suppressed: bool = false
+
 ## Lista interna de civis atualmente na area de cobertura do sensor.
 var _detected_civilians: Array[Civilian] = []
 
@@ -96,6 +105,7 @@ func _setup_rescue_ring_mesh() -> void:
 			ring_material = rescue_ring_mesh.material_override as ShaderMaterial
 	
 	if rescue_ring_mesh != null:
+		rescue_ring_mesh.top_level = true
 		rescue_ring_mesh.visible = false
 
 
@@ -120,6 +130,13 @@ func _physics_process(delta: float) -> void:
 func step(delta: float) -> void:
 	_cleanup_dead_civilians()
 	
+	if current_target_civilian == null:
+		current_target_civilian = _find_closest_civilian()
+	
+	if current_target_civilian == null:
+		_reset_rescue_progress()
+		return
+	
 	var helicopter: CharacterBody3D = get_parent() as CharacterBody3D
 	var current_altitude: float = global_position.y
 	var horizontal_speed: float = 0.0
@@ -129,7 +146,8 @@ func step(delta: float) -> void:
 		var horizontal_vel: Vector2 = Vector2(helicopter.velocity.x, helicopter.velocity.z)
 		horizontal_speed = horizontal_vel.length()
 	
-	var is_hover_valid: bool = current_altitude <= max_rescue_altitude and horizontal_speed <= max_rescue_speed
+	var relative_altitude: float = current_altitude - current_target_civilian.global_position.y
+	var is_hover_valid: bool = relative_altitude <= max_rescue_altitude and relative_altitude >= -0.2 and horizontal_speed <= max_rescue_speed
 	
 	if not is_hover_valid:
 		_reset_rescue_progress()
@@ -139,28 +157,26 @@ func step(delta: float) -> void:
 		_reset_rescue_progress()
 		return
 	
-	if current_target_civilian == null:
-		current_target_civilian = _find_closest_civilian()
-	
-	if current_target_civilian == null:
-		_reset_rescue_progress()
-		return
-	
 	_update_ring_transform()
 	
-	var suppressed_now: bool = is_perimeter_suppressed(current_target_civilian.global_position)
-	_set_suppression_state(suppressed_now)
+	suppression_check_timer += delta
+	if suppression_check_timer >= SUPPRESSION_CHECK_INTERVAL:
+		suppression_check_timer = 0.0
+		_cached_is_suppressed = is_perimeter_suppressed(current_target_civilian.global_position)
+	
+	_set_suppression_state(_cached_is_suppressed)
 	
 	if is_suppressed:
 		_update_ring_shader_params()
 		return
 	
+	var effective_duration: float = get_effective_boarding_duration()
 	boarding_timer += delta
-	var progress: float = clampf(boarding_timer / boarding_duration, 0.0, 1.0)
+	var progress: float = clampf(boarding_timer / effective_duration, 0.0, 1.0)
 	boarding_progress_changed.emit(progress)
 	_update_ring_shader_params()
 	
-	if boarding_timer >= boarding_duration:
+	if boarding_timer >= effective_duration:
 		_execute_boarding()
 
 
@@ -193,7 +209,7 @@ func is_perimeter_suppressed(civilian_pos: Vector3) -> bool:
 			continue
 		if enemy_3d is CollisionObject3D:
 			var col: CollisionObject3D = enemy_3d as CollisionObject3D
-			if col.collision_layer == 8: # Apenas Enemies_Air
+			if (col.collision_layer & 8) != 0 and (col.collision_layer & 4) == 0:
 				continue
 		
 		var dist: float = civilian_pos.distance_to(enemy_3d.global_position)
@@ -201,6 +217,19 @@ func is_perimeter_suppressed(civilian_pos: Vector3) -> bool:
 			return true
 	
 	return false
+
+
+## Retorna o tempo efetivo de embarque respeitando modificadores do CargoComponent.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     float: Duracao em segundos para concluir o embarque de 1 civil.
+func get_effective_boarding_duration() -> float:
+	if cargo_component != null and cargo_component.boarding_duration > 0.0:
+		return cargo_component.boarding_duration
+	return boarding_duration
 
 
 ## Retorna o progresso normalizado atual de embarque (0.0 a 1.0).
@@ -211,9 +240,10 @@ func is_perimeter_suppressed(civilian_pos: Vector3) -> bool:
 ## Returns:
 ##     float: Valor entre 0.0 e 1.0.
 func get_boarding_progress() -> float:
-	if boarding_duration <= 0.0:
+	var duration: float = get_effective_boarding_duration()
+	if duration <= 0.0:
 		return 0.0
-	return clampf(boarding_timer / boarding_duration, 0.0, 1.0)
+	return clampf(boarding_timer / duration, 0.0, 1.0)
 
 
 ## Conclui o ciclo de embarque, inserindo o civil na cabine e liberando o alvo.
@@ -252,9 +282,10 @@ func _update_ring_transform() -> void:
 		return
 	
 	rescue_ring_mesh.visible = true
+	rescue_ring_mesh.global_rotation = Vector3.ZERO
 	rescue_ring_mesh.global_position = Vector3(
 		current_target_civilian.global_position.x,
-		0.05,
+		current_target_civilian.global_position.y + 0.05,
 		current_target_civilian.global_position.z
 	)
 
@@ -299,6 +330,8 @@ func _set_suppression_state(new_state: bool) -> void:
 ##     void
 func _reset_rescue_progress() -> void:
 	boarding_timer = 0.0
+	suppression_check_timer = SUPPRESSION_CHECK_INTERVAL
+	_cached_is_suppressed = false
 	_set_suppression_state(false)
 	
 	if rescue_ring_mesh != null:

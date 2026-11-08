@@ -122,3 +122,33 @@ func test_rescue_blocked_when_cabin_is_full() -> void:
 	rescue_sensor.step(1.0)
 	assert_eq(rescue_sensor.get_boarding_progress(), 0.0, "Nao deve iniciar embarque com cabine lotada.")
 	assert_false(rescue_sensor.rescue_ring_mesh.visible, "O anel deve permanecer inativo com a cabine lotada.")
+
+
+func test_rescue_on_elevated_terrain() -> void:
+	var civ: Civilian = civilian_scene.instantiate() as Civilian
+	add_child_autofree(civ)
+	# Civil posicionado sobre terraço ou falésia a 5.0m de altitude
+	civ.global_position = Vector3(10.0, 5.0, 10.0)
+	
+	# Helicóptero paira a 5.8m (0.8m acima do civil)
+	rescue_sensor.global_position = Vector3(10.0, 5.8, 10.0)
+	rescue_sensor._on_body_entered(civ)
+	
+	rescue_sensor.step(1.0)
+	assert_almost_eq(rescue_sensor.get_boarding_progress(), 0.5, 0.01, "Deve permitir resgate em terreno elevado usando altitude relativa.")
+	assert_almost_eq(rescue_sensor.rescue_ring_mesh.global_position.y, 5.05, 0.01, "O anel deve se projetar na altura do terreno elevado.")
+
+
+func test_boarding_duration_reflects_cargo_component() -> void:
+	var civ: Civilian = civilian_scene.instantiate() as Civilian
+	add_child_autofree(civ)
+	civ.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	# Simula modificador do Boon Guincho de Alta Potência (reduz para 1.1s)
+	cargo.boarding_duration = 1.1
+	rescue_sensor.global_position = Vector3(0.0, 1.0, 0.0)
+	rescue_sensor._on_body_entered(civ)
+	
+	rescue_sensor.step(0.55)
+	assert_almost_eq(rescue_sensor.get_boarding_progress(), 0.5, 0.01, "O progresso deve respeitar a duracao sincronizada com o CargoComponent.")
+
