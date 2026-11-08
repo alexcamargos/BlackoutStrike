@@ -122,7 +122,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Entidade com 3 módulos de colisão e vida distintos: Torreta Dupla de Proa ($800\text{ HP}$), Torreta Quádrupla de Popa ($800\text{ HP}$) e Núcleo Central de Comando ($2400\text{ HP}$). Implementação das Fases 1 (canhão 76mm + minas navais) e 2 (CIWS em leque + salva de 4 mísseis teleguiados).
   - **Critério de Aceite:** O núcleo só recebe dano após a queda de ao menos uma das torretas (`test_boss_logic.gd` verde); ao zerar o núcleo, executa sequência de destruição e emite `EventBus.boss_defeated` e `EventBus.mission_accomplished`.
 
-- [ ] **TASK-052: Shaders de Oceano, Rotor Wash, Câmera Tática e Ambiente Estilo Sky Force**
+- [x] **TASK-052: Shaders de Oceano, Rotor Wash, Câmera Tática e Ambiente Estilo Sky Force**
   - **Dependência:** TASK-013.
   - **Arquivos:** `res://assets/shaders/ocean_pbr.gdshader`, `res://assets/shaders/rotor_wash.gdshader`, `res://scenes/core/world_environment.tres`, `res://scenes/core/tactical_camera.tscn`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Integração da cena principal da Missão 1 com câmera oblíqua ($68^\circ$, $FOV = 36^\circ$), shader de água com profundidade e espuma, decalque de `rotor_wash` sob o helicóptero e configuração de `WorldEnvironment` com Bloom Filmic e SSAO.
