@@ -48,8 +48,17 @@ func _ready() -> void:
 ##     Nenhuma excecao levantada.
 func get_surface_altitude(x: float, z: float) -> float:
 	# Regiao da falesia rochosa do setor nordeste
-	if x >= 5.0 and x <= 25.0 and z >= 5.0 and z <= 20.0:
+	if x >= 5.0 and x <= 25.0 and z >= 4.0 and z <= 20.0:
 		return 5.0
+	# Regiao da falesia rochosa do setor oeste
+	if x >= -121.0 and x <= -103.0 and z >= -28.0 and z <= 8.0:
+		return 5.5
+	# Regiao da falesia rochosa do setor leste
+	if x >= 94.0 and x <= 116.0 and z >= -69.0 and z <= -41.0:
+		return 5.7
+	# Regiao da falesia rochosa do setor sul
+	if x >= -59.0 and x <= -31.0 and z >= 71.0 and z <= 89.0:
+		return 4.5
 	# Limites externos da ilha (faixa de praia litoranea)
 	if absf(x) > 120.0 or absf(z) > 120.0:
 		return 0.1
