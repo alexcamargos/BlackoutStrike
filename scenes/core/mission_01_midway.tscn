@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://mission_01_midway_scene_01"]
+[gd_scene load_steps=20 format=3 uid="uid://mission_01_midway_scene_01"]
 
 [ext_resource type="Environment" uid="uid://world_environment_midway_01" path="res://scenes/core/world_environment.tres" id="1_env"]
 [ext_resource type="Shader" path="res://assets/shaders/ocean_pbr.gdshader" id="2_water_shader"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://tactical_camera_scene_01" path="res://scenes/core/tactical_camera.tscn" id="7_cam"]
 [ext_resource type="PackedScene" uid="uid://hud_ui_main_01" path="res://scenes/ui/hud.tscn" id="8_hud"]
 [ext_resource type="PackedScene" uid="uid://boon_selection_ui_01" path="res://scenes/roguelite/boon_selection_ui.tscn" id="9_boon_ui"]
+[ext_resource type="PackedScene" uid="uid://radio_box_ui_01" path="res://scenes/ui/radio_transmission_box.tscn" id="10_radio"]
+[ext_resource type="Script" path="res://scenes/core/mission_01_midway.gd" id="11_mission"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -41,6 +43,7 @@ size = Vector3(260, 2, 260)
 size = Vector3(260, 2, 260)
 
 [node name="Mission_01_Midway" type="Node3D"]
+script = ExtResource("11_mission")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource("1_env")
@@ -68,6 +71,7 @@ shape = SubResource("BoxShape3D_island_col")
 
 [node name="SpawnDirector" type="Node3D" parent="." node_paths=PackedStringArray("enemies_container", "shelters_container", "crates_container")]
 script = ExtResource("3_director")
+auto_spawn_on_ready = true
 enemies_container = NodePath("../ActiveEntities/Enemies")
 shelters_container = NodePath("../ActiveEntities/Civilians")
 crates_container = NodePath("../ActiveEntities/Enemies")
@@ -158,3 +162,5 @@ target = NodePath("../ActiveEntities/PlayerHelicopter")
 
 [node name="BoonSelectionModal" parent="CanvasLayer_UI" instance=ExtResource("9_boon_ui")]
 visible = false
+
+[node name="RadioTransmissionBox" parent="CanvasLayer_UI" instance=ExtResource("10_radio")]

@@ -82,3 +82,24 @@ func test_radio_transmission_box_displays_message_and_auto_hides() -> void:
 	# Simula decorrencia de tempo superior a duracao (1.5s)
 	radio_box._process(1.6)
 	assert_false(radio_box.visible, "A caixa de radio deve auto-ocultar-se apos esgotar a duracao.")
+
+
+const Mission01MidwayScript = preload("res://scenes/core/mission_01_midway.gd")
+
+
+func test_mission_01_midway_ui_hierarchy_and_orchestrator() -> void:
+	var mission_scene: PackedScene = load("res://scenes/core/mission_01_midway.tscn")
+	assert_not_null(mission_scene, "A cena mission_01_midway.tscn deve existir e carregar sem erros.")
+	
+	var mission_node: Node = mission_scene.instantiate()
+	add_child_autofree(mission_node)
+	
+	assert_true(mission_node.get_script() == Mission01MidwayScript, "O no raiz de Midway deve possuir o script Mission01Midway.")
+	
+	var radio_box_instance: Node = mission_node.get_node_or_null("CanvasLayer_UI/RadioTransmissionBox")
+	assert_not_null(radio_box_instance, "CanvasLayer_UI deve conter a instancia da RadioTransmissionBox.")
+	assert_true(radio_box_instance is RadioTransmissionBox, "A instancia deve ser do tipo RadioTransmissionBox.")
+	
+	var director_instance: SpawnDirector = mission_node.get_node_or_null("SpawnDirector") as SpawnDirector
+	assert_not_null(director_instance, "SpawnDirector deve existir na cena da missao.")
+	assert_true(director_instance.auto_spawn_on_ready, "SpawnDirector deve estar com auto_spawn_on_ready = true na missao.")
