@@ -6,7 +6,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 1: Fundação do Core, Eventos e Cinemática do Helicóptero
 
-- [ ] **TASK-010: Configuração Base do Repositório, InputMap, Áudio e Autoloads**
+- [x] **TASK-010: Configuração Base do Repositório, InputMap, Áudio e Autoloads**
   - **Contexto:** Inicializar o projeto Godot 4.3+, configurar render Forward+, camadas de colisão 3D (1 a 8), `InputMap` (`move_north`, `move_south`, `move_west`, `move_east`, `altitude_descend`, `fire_primary`, `weapon_slot_1..3`, `weapon_cycle_next`), layout de áudio (`res://default_bus_layout.tres`) e nós globais.
   - **Entregáveis:** `res://scripts/globals/event_bus.gd`, `res://scripts/globals/game_state.gd`, `res://scripts/globals/meta_progression.gd` e `res://default_bus_layout.tres` registrados no `project.godot`.
   - **Critério de Aceite:** O projeto compila em modo headless (`godot --headless --quit`) sem erros de script e com os 3 singletons acessíveis globalmente.
