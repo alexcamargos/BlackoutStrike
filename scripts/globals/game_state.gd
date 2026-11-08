@@ -19,6 +19,9 @@ var current_status: RunStatus = RunStatus.IDLE
 ## Total de civis extraidos com sucesso durante a incursao corrente.
 var rescued_in_current_run: int = 0
 
+## Total de civis mortos por fogo cruzado ou acidentes durante a incursao corrente.
+var killed_in_current_run: int = 0
+
 ## Identificadores de boons taticos ativos durante a incursao.
 var active_run_boons: Array[String] = []
 
@@ -30,9 +33,11 @@ var active_run_boons: Array[String] = []
 ##
 ## Returns:
 ##     void
+##
 func start_new_run() -> void:
 	current_status = RunStatus.IN_PROGRESS
 	rescued_in_current_run = 0
+	killed_in_current_run = 0
 	active_run_boons.clear()
 
 
@@ -49,6 +54,21 @@ func register_extracted_civilians(count: int) -> void:
 	rescued_in_current_run += count
 	if EventBus != null:
 		EventBus.civilian_extracted.emit(rescued_in_current_run)
+
+
+## Registra civis mortos por fogo cruzado na incursao ativa.
+##
+## Args:
+##     count (int): Quantidade de civis eliminados no evento (padrao: 1).
+##
+## Returns:
+##     void
+func register_killed_civilian(count: int = 1) -> void:
+	if count <= 0:
+		return
+	killed_in_current_run += count
+	if EventBus != null:
+		EventBus.civilian_killed.emit(killed_in_current_run)
 
 
 ## Finaliza a incursao marcando condicao de vitoria.
