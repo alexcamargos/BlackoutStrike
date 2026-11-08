@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoonData" load_steps=2 format=3 uid="uid://boon_chaff_flare_01"]
+
+[ext_resource type="Script" path="res://scripts/data/boon_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "chaff_flare_system"
+title = "Sistemas de Chaff/Flare"
+description = "Solta automaticamente contramedidas contra misseis travados (tempo de recarga: 12s)."
+target_system = 0
+operation = 2
+target_property_name = "auto_chaff_enabled"
+value = 1.0
+has_secondary_buff = false
+secondary_property_name = ""
+secondary_operation = 0
+secondary_value = 1.0
+has_drawback = false
+drawback_property_name = ""
+drawback_value = 1.0

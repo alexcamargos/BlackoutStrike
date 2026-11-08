@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoonData" load_steps=2 format=3 uid="uid://boon_overclock_rotor_01"]
+
+[ext_resource type="Script" path="res://scripts/data/boon_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "overclock_rotor"
+title = "Overclock de Rotor"
+description = "+15% Velocidade Maxima e Aceleracao, porem +10% Consumo de Combustivel."
+target_system = 0
+operation = 0
+target_property_name = "max_speed"
+value = 1.15
+has_secondary_buff = true
+secondary_property_name = "acceleration"
+secondary_operation = 0
+secondary_value = 1.15
+has_drawback = true
+drawback_property_name = "active_burn_rate"
+drawback_value = 1.1

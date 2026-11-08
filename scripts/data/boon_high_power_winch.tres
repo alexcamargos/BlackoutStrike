@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoonData" load_steps=2 format=3 uid="uid://boon_high_power_winch_01"]
+
+[ext_resource type="Script" path="res://scripts/data/boon_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "high_power_winch"
+title = "Guincho de Alta Potencia"
+description = "Reduz o tempo de preenchimento do anel de resgate para 1.1s."
+target_system = 4
+operation = 0
+target_property_name = "boarding_duration"
+value = 0.55
+has_secondary_buff = false
+secondary_property_name = ""
+secondary_operation = 0
+secondary_value = 1.0
+has_drawback = false
+drawback_property_name = ""
+drawback_value = 1.0

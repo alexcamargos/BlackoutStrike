@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoonData" load_steps=2 format=3 uid="uid://boon_auxiliary_fuel_01"]
+
+[ext_resource type="Script" path="res://scripts/data/boon_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "auxiliary_fuel_tanks"
+title = "Tanques Selados Auxiliares"
+description = "Aumenta a capacidade maxima de combustivel (+30 unidades) e reduz o consumo passivo em 15%."
+target_system = 2
+operation = 1
+target_property_name = "max_fuel"
+value = 30.0
+has_secondary_buff = true
+secondary_property_name = "passive_burn_rate"
+secondary_operation = 0
+secondary_value = 0.85
+has_drawback = false
+drawback_property_name = ""
+drawback_value = 1.0

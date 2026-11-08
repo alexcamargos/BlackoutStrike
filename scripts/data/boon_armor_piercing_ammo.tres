@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BoonData" load_steps=2 format=3 uid="uid://boon_armor_piercing_01"]
+
+[ext_resource type="Script" path="res://scripts/data/boon_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "armor_piercing_ammo"
+title = "Municao Perfurante"
+description = "Tiros de canhao atravessam o primeiro alvo atingido e causam +25% de dano a estruturas."
+target_system = 3
+operation = 2
+target_property_name = "pierce_first_target"
+value = 1.0
+has_secondary_buff = true
+secondary_property_name = "structure_damage_bonus"
+secondary_operation = 1
+secondary_value = 0.25
+has_drawback = false
+drawback_property_name = ""
+drawback_value = 1.0
