@@ -66,7 +66,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Edifício protegido com vida própria ($300.0\text{ HP}$ via `ShelterData`); ao ser destruído, emite `EventBus.shelter_destroyed` e gera no solo 4 instâncias de `Civilian` em raio de $2.5\text{ m}$. Cada civil possui `HealthComponent` ($30.0\text{ HP}$) vulnerável a explosões em área (foguetes Hydra/tanques) e fogo cruzado, emitindo `EventBus.civilian_killed` caso morra.
   - **Critério de Aceite:** Civis são liberados no solo com física estável e sofrem dano letal caso atingidos por raio explosivo.
 
-- [ ] **TASK-031: Componente de Carga, Anel Holográfico e Regra de Supressão de Perímetro**
+- [x] **TASK-031: Componente de Carga, Anel Holográfico e Regra de Supressão de Perímetro**
   - **Dependência:** TASK-013, TASK-030.
   - **Arquivos:** `res://scripts/components/cargo_component.gd`, `res://assets/shaders/rescue_ring.gdshader`, `res://tests/unit/test_cargo_component.gd`, `res://tests/unit/test_rescue_area.gd`.
   - **Lógica:** Ao pairar em altitude $Y \le 1.2\text{ m}$ sobre o civil, projeta o disco holográfico. Se houver inimigos terrestres vivos em raio $\le 10.0\text{ m}$, o anel entra em estado `is_suppressed = true` (cor vermelho-alerta e progresso congelado). Sem supressão, preenche de $0^\circ$ a $360^\circ$ em $2.0\text{ s}$ e embarca 1 passageiro até o limite de 5.
