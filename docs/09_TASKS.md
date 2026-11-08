@@ -45,7 +45,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Controle dos três slots: Canhão Vulcan (Slot 1), Foguetes Hydra (Slot 2) e Míssil Hellfire (Slot 3). Controle estrito de cadência e redução de munição no disparo.
   - **Critério de Aceite:** Impossibilidade de atirar sem munição em qualquer slot e emissão contínua de sinais de inventário para a interface (`test_weapon_ammo.gd` verde).
 
-- [ ] **TASK-022: Míssil Guiado Hellfire com Travamento de Cone**
+- [x] **TASK-022: Míssil Guiado Hellfire com Travamento de Cone**
   - **Dependência:** TASK-021.
   - **Lógica:** Varredura cônica frontal de $40^\circ$ para detecção do inimigo hostil mais próximo; curva de aproximação guiada em direção ao alvo.
   - **Critério de Aceite:** O míssil altera seu vetor de trajetória em direção ao alvo móvel ou segue reto caso não existam entidades na área.
