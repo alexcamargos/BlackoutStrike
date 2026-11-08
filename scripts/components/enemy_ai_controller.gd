@@ -50,6 +50,12 @@ var target_player: Node3D = null
 ## Flag indicando se a unidade já iniciou sequência de morte.
 var is_dead: bool = false
 
+## Nó móvel de torreta para apontamento desacoplado em direção ao alvo.
+@export var turret_node: Node3D = null
+
+## Marcador de origem balística espacial dos projéteis disparados.
+@export var muzzle_marker: Marker3D = null
+
 
 ## Inicializa o controlador, detecta o nó pai e componentes associados.
 ##
@@ -68,6 +74,17 @@ func _ready() -> void:
 				health_component.current_health = stats_data.max_health
 			health_component.entity_destroyed.connect(_on_entity_destroyed)
 		
+		# Detecta automaticamente nós de torreta e muzzle se não exportados
+		if turret_node == null:
+			turret_node = parent_body.get_node_or_null("Turret") as Node3D
+			if turret_node == null:
+				turret_node = parent_body.get_node_or_null("ModelContainer/Turret") as Node3D
+		if muzzle_marker == null:
+			if turret_node != null:
+				muzzle_marker = turret_node.get_node_or_null("Muzzle") as Marker3D
+			if muzzle_marker == null:
+				muzzle_marker = parent_body.get_node_or_null("Muzzle") as Marker3D
+		
 		# Configura grupos padrão
 		parent_body.add_to_group("enemies")
 		if stats_data != null:
@@ -75,6 +92,7 @@ func _ready() -> void:
 				parent_body.add_to_group("air_enemies")
 			else:
 				parent_body.add_to_group("ground_enemies")
+
 	
 	if supply_pickup_scene == null:
 		supply_pickup_scene = load("res://scenes/roguelite/supply_pickup.tscn") as PackedScene
@@ -154,7 +172,20 @@ func _orient_towards(target_pos: Vector3, delta: float) -> void:
 	
 	if look_dir.length_squared() > 0.01:
 		var target_basis: Basis = Basis.looking_at(look_dir.normalized(), Vector3.UP)
-		parent_body.global_transform.basis = parent_body.global_transform.basis.slerp(target_basis, 6.0 * delta)
+		
+		# Apontamento angular da torreta desacoplada em direção ao alvo
+		if turret_node != null and is_instance_valid(turret_node):
+			var turret_pos: Vector3 = turret_node.global_position
+			var turret_dir: Vector3 = (target_pos - turret_pos)
+			if stats_data.behavior != EnemyStatsData.BehaviorType.AIR_INTERCEPTOR and stats_data.behavior != EnemyStatsData.BehaviorType.STATIC_TURRET:
+				turret_dir.y = 0.0
+			if turret_dir.length_squared() > 0.01:
+				var t_basis: Basis = Basis.looking_at(turret_dir.normalized(), Vector3.UP)
+				turret_node.global_transform.basis = turret_node.global_transform.basis.slerp(t_basis, 8.0 * delta)
+		
+		# Corpo pai rotaciona suavemente (exceto STATIC_TURRET, cuja base permanece estática)
+		if stats_data.behavior != EnemyStatsData.BehaviorType.STATIC_TURRET:
+			parent_body.global_transform.basis = parent_body.global_transform.basis.slerp(target_basis, 6.0 * delta)
 
 
 ## Dispara um projétil contra o alvo especificado.
@@ -187,6 +218,9 @@ func fire_weapon_at(target: Node3D) -> Projectile:
 	
 	# Posição e orientação
 	var muzzle_pos: Vector3 = parent_body.global_position if parent_body.is_inside_tree() else parent_body.position
+	if muzzle_marker != null and is_instance_valid(muzzle_marker) and muzzle_marker.is_inside_tree():
+		muzzle_pos = muzzle_marker.global_position
+	
 	var target_pos: Vector3 = target.global_position if (target != null and target.is_inside_tree()) else (target.position if target != null else Vector3.ZERO)
 	
 	var parent_tree: Node = parent_body.get_parent()
@@ -199,15 +233,19 @@ func fire_weapon_at(target: Node3D) -> Projectile:
 	
 	if target != null:
 		var dir: Vector3 = (target_pos - muzzle_pos).normalized()
-		projectile.global_position = muzzle_pos + dir * 1.0
+		projectile.global_position = muzzle_pos + dir * 0.8
 		if dir.length_squared() > 0.01:
 			var target_look: Vector3 = projectile.global_position + dir
 			if projectile.is_inside_tree():
 				projectile.look_at(target_look, Vector3.UP)
 	else:
-		projectile.global_position = muzzle_pos
-		if parent_body.is_inside_tree():
-			projectile.global_transform = parent_body.global_transform
+		if turret_node != null and is_instance_valid(turret_node) and turret_node.is_inside_tree():
+			projectile.global_position = muzzle_pos
+			projectile.global_transform.basis = turret_node.global_transform.basis
+		else:
+			projectile.global_position = muzzle_pos
+			if parent_body.is_inside_tree():
+				projectile.global_transform = parent_body.global_transform
 	
 	weapon_fired.emit(projectile)
 	return projectile
