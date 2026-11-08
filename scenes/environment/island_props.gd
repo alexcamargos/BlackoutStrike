@@ -1,3 +1,4 @@
+@tool
 ## Gerenciador de decoracao cenica e escala para o Atol de Midway.
 ##
 ## Instancia em lote palmeiras litoraneas, conteineres logisticos da Aetheris
