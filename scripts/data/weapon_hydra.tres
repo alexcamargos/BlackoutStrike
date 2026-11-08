@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=3 format=3 uid="uid://weapon_hydra_res_01"]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://projectile_hydra_01" path="res://scenes/weapons/projectile_hydra.tscn" id="2_scene"]
+
+[resource]
+script = ExtResource("1_script")
+id = "hydra_70"
+display_name = "Foguetes Hydra 70"
+projectile_scene = ExtResource("2_scene")
+max_ammo = 32
+fire_rate = 2.0
+base_damage = 160.0
+projectile_speed = 65.0
+spread_angle_deg = 0.0
+explosion_radius = 3.0
+is_homing = false
+homing_cone_deg = 40.0
+homing_turn_speed = 6.0
