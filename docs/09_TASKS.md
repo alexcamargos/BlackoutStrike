@@ -33,7 +33,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 2: Balística, Armamentos e HUD Retrô-Moderno
 
-- [ ] **TASK-020: Sistema Modular de Projéteis (`Projectile.gd`)**
+- [x] **TASK-020: Sistema Modular de Projéteis (`Projectile.gd`)**
   - **Dependência:** TASK-010.
   - **Arquivos:** `res://scripts/weapons/projectile.gd` e cenas base de tiro de canhão e foguete.
   - **Lógica:** `Area3D` com velocidade linear, tempo de vida útil e detecção de impacto via máscara de colisão.
