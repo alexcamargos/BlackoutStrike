@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="HangarUpgradeData" load_steps=2 format=3 uid="uid://upgrade_reinforce_armor_01"]
+
+[ext_resource type="Script" path="res://scripts/data/hangar_upgrade_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "reinforce_armor"
+title = "Reforco de Blindagem"
+description = "Aumenta o HP maximo do helicoptero em escaloes (+100 HP por nivel)."
+current_level = 0
+max_level = 3
+cost_per_level = Array[int]([3, 6, 12])
+value_per_level = Array[float]([1100.0, 1200.0, 1300.0])

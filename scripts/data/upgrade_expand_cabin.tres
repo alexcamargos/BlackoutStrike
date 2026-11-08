@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="HangarUpgradeData" load_steps=2 format=3 uid="uid://upgrade_expand_cabin_01"]
+
+[ext_resource type="Script" path="res://scripts/data/hangar_upgrade_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "expand_cabin"
+title = "Cabine Estendida"
+description = "Aumenta permanentemente a capacidade de refens do R-9X."
+current_level = 0
+max_level = 3
+cost_per_level = Array[int]([3, 6, 12])
+value_per_level = Array[float]([6.0, 7.0, 8.0])

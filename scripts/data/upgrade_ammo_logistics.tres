@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="HangarUpgradeData" load_steps=2 format=3 uid="uid://upgrade_ammo_logistics_01"]
+
+[ext_resource type="Script" path="res://scripts/data/hangar_upgrade_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "ammo_logistics"
+title = "Logistica de Calibre"
+description = "Aumenta a capacidade de reserva de foguetes Hydra e misseis Hellfire."
+current_level = 0
+max_level = 3
+cost_per_level = Array[int]([3, 6, 12])
+value_per_level = Array[float]([1.2, 1.4, 1.6])
