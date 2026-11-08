@@ -352,7 +352,7 @@ func _find_closest_civilian() -> Civilian:
 	var min_dist: float = INF
 	
 	for civ in _detected_civilians:
-		if civ == null or civ.is_queued_for_deletion() or civ.is_dead:
+		if civ == null or civ.is_queued_for_deletion() or civ.is_dead or civ.is_rescued:
 			continue
 		var dist: float = global_position.distance_to(civ.global_position)
 		if dist < min_dist:
@@ -372,12 +372,12 @@ func _find_closest_civilian() -> Civilian:
 func _cleanup_dead_civilians() -> void:
 	var valid_civilians: Array[Civilian] = []
 	for civ in _detected_civilians:
-		if is_instance_valid(civ) and not civ.is_queued_for_deletion() and not civ.is_dead:
+		if is_instance_valid(civ) and not civ.is_queued_for_deletion() and not civ.is_dead and not civ.is_rescued:
 			valid_civilians.append(civ)
 	_detected_civilians = valid_civilians
 	
 	if current_target_civilian != null:
-		if not is_instance_valid(current_target_civilian) or current_target_civilian.is_dead or current_target_civilian.is_queued_for_deletion():
+		if not is_instance_valid(current_target_civilian) or current_target_civilian.is_dead or current_target_civilian.is_rescued or current_target_civilian.is_queued_for_deletion():
 			current_target_civilian = null
 
 

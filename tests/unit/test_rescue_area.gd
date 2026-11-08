@@ -106,7 +106,8 @@ func test_rescue_resumes_and_boards_when_enemy_cleared() -> void:
 	# Completa o ciclo de 2.0s
 	rescue_sensor.step(2.0)
 	assert_eq(cargo.current_occupants, 1, "O civil deve ter embarcado na cabine.")
-	assert_true(civ.is_dead, "A entidade do civil resgatado deve ser desalocada.")
+	assert_true(civ.is_rescued, "A entidade do civil resgatado deve estar marcada com status de resgatada.")
+	assert_false(civ.is_dead, "O civil resgatado nao deve ser considerado morto.")
 
 
 func test_rescue_blocked_when_cabin_is_full() -> void:
