@@ -155,7 +155,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 7: Modelos 3D de Entidades, Malhas Modulares e Animações
 
-- [ ] **TASK-070: Modelo PBR e Articulação do R-9X Mohawk III**
+- [x] **TASK-070: Modelo PBR e Articulação do R-9X Mohawk III**
   - **Dependência:** TASK-013, TASK-052.
   - **Arquivos:** `res://scenes/entities/player/player_helicopter.tscn`, `res://assets/models/vehicles/r9x_mohawk.glb`.
   - **Lógica:** Substituir os cubos de fuselagem por modelo 3D dedicado de helicóptero militar. Aplicar material PBR padrão JTF Vanguard: pintura azul-chumbo (`#2A3847`), metalicidade $0.8$, rugosidade $0.25$ e canopy escurecido reflexivo. Separar e articular o rotor principal e de cauda com rotação contínua e blur estético, preservando os marcadores `MuzzleMarkers` e os nós de subsistema intactos.

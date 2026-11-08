@@ -173,3 +173,85 @@ func test_aim_target_yaw_rotation() -> void:
 	
 	helicopter.clear_aim_target()
 	assert_false(helicopter.has_aim_target, "has_aim_target deve ser false apos clear_aim_target.")
+
+
+func test_r9x_mohawk_pbr_model_and_articulation() -> void:
+	assert_true(FileAccess.file_exists("res://assets/models/vehicles/r9x_mohawk.glb"), "O modelo 3D dedicado res://assets/models/vehicles/r9x_mohawk.glb deve existir.")
+	
+	var scene_res: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	var helicopter: PlayerHelicopter = scene_res.instantiate() as PlayerHelicopter
+	add_child_autofree(helicopter)
+	
+	# Validacao do material PBR da fuselagem JTF Vanguard (#2A3847, met 0.8, rough 0.25)
+	var fuselage: MeshInstance3D = helicopter.get_node_or_null("HelicopterMeshContainer/FuselageMesh") as MeshInstance3D
+	assert_not_null(fuselage, "Deve conter o nó FuselageMesh.")
+	var hull_mat: StandardMaterial3D = fuselage.mesh.material as StandardMaterial3D
+	assert_not_null(hull_mat, "FuselageMesh deve possuir material StandardMaterial3D.")
+	assert_almost_eq(hull_mat.albedo_color.r, 0.165, 0.02, "Albedo R deve ser ~0.165 (#2A3847).")
+	assert_almost_eq(hull_mat.albedo_color.g, 0.220, 0.02, "Albedo G deve ser ~0.220 (#2A3847).")
+	assert_almost_eq(hull_mat.albedo_color.b, 0.278, 0.02, "Albedo B deve ser ~0.278 (#2A3847).")
+	assert_almost_eq(hull_mat.metallic, 0.8, 0.01, "Metalicidade do casco deve ser 0.8.")
+	assert_almost_eq(hull_mat.roughness, 0.25, 0.01, "Rugosidade do casco deve ser 0.25.")
+	
+	# Validacao do canopy escurecido reflexivo
+	var canopy: MeshInstance3D = helicopter.get_node_or_null("HelicopterMeshContainer/FuselageMesh/Canopy") as MeshInstance3D
+	assert_not_null(canopy, "Deve conter malha de canopy do cockpit.")
+	var canopy_mat: StandardMaterial3D = canopy.mesh.material as StandardMaterial3D
+	assert_not_null(canopy_mat, "Canopy deve possuir material StandardMaterial3D.")
+	assert_true(canopy_mat.roughness <= 0.1, "Rugosidade do canopy deve ser baixa (<= 0.1) para reflexao nítida.")
+	assert_true(canopy_mat.metallic >= 0.8, "Metalicidade do canopy deve ser alta (>= 0.8).")
+	
+	# Validacao dos rotores e discos de blur
+	var main_blur: MeshInstance3D = helicopter.get_node_or_null("HelicopterMeshContainer/MainRotor/MainRotorBlurDisk") as MeshInstance3D
+	assert_not_null(main_blur, "MainRotor deve possuir MainRotorBlurDisk para blur estético.")
+	var main_blur_mat: StandardMaterial3D = main_blur.mesh.material as StandardMaterial3D
+	assert_not_null(main_blur_mat, "MainRotorBlurDisk deve possuir StandardMaterial3D.")
+	assert_true(main_blur_mat.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED, "Blur disk deve ter transparencia ativada.")
+	
+	var tail_blur: MeshInstance3D = helicopter.get_node_or_null("HelicopterMeshContainer/TailRotor/TailRotorBlurDisk") as MeshInstance3D
+	assert_not_null(tail_blur, "TailRotor deve possuir TailRotorBlurDisk para blur estético.")
+
+
+func test_r9x_weapon_muzzle_alignment_during_cosmetic_tilt() -> void:
+	var scene_res: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	var helicopter: PlayerHelicopter = scene_res.instantiate() as PlayerHelicopter
+	add_child_autofree(helicopter)
+	
+	var markers: Node3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers") as Node3D
+	var vulcan: Marker3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers/VulcanMuzzle") as Marker3D
+	var hydra_l: Marker3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers/HydraPodLeft") as Marker3D
+	var hydra_r: Marker3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers/HydraPodRight") as Marker3D
+	var hellfire: Marker3D = helicopter.get_node_or_null("HelicopterMeshContainer/MuzzleMarkers/HellfireHardpoint") as Marker3D
+	
+	# Posições locais de referencia
+	var local_vulcan: Vector3 = vulcan.position
+	var local_hydra_l: Vector3 = hydra_l.position
+	var local_hydra_r: Vector3 = hydra_r.position
+	var local_hellfire: Vector3 = hellfire.position
+	
+	# Simula inclinacao cosmética extrema de 22 graus em Roll e Pitch, mais 45 graus de Yaw
+	var max_tilt: float = deg_to_rad(22.0)
+	helicopter.rotation.y = deg_to_rad(45.0)
+	helicopter.mesh_container.rotation.x = max_tilt
+	helicopter.mesh_container.rotation.z = -max_tilt
+	
+	# As posições locais dos marcadores devem permanecer identicas sem deformacao
+	assert_eq(vulcan.position, local_vulcan, "VulcanMuzzle nao deve se deslocar no espaco local sob tilt cosmético.")
+	assert_eq(hydra_l.position, local_hydra_l, "HydraPodLeft nao deve se deslocar no espaco local sob tilt cosmético.")
+	assert_eq(hydra_r.position, local_hydra_r, "HydraPodRight nao deve se deslocar no espaco local sob tilt cosmético.")
+	assert_eq(hellfire.position, local_hellfire, "HellfireHardpoint nao deve se deslocar no espaco local sob tilt cosmético.")
+	
+	# Registra liberacao automatica dos projeteis disparados para evitar orfaos em testes unitarios
+	helicopter.weapon_manager.shot_fired.connect(func(_idx: int, proj: Projectile) -> void:
+		if proj != null:
+			autoqfree(proj)
+	)
+	
+	# Disparo de cada arma com a fuselagem inclinada
+	for slot in range(3):
+		helicopter.weapon_manager.select_slot(slot)
+		helicopter.weapon_manager.cooldown_timer = 0.0
+		var fired: bool = helicopter.fire_active_weapon()
+		assert_true(fired, "Arma do slot " + str(slot) + " deve disparar com sucesso sob inclinacao cosmética de 22 graus.")
+
+
