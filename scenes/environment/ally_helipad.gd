@@ -72,7 +72,8 @@ func step(delta: float) -> void:
 		var cb: CharacterBody3D = player_helicopter as CharacterBody3D
 		horizontal_speed = Vector2(cb.velocity.x, cb.velocity.z).length()
 	
-	var can_service: bool = current_altitude <= max_service_altitude and horizontal_speed <= max_service_speed
+	var relative_altitude: float = current_altitude - global_position.y
+	var can_service: bool = relative_altitude <= max_service_altitude and relative_altitude >= -0.2 and horizontal_speed <= max_service_speed
 	if not can_service:
 		is_servicing = false
 		return
@@ -120,14 +121,10 @@ func _process_maintenance(delta: float) -> void:
 	var health_comp: HealthComponent = _find_health_component(player_helicopter)
 	if health_comp != null and not health_comp.is_destroyed():
 		health_comp.repair(repair_rate * delta)
-		if EventBus != null:
-			EventBus.player_health_changed.emit(health_comp.current_health, health_comp.max_health)
 	
 	var fuel_comp: FuelComponent = _find_fuel_component(player_helicopter)
 	if fuel_comp != null and not fuel_comp.is_empty():
 		fuel_comp.refuel(refuel_rate * delta)
-		if EventBus != null:
-			EventBus.player_fuel_changed.emit(fuel_comp.current_fuel, fuel_comp.max_fuel)
 
 
 ## Localiza o CargoComponent na hierarquia da aeronave.

@@ -81,6 +81,28 @@ func test_helipad_aborts_service_when_helicopter_ascends() -> void:
 	assert_almost_eq(player.health_component.current_health, 500.0, 0.01, "Blindagem nao deve reparar com altitude excessiva.")
 
 
+func test_helipad_services_on_elevated_platform() -> void:
+	var helipad: AllyBaseHelipad = helipad_scene.instantiate() as AllyBaseHelipad
+	add_child_autofree(helipad)
+	# Heliponto situado no topo de uma plataforma elevada a 6.0m
+	helipad.global_position = Vector3(50.0, 6.0, 50.0)
+	
+	var player: PlayerHelicopter = player_scene.instantiate() as PlayerHelicopter
+	add_child_autofree(player)
+	# Helicóptero pousado a 6.8m (0.8m acima da plataforma do heliponto)
+	player.global_position = Vector3(50.0, 6.8, 50.0)
+	player.health_component.current_health = 700.0
+	player.fuel_component.current_fuel = 40.0
+	
+	helipad._on_body_entered(player)
+	helipad.step(1.0)
+	
+	assert_true(helipad.is_servicing, "O heliponto deve atender aeronave em plataforma elevada usando cota relativa.")
+	assert_almost_eq(player.health_component.current_health, 740.0, 0.1, "Blindagem deve regenerar normalmente em heliponto elevado.")
+	assert_almost_eq(player.fuel_component.current_fuel, 55.0, 0.1, "Combustivel deve ser bombeado normalmente em heliponto elevado.")
+
+
+
 func test_ammo_crate_replenishes_twenty_five_percent() -> void:
 	var ammo_crate: SupplyPickup = supply_scene.instantiate() as SupplyPickup
 	ammo_crate.pickup_type = SupplyPickup.PickupType.AMMO_CRATE
