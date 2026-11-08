@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://projectile_hydra_01"]
+[gd_scene load_steps=10 format=3 uid="uid://projectile_hydra_01"]
 
 [ext_resource type="Script" path="res://scripts/weapons/projectile.gd" id="1_proj"]
 [ext_resource type="PackedScene" uid="uid://impact_effect_vfx_01" path="res://scenes/vfx/impact_effect.tscn" id="2_impact"]
@@ -7,16 +7,38 @@
 radius = 0.4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rocket"]
+albedo_color = Color(0.28, 0.32, 0.34, 1)
+metallic = 0.75
+roughness = 0.3
 emission_enabled = true
-emission = Color(1, 0.4, 0.1, 1)
-emission_energy_multiplier = 3.0
-albedo_color = Color(0.3, 0.35, 0.35, 1)
+emission = Color(1, 0.5, 0.1, 1)
+emission_energy_multiplier = 4.0
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_rocket"]
 material = SubResource("StandardMaterial3D_rocket")
 top_radius = 0.1
 bottom_radius = 0.15
 height = 0.9
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hydra_trail"]
+direction = Vector3(0, 0, 1)
+spread = 15.0
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+gravity = Vector3(0, 0.5, 0)
+scale_min = 0.6
+scale_max = 1.3
+color = Color(0.8, 0.65, 0.45, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trail_particle"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.85, 0.85, 0.85, 0.65)
+
+[sub_resource type="BoxMesh" id="BoxMesh_smoke"]
+material = SubResource("StandardMaterial3D_trail_particle")
+size = Vector3(0.12, 0.12, 0.12)
 
 [node name="ProjectileHydra" type="Area3D"]
 collision_layer = 16
@@ -34,3 +56,11 @@ shape = SubResource("SphereShape3D_hitbox")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CylinderMesh_rocket")
+
+[node name="TrailParticles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.45)
+amount = 32
+lifetime = 0.45
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_hydra_trail")
+draw_pass_1 = SubResource("BoxMesh_smoke")
