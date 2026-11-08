@@ -23,7 +23,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Gestão de integridade ($1000\text{ HP}$ base), flag `is_invulnerable`, métodos `take_damage(amount, source)` e `repair(amount)`, emissão de `health_changed` e `entity_destroyed`.
   - **Critério de Aceite:** Dano reduz a vida de forma precisa e valores não ultrapassam o teto nem descem abaixo de zero.
 
-- [ ] **TASK-013: Controlador de Voo e Entidade do Helicóptero (`FlightMovementController.gd` & `PlayerHelicopter.gd`)**
+- [x] **TASK-013: Controlador de Voo e Entidade do Helicóptero (`FlightMovementController.gd` & `PlayerHelicopter.gd`)**
   - **Dependências:** TASK-011, TASK-012.
   - **Arquivos:** `res://scripts/components/flight_movement_controller.gd`, `res://scenes/entities/player/player_helicopter.tscn`, `res://tests/unit/test_flight_inertia.gd`.
   - **Lógica:** `CharacterBody3D` orquestrando `FlightMovementController` com aceleração linear ($18.0\text{ m/s}^2$), velocidade máxima ($22.0\text{ m/s}$), arrasto inercial ($7.5\text{ m/s}^2$), transição entre cotas $Y = 4.0\text{ m}$ e $Y = 0.8\text{ m}$, rotação *Yaw* ($8.0\text{ rad/s}$), inclinação cosmética da malha até $22^\circ$ e sequência de autorrotação/queda em 3 segundos após `fuel_depleted`.
