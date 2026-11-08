@@ -41,3 +41,14 @@ func test_core_destruction_emits_boss_defeated_and_mission_accomplished() -> voi
 	assert_signal_emitted(EventBus, "boss_defeated", "EventBus deve emitir boss_defeated.")
 	assert_signal_emitted(EventBus, "mission_accomplished", "EventBus deve emitir mission_accomplished.")
 	assert_true(boss.is_queued_for_deletion(), "O chefe deve ser desalocado da arvore ao morrer.")
+
+func test_boss_phase_attacks_and_mine_dropping_without_errors() -> void:
+	# Valida lancamento de minas e canhoes da Fase 1 sem lancar erros de !is_inside_tree()
+	boss._drop_naval_mine()
+	boss._fire_double_cannon()
+	
+	# Valida ataques da Fase 2
+	boss._fire_ciws_fan()
+	boss._fire_missile_salvo()
+	
+	assert_true(boss.is_inside_tree(), "O chefe deve permanecer estavel e funcional na arvore.")

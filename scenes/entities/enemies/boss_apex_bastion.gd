@@ -170,7 +170,8 @@ func _process_phase_2(delta: float) -> void:
 func _fire_double_cannon() -> void:
 	if cannon_projectile_scene == null:
 		return
-	var spawn_pos: Vector3 = bow_turret.global_position if (bow_turret != null and bow_turret.is_inside_tree()) else (global_position + Vector3(0, 2, -5))
+	var boss_pos: Vector3 = global_position if is_inside_tree() else position
+	var spawn_pos: Vector3 = bow_turret.global_position if (bow_turret != null and bow_turret.is_inside_tree()) else (boss_pos + Vector3(0, 2, -5))
 	for offset_x in [-1.0, 1.0]:
 		var proj: Projectile = cannon_projectile_scene.instantiate() as Projectile
 		if proj != null:
@@ -184,17 +185,30 @@ func _drop_naval_mine() -> void:
 		return
 	var mine: FloatingNavalMine = naval_mine_scene.instantiate() as FloatingNavalMine
 	if mine != null:
-		var base_pos: Vector3 = stern_turret.global_position if (stern_turret != null and stern_turret.is_inside_tree()) else (global_position + Vector3(0, 0, 5))
-		mine.global_position = base_pos + Vector3(randf_range(-3.0, 3.0), 0, randf_range(2.0, 6.0))
-		mine.global_position.y = 0.2
-		var parent_node: Node = get_parent() if get_parent() != null else self
-		parent_node.add_child(mine)
+		var boss_pos: Vector3 = global_position if is_inside_tree() else position
+		var base_pos: Vector3 = stern_turret.global_position if (stern_turret != null and stern_turret.is_inside_tree()) else (boss_pos + Vector3(0, 0, 5))
+		var spawn_pos: Vector3 = base_pos + Vector3(randf_range(-3.0, 3.0), 0, randf_range(2.0, 6.0))
+		spawn_pos.y = 0.2
+		
+		var parent_node: Node = get_parent()
+		if parent_node != null and parent_node.is_inside_tree():
+			parent_node.add_child(mine)
+		elif is_inside_tree():
+			add_sibling(mine)
+		else:
+			add_child(mine)
+		
+		if mine.is_inside_tree():
+			mine.global_position = spawn_pos
+		else:
+			mine.position = spawn_pos
 
 
 func _fire_ciws_fan() -> void:
 	if ciws_projectile_scene == null:
 		return
-	var origin: Vector3 = global_position + Vector3(0, 2.5, 0)
+	var boss_pos: Vector3 = global_position if is_inside_tree() else position
+	var origin: Vector3 = boss_pos + Vector3(0, 2.5, 0)
 	var forward: Vector3 = _get_aim_direction(origin)
 	
 	# Leque de 60 graus (-30° a +30°) com 5 projéteis
@@ -211,7 +225,8 @@ func _fire_ciws_fan() -> void:
 func _fire_missile_salvo() -> void:
 	if missile_projectile_scene == null:
 		return
-	var origin: Vector3 = stern_turret.global_position if (stern_turret != null and stern_turret.is_inside_tree()) else (global_position + Vector3(0, 2, 4))
+	var boss_pos: Vector3 = global_position if is_inside_tree() else position
+	var origin: Vector3 = stern_turret.global_position if (stern_turret != null and stern_turret.is_inside_tree()) else (boss_pos + Vector3(0, 2, 4))
 	for i in range(4):
 		var missile: Projectile = missile_projectile_scene.instantiate() as Projectile
 		if missile != null:
@@ -247,7 +262,9 @@ func _get_aim_direction(from_pos: Vector3) -> Vector3:
 	if target_player != null and is_instance_valid(target_player):
 		var target_pos: Vector3 = target_player.global_position if target_player.is_inside_tree() else target_player.position
 		return (target_pos - from_pos).normalized()
-	return -global_transform.basis.z.normalized()
+	if is_inside_tree():
+		return -global_transform.basis.z.normalized()
+	return -transform.basis.z.normalized()
 
 
 func _on_core_destroyed() -> void:
