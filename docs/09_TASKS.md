@@ -82,7 +82,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 4: Loop Roguelite, Boons, Hangar e Spawn Semi-Procedural
 
-- [ ] **TASK-040: Schemas de Dados e Catálogo de Recursos (`.tres`)**
+- [x] **TASK-040: Schemas de Dados e Catálogo de Recursos (`.tres`)**
   - **Dependência:** TASK-010.
   - **Arquivos:** `res://scripts/data/weapon_data.gd`, `res://scripts/data/boon_data.gd`, `res://scripts/data/hangar_upgrade_data.gd`, `res://scripts/data/helicopter_specs_data.gd`, `res://scripts/data/enemy_stats_data.gd`, `res://scripts/data/shelter_data.gd` e arquivos `.tres` correspondentes.
   - **Lógica:** Implementação integral dos schemas definidos em `docs/05_DATA_SCHEMA.md` e criação dos 5 Boons táticos do MVP, 3 armas, 3 upgrades de hangar e tabelas de inimigos/abrigos.
