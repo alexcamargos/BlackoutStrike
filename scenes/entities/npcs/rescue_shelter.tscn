@@ -1,0 +1,38 @@
+[gd_scene load_steps=8 format=3 uid="uid://rescue_shelter_entity_01"]
+
+[ext_resource type="Script" path="res://scenes/entities/npcs/rescue_shelter.gd" id="1_shelter"]
+[ext_resource type="Resource" uid="uid://rescue_shelter_res_01" path="res://scripts/data/rescue_shelter.tres" id="2_data"]
+[ext_resource type="PackedScene" uid="uid://civilian_entity_01" path="res://scenes/entities/npcs/civilian.tscn" id="3_civilian"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="4_health"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bunker"]
+size = Vector3(4.0, 3.0, 4.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_concrete"]
+albedo_color = Color(0.35, 0.38, 0.42, 1)
+roughness = 0.8
+metallic = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_bunker"]
+material = SubResource("StandardMaterial3D_concrete")
+size = Vector3(4.0, 3.0, 4.0)
+
+[node name="RescueShelter" type="StaticBody3D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_shelter")
+shelter_data = ExtResource("2_data")
+civilian_scene = ExtResource("3_civilian")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_bunker")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("BoxMesh_bunker")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("4_health")
+max_health = 300.0
+current_health = 300.0
