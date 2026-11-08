@@ -183,19 +183,19 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 8: Efeitos Visuais (VFX GPU), Balística Emissiva e Feedback de Combate
 
-- [ ] **TASK-080: Balística Hiper-Visível e Traçantes Emissivos de Canhões e Mísseis**
+- [x] **TASK-080: Balística Hiper-Visível e Traçantes Emissivos de Canhões e Mísseis**
   - **Dependência:** TASK-020, TASK-022.
   - **Arquivos:** `res://scenes/weapons/projectile_vulcan.tscn`, `res://scenes/weapons/projectile_hydra.tscn`, `res://scenes/weapons/projectile_hellfire.tscn`, `res://scenes/weapons/projectile_enemy_*.tscn`.
   - **Lógica:** Configurar tiros do Vulcan como cápsulas alongadas traçantes com emissão amarela intensa (energia $\ge 4.0$). Adicionar nó `GPUParticles3D` nos foguetes Hydra e mísseis Hellfire com emissão de pluma de fumaça cinza e fagulhas incandescentes na esteira. Projéteis hostis estilizados em plasma carmesim/laranja com Bloom destacado.
   - **Critério de Aceite:** Projéteis claramente legíveis contra o mar e solo; `test_projectile.gd` e `test_homing_missile.gd` passam sem alterações.
 
-- [ ] **TASK-081: Sistemas de Partículas GPU de Impacto, Explosão e Destroços**
+- [x] **TASK-081: Sistemas de Partículas GPU de Impacto, Explosão e Destroços**
   - **Dependência:** TASK-020, TASK-080.
   - **Arquivos:** `res://scenes/vfx/impact_effect.tscn`, `res://scenes/vfx/explosion_heavy.tscn`, `res://scenes/vfx/water_splash.tscn`.
   - **Lógica:** Implementar sistema de impacto discriminado por superfície: faíscas metálicas em blindagens, impacto de poeira no solo e borrifos verticais (`water_splash`) no mar. Criar prefab de explosão pesada em duas etapas para veículos e estruturas destruídas (clarão pontual, bola de fogo volumétrica expansiva e fragmentos com física simples de gravidade).
   - **Critério de Aceite:** Efeitos possuem ciclo de vida finito com desalocação automática da memória (`one_shot = true` e limpeza de nós sem vazamentos).
 
-- [ ] **TASK-082: Refinamento do Rotor Wash e Anel de Resgate Holográfico**
+- [x] **TASK-082: Refinamento do Rotor Wash e Anel de Resgate Holográfico**
   - **Dependência:** TASK-031, TASK-052.
   - **Arquivos:** `res://assets/shaders/rescue_ring.gdshader`, `res://assets/shaders/rotor_wash.gdshader`, `res://scenes/entities/player/player_helicopter.tscn`.
   - **Lógica:** Modular a intensidade do `rotor_wash.gdshader` dinamicamente conforme a altitude do R-9X ($Y \le 1.8\text{ m}$ projeta anel de ondas visível na água; altitudes maiores desvanecem o decalque). Calibrar emissão HDR do anel de resgate ($2.5$) para contraste sobre areia e asfalto, com transição de cor para carmesim pulsante em $14\text{ rad/s}$ quando suprimido.
