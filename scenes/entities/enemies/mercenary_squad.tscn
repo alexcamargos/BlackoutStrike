@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://enemy_mercenary_squad_scene_01"]
+
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
+[ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
+[ext_resource type="Resource" uid="uid://enemy_mercenary_squad_01" path="res://scripts/data/enemy_mercenary_squad.tres" id="3_stats"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hitbox"]
+radius = 0.6
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mercenary"]
+albedo_color = Color(0.25, 0.28, 0.22, 1)
+roughness = 0.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_squad"]
+material = SubResource("StandardMaterial3D_mercenary")
+radius = 0.5
+height = 1.6
+
+[node name="MercenarySquad" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
+collision_layer = 4
+collision_mask = 7
+motion_mode = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+mesh = SubResource("CapsuleMesh_squad")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("1_health")
+max_health = 45.0
+current_health = 45.0
+
+[node name="EnemyAIController" type="Node" parent="."]
+script = ExtResource("2_ai")
+stats_data = ExtResource("3_stats")

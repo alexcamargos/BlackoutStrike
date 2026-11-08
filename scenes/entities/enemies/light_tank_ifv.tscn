@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://enemy_light_tank_scene_01"]
+
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
+[ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
+[ext_resource type="Resource" uid="uid://enemy_light_tank_01" path="res://scripts/data/enemy_light_tank.tres" id="3_stats"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
+size = Vector3(2.8, 1.6, 4.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tank"]
+albedo_color = Color(0.22, 0.25, 0.2, 1)
+metallic = 0.6
+roughness = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_tank_hull"]
+material = SubResource("StandardMaterial3D_tank")
+size = Vector3(2.6, 1.4, 4.2)
+
+[node name="LightTankIFV" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+shape = SubResource("BoxShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+mesh = SubResource("BoxMesh_tank_hull")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("1_health")
+max_health = 320.0
+current_health = 320.0
+
+[node name="EnemyAIController" type="Node" parent="."]
+script = ExtResource("2_ai")
+stats_data = ExtResource("3_stats")

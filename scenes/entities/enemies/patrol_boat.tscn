@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://enemy_patrol_boat_scene_01"]
+
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
+[ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
+[ext_resource type="Resource" uid="uid://enemy_patrol_boat_01" path="res://scripts/data/enemy_patrol_boat.tres" id="3_stats"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hitbox"]
+size = Vector3(2.5, 1.2, 5.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_boat"]
+albedo_color = Color(0.2, 0.25, 0.28, 1)
+metallic = 0.5
+roughness = 0.4
+
+[sub_resource type="BoxMesh" id="BoxMesh_boat_hull"]
+material = SubResource("StandardMaterial3D_boat")
+size = Vector3(2.4, 1.0, 4.8)
+
+[node name="PatrolBoat" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_boat_hull")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("1_health")
+max_health = 180.0
+current_health = 180.0
+
+[node name="EnemyAIController" type="Node" parent="."]
+script = ExtResource("2_ai")
+stats_data = ExtResource("3_stats")
