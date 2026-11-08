@@ -32,6 +32,7 @@ Mission_01_Midway (Node3D)
 ├── OceanWaterMesh (MeshInstance3D) [Plano horizontal infinito com ocean_pbr.gdshader]
 ├── IslandTerrain (StaticBody3D) [Malha de solo e rochas colidíveis na Camada 1]
 │   └── CollisionShape3D
+├── IslandProps (Node3D) [Instanciamento em lote de palmeiras, contêineres e guindastes via MultiMesh]
 ├── SpawnDirector (Node3D) [Script responsável pelo sorteio e spawn de POIs]
 │   ├── ShelterSpawnPoints (Node3D)
 │   ├── SAMSpawnPoints (Node3D)
