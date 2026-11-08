@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://projectile_hellfire_01"]
+
+[ext_resource type="Script" path="res://scripts/weapons/projectile.gd" id="1_proj"]
+[ext_resource type="PackedScene" uid="uid://impact_effect_vfx_01" path="res://scenes/vfx/impact_effect.tscn" id="2_impact"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
+radius = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_missile"]
+albedo_color = Color(0.2, 0.22, 0.24, 1)
+metallic = 0.85
+roughness = 0.25
+emission_enabled = true
+emission = Color(1, 0.35, 0.1, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_fuselage"]
+material = SubResource("StandardMaterial3D_missile")
+top_radius = 0.14
+bottom_radius = 0.18
+height = 1.4
+
+[node name="ProjectileHellfire" type="Area3D"]
+collision_layer = 16
+collision_mask = 77
+script = ExtResource("1_proj")
+damage = 650.0
+speed = 50.0
+lifetime = 5.0
+explosion_radius = 2.5
+is_homing = true
+homing_turn_speed = 6.0
+impact_effect_scene = ExtResource("2_impact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_hitbox")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_fuselage")
