@@ -71,12 +71,23 @@ func find_best_target(origin: Vector3, forward: Vector3, cone_deg: float, range_
 ## Args:
 ##     scanner_node (Node3D): No de referencia espacial para calculo de proa e posicao.
 ##     tree (SceneTree): Arvore de cena ativa para obtencao dos nos de inimigos.
+##     delta (float): Intervalo de tempo fisico para controle de cadencia do scanner.
+##     force (bool): Se True, ignora o cronometro e executa varredura imediata.
 ##
 ## Returns:
 ##     Node3D: Alvo ativo apos o ciclo de varredura.
-func scan_from_node(scanner_node: Node3D, tree: SceneTree) -> Node3D:
+func scan_from_node(scanner_node: Node3D, tree: SceneTree, delta: float = 0.0, force: bool = false) -> Node3D:
 	if scanner_node == null or tree == null:
 		return null
+	
+	if current_target != null and not is_instance_valid(current_target):
+		clear_target()
+	
+	if delta > 0.0:
+		_scan_timer += delta
+		if not force and _scan_timer < scan_interval:
+			return current_target
+		_scan_timer = 0.0
 	
 	var candidates: Array[Node3D] = []
 	var enemy_nodes: Array[Node] = tree.get_nodes_in_group("enemies")

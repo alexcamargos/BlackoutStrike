@@ -78,17 +78,17 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	_process_flight_controls(delta)
-	_process_weapon_controls()
+	_process_weapon_controls(delta)
 
 
 ## Processa comandos de selecao e disparo de armamentos.
 ##
 ## Args:
-##     Nenhum.
+##     delta (float): Intervalo de tempo fisico para atualizacao cadenciada do scanner.
 ##
 ## Returns:
 ##     void
-func _process_weapon_controls() -> void:
+func _process_weapon_controls(delta: float) -> void:
 	if weapon_manager == null:
 		return
 	
@@ -107,7 +107,7 @@ func _process_weapon_controls() -> void:
 	# Varredura automatica de alvos para misseis Hellfire (Slot 2)
 	if target_scanner != null and is_inside_tree():
 		if weapon_manager.current_slot_index == 2:
-			current_locked_target = target_scanner.scan_from_node(self, get_tree())
+			current_locked_target = target_scanner.scan_from_node(self, get_tree(), delta)
 		elif target_scanner.current_target != null:
 			target_scanner.clear_target()
 			current_locked_target = null
