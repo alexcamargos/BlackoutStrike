@@ -61,6 +61,9 @@ func test_shelter_collapse_emits_event_and_spawns_survivors() -> void:
 	for civ in spawned_civilians:
 		var dist: float = civ.global_position.distance_to(Vector3(10.0, 0.0, 20.0))
 		assert_almost_eq(dist, 2.5, 0.1, "Cada civil deve ser instanciado no raio de dispersao de 2.5m.")
+	
+	for child in parent_container.get_children():
+		autoqfree(child)
 
 
 func test_shelter_collapse_prioritizes_dedicated_civilian_container() -> void:
@@ -68,8 +71,11 @@ func test_shelter_collapse_prioritizes_dedicated_civilian_container() -> void:
 	dedicated_container.add_to_group("civilian_container")
 	add_child_autofree(dedicated_container)
 	
+	var shelter_parent: Node3D = Node3D.new()
+	add_child_autofree(shelter_parent)
+	
 	var shelter: RescueShelter = shelter_scene.instantiate() as RescueShelter
-	add_child_autofree(shelter)
+	shelter_parent.add_child(shelter)
 	shelter.global_position = Vector3(0.0, 0.0, 0.0)
 	
 	shelter.take_damage(300.0)
@@ -78,6 +84,10 @@ func test_shelter_collapse_prioritizes_dedicated_civilian_container() -> void:
 	for child in dedicated_container.get_children():
 		if child is Civilian:
 			in_dedicated.append(child as Civilian)
+		autoqfree(child)
+	
+	for child in shelter_parent.get_children():
+		autoqfree(child)
 	
 	assert_eq(in_dedicated.size(), 4, "Civis liberados devem ser anexados ao container dedicado quando presente.")
 
@@ -119,8 +129,7 @@ func test_civilian_vulnerable_to_explosive_projectile_damage() -> void:
 	rocket.global_position = Vector3(6.0, 0.0, 0.0)
 	
 	# Aguarda sincronizacao do espaco fisico no PhysicsServer3D
-	await get_tree().physics_frame
-	await get_tree().physics_frame
+	await wait_physics_frames(2)
 	
 	watch_signals(EventBus)
 	
@@ -179,6 +188,7 @@ func test_shelter_reinforced_concrete_model_and_debris_instantiation() -> void:
 			# Assegura que escombros nao colidem com civis (collision_layer = 0)
 			assert_eq(child.collision_layer, 0, "Escombros nao devem colidir com a camada de civis (layer deve ser 0).")
 			assert_eq(child.collision_mask, 1, "Escombros devem colidir apenas com World_Static.")
+		autoqfree(child)
 	
 	assert_true(debris_count >= 4, "A destruicao do abrigo deve instanciar pecas fragmentadas de escombros (contado: %d)." % debris_count)
 
