@@ -39,7 +39,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** `Area3D` com velocidade linear, tempo de vida útil e detecção de impacto via máscara de colisão.
   - **Critério de Aceite:** Projétil aplica dano ao chamar `take_damage()` no nó receptor e instancia efeito de impacto antes de se desalocar da memória (`queue_free()`).
 
-- [ ] **TASK-021: Gerenciador de Armas do Helicóptero (`WeaponManager.gd`)**
+- [x] **TASK-021: Gerenciador de Armas do Helicóptero (`WeaponManager.gd`)**
   - **Dependência:** TASK-020.
   - **Arquivos:** `res://scripts/weapons/weapon_manager.gd`, `res://tests/unit/test_weapon_ammo.gd`.
   - **Lógica:** Controle dos três slots: Canhão Vulcan (Slot 1), Foguetes Hydra (Slot 2) e Míssil Hellfire (Slot 3). Controle estrito de cadência e redução de munição no disparo.
