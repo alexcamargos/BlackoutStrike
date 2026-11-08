@@ -199,6 +199,35 @@ func get_current_weapon_data() -> WeaponData:
 	return null
 
 
+## Aplica um multiplicador na capacidade maxima de municao de todos os slots equipados.
+##
+## Usado pela meta-progressao de Hangar (Logistica de Calibre).
+##
+## Args:
+##     multiplier (float): Fator multiplicativo da capacidade (ex: 1.2 para +20%).
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func apply_ammo_capacity_multiplier(multiplier: float) -> void:
+	if multiplier <= 0.0 or not is_finite(multiplier):
+		return
+	
+	for i in range(weapon_slots.size()):
+		var slot: WeaponData = weapon_slots[i]
+		if slot != null:
+			var duplicated_slot: WeaponData = slot.duplicate()
+			duplicated_slot.max_ammo = int(round(float(slot.max_ammo) * multiplier))
+			weapon_slots[i] = duplicated_slot
+			if i < ammo_counts.size():
+				ammo_counts[i] = duplicated_slot.max_ammo
+			ammo_updated.emit(i, ammo_counts[i], duplicated_slot.max_ammo)
+			if EventBus != null:
+				EventBus.weapon_ammo_changed.emit(i, ammo_counts[i], duplicated_slot.max_ammo)
+
+
 ## Inicializa os estoques de municao com base nas capacidades maximas de cada slot.
 ##
 ## Args:
