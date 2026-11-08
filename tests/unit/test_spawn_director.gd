@@ -71,3 +71,16 @@ func test_reactive_wave_triggered_by_data_crate_opened() -> void:
 	assert_not_null(params, "Parametros do sinal nao podem ser nulos.")
 	var units: Array = params[1] as Array
 	assert_eq(units.size(), 3, "Onda reativa deve conter 3 unidades.")
+
+
+func test_auto_spawn_on_ready_flag() -> void:
+	var auto_director: SpawnDirector = SpawnDirector.new()
+	auto_director.auto_spawn_on_ready = true
+	add_child_autofree(auto_director)
+	
+	# Com auto_spawn_on_ready = true, o diretor deve instanciar abrigos como filhos ao entrar na arvore
+	var shelters_found: int = 0
+	for child in auto_director.get_children():
+		if child is RescueShelter or child.name.begins_with("RescueShelter"):
+			shelters_found += 1
+	assert_eq(shelters_found, 3, "Auto spawn deve instanciar 3 abrigos automaticamente em _ready().")

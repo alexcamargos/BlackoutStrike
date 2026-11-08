@@ -67,6 +67,9 @@ signal reactive_wave_dispatched(origin: Vector3, units: Array[Node3D])
 ## Distancia radial de surgimento dos drones em ondas reativas (em metros).
 const DRONE_REACTIVE_RADIUS: float = 60.0
 
+## Se verdadeiro, dispara a instanciacao do layout inicial automaticamente em _ready().
+@export var auto_spawn_on_ready: bool = false
+
 ## Referencia local ao jogador para alinhamento de reforcos aereos.
 var player_ref: Node3D = null
 
@@ -90,6 +93,9 @@ func _ready() -> void:
 			EventBus.shelter_destroyed.connect(_on_shelter_destroyed)
 		if not EventBus.data_crate_opened.is_connected(_on_data_crate_opened):
 			EventBus.data_crate_opened.connect(_on_data_crate_opened)
+	
+	if auto_spawn_on_ready:
+		spawn_initial_layout()
 
 
 ## Distribui semi-proceduralmente o layout inicial da missao sem sobreposicoes.
