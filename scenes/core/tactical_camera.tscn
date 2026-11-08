@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://tactical_camera_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/core/tactical_camera.gd" id="1_cam"]
+
+[node name="TacticalCamera" type="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 0.374607, 0.927184, 0, -0.927184, 0.374607, 0, 38, 15)
+fov = 36.0
+script = ExtResource("1_cam")
+follow_smoothness = 8.0
+camera_height = 38.0
+camera_distance_z = 15.0
+tilt_angle_deg = 68.0
