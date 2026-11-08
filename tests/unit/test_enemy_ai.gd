@@ -73,6 +73,17 @@ func test_entity_destroyed_drops_supply_and_emits_killed() -> void:
 	
 	assert_signal_emitted(enemy_controller, "enemy_killed", "Deve emitir enemy_killed ao zerar a vida.")
 	assert_true(dummy_parent.is_queued_for_deletion(), "O no pai deve entrar na fila de delecao.")
+	
+	# Desaloca os drops instanciados como irmaos do dummy_parent para evitar nós órfãos
+	var tree: SceneTree = get_tree()
+	if tree != null:
+		var root: Node = tree.root
+		for child in root.get_children():
+			if child is SupplyPickup:
+				child.free()
+	for child in get_children():
+		if child is SupplyPickup:
+			child.free()
 
 func test_patrol_waypoints_cycle() -> void:
 	enemy_controller.patrol_waypoints = [Vector3(0, 0, 0), Vector3(10, 0, 0)]
