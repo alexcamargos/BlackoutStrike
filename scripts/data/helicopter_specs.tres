@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="HelicopterSpecsData" load_steps=2 format=3 uid="uid://helicopter_specs_res_01"]
+
+[ext_resource type="Script" path="res://scripts/data/helicopter_specs_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+max_armor = 1000.0
+max_fuel = 100.0
+passive_burn_rate = 0.7
+active_burn_rate = 1.6
+autorotation_grace_seconds = 3.0
+max_cargo = 5
+rescue_boarding_time = 2.0
+rescue_max_altitude = 1.2
+acceleration = 18.0
+max_speed = 22.0
+drag_deceleration = 7.5
+cruise_altitude = 4.0
+hover_altitude = 0.8
+max_tilt_deg = 22.0
+yaw_turn_speed = 8.0
