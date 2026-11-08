@@ -139,7 +139,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Gerar e vincular duas texturas de normais contínuas cruzadas aos uniforms `wave_normal_1` e `wave_normal_2` do material em `ocean_pbr.gdshader`. Calibrar a atenuação ótica pela profundidade (Beer-Lambert de turquesa raso `#14A6B8` a azul-marinho abissal `#031438`) e afinar a faixa de espuma de intersecção (`foam_intersection_depth = 0.45`).
   - **Critério de Aceite:** O oceano exibe micro-reflexos especulares solares dinâmicos em movimento contínuo e gera bordas de espuma suave no contato com a terra; testes automatizados continuam passando sem erros.
 
-- [ ] **TASK-061: Terreno Litorâneo Modular e Topografia da Ilha Midway**
+- [x] **TASK-061: Terreno Litorâneo Modular e Topografia da Ilha Midway**
   - **Dependência:** TASK-042, TASK-060.
   - **Arquivos:** `res://scenes/environment/island_terrain_midway.tscn`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Substituir o bloco cúbico de areia por malha de relevo costeiro dividida em 3 cotas: faixa de praia rasa com declive suave ($Y \in [-0.2, 0.3]\text{ m}$), falésias rochosas com sombras nítidas ($Y \in [0.5, 6.0]\text{ m}$) e platôs industriais planos ($Y = 0.5\text{ m}$). Preservar a camada de física estática (`collision_layer = 1`) e os marcadores de posição do `SpawnDirector`.
