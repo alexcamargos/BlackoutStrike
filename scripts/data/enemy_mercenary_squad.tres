@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyStatsData" load_steps=2 format=3 uid="uid://enemy_mercenary_squad_01"]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_stats_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "mercenary_squad"
+display_name = "Infantaria Mercenaria"
+behavior = 1
+collision_layer = 3
+max_health = 45.0
+move_speed = 3.5
+detection_range = 22.0
+fire_interval = 1.8
+projectile_damage = 12.0
+projectile_speed = 40.0
+projectile_explosion_radius = 0.0
+is_homing_projectile = false
+suppresses_rescue_ring = true
+suppression_radius = 10.0
+supply_drop_chance = 0.35

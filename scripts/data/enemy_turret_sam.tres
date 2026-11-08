@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyStatsData" load_steps=2 format=3 uid="uid://enemy_turret_sam_01"]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_stats_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "turret_sam"
+display_name = "Bateria Antiaerea SAM"
+behavior = 0
+collision_layer = 3
+max_health = 240.0
+move_speed = 0.0
+detection_range = 40.0
+fire_interval = 4.0
+projectile_damage = 180.0
+projectile_speed = 28.0
+projectile_explosion_radius = 0.0
+is_homing_projectile = true
+suppresses_rescue_ring = false
+suppression_radius = 10.0
+supply_drop_chance = 0.35

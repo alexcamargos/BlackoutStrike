@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyStatsData" load_steps=2 format=3 uid="uid://enemy_data_crate_01"]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_stats_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "data_crate"
+display_name = "Crate de Dados"
+behavior = 0
+collision_layer = 3
+max_health = 150.0
+move_speed = 0.0
+detection_range = 0.0
+fire_interval = 9999.0
+projectile_damage = 0.0
+projectile_speed = 0.0
+projectile_explosion_radius = 0.0
+is_homing_projectile = false
+suppresses_rescue_ring = false
+suppression_radius = 0.0
+supply_drop_chance = 0.0

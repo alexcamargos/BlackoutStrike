@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyStatsData" load_steps=2 format=3 uid="uid://enemy_light_tank_01"]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_stats_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "light_tank_ifv"
+display_name = "Blindado Leve IFV"
+behavior = 1
+collision_layer = 3
+max_health = 320.0
+move_speed = 4.5
+detection_range = 36.0
+fire_interval = 3.0
+projectile_damage = 95.0
+projectile_speed = 30.0
+projectile_explosion_radius = 2.0
+is_homing_projectile = false
+suppresses_rescue_ring = true
+suppression_radius = 10.0
+supply_drop_chance = 0.35

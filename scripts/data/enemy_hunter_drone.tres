@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyStatsData" load_steps=2 format=3 uid="uid://enemy_hunter_drone_01"]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_stats_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+id = "hunter_drone"
+display_name = "Drone Cacador"
+behavior = 3
+collision_layer = 4
+max_health = 60.0
+move_speed = 14.0
+detection_range = 20.0
+fire_interval = 1.5
+projectile_damage = 20.0
+projectile_speed = 35.0
+projectile_explosion_radius = 0.0
+is_homing_projectile = false
+suppresses_rescue_ring = false
+suppression_radius = 10.0
+supply_drop_chance = 0.35
