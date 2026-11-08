@@ -110,7 +110,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 5: Inimigos, Chefe Modular e Pipeline Visual
 
-- [ ] **TASK-050: Controlador Modular de IA (`EnemyAIController.gd`) e os 5 Arquétipos Hostis**
+- [x] **TASK-050: Controlador Modular de IA (`EnemyAIController.gd`) e os 5 Arquétipos Hostis**
   - **Dependência:** TASK-012, TASK-020, TASK-040.
   - **Arquivos:** `res://scripts/components/enemy_ai_controller.gd`, `res://scenes/entities/enemies/mercenary_squad.tscn`, `res://scenes/entities/enemies/hunter_drone.tscn`, `res://scenes/entities/enemies/patrol_boat.tscn`, `res://scenes/entities/enemies/light_tank_ifv.tscn`, `res://scenes/entities/enemies/turret_sam.tscn`, `res://tests/unit/test_enemy_ai.gd`.
   - **Lógica:** Implementação do controlador parametrizado por `EnemyStatsData.BehaviorType` (`STATIC_TURRET`, `GROUND_PATROL`, `NAVAL_PATROL`, `AIR_INTERCEPTOR`), verificação de supressão de resgate ($\le 10.0\text{ m}$) e instanciação dos 5 inimigos regulares da Missão 1.
