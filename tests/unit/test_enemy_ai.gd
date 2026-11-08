@@ -43,7 +43,7 @@ func test_fire_weapon_at_target_spawns_projectile() -> void:
 	
 	var proj: Projectile = enemy_controller.fire_weapon_at(target_node)
 	if proj != null:
-		autofree(proj)
+		autoqfree(proj)
 	assert_not_null(proj, "Disparar a arma deve instanciar um projetil valido.")
 	assert_signal_emitted(enemy_controller, "weapon_fired", "Deve emitir o sinal weapon_fired.")
 	assert_eq(proj.damage, 20.0, "O dano do projetil deve corresponder ao stats_data.")

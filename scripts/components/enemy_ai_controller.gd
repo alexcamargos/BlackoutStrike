@@ -115,6 +115,37 @@ func _physics_process(delta: float) -> void:
 	_update_target_player()
 	_update_combat_loop(delta)
 	_update_movement(delta)
+	_update_procedural_animations(delta)
+
+
+## Executa micro-animações procedurais conforme o arquétipo hostil (bobbing aéreo, balanço náutico, oscilação de radar).
+##
+## Args:
+##     delta (float): Intervalo de tempo em segundos.
+##
+## Returns:
+##     void
+func _update_procedural_animations(delta: float) -> void:
+	if parent_body == null or not is_instance_valid(parent_body) or not parent_body.is_inside_tree():
+		return
+	
+	var model: Node3D = parent_body.get_node_or_null("ModelContainer") as Node3D
+	if model == null:
+		return
+	
+	var t: float = float(Time.get_ticks_msec()) * 0.004
+	match stats_data.behavior:
+		EnemyStatsData.BehaviorType.AIR_INTERCEPTOR:
+			model.position.y = sin(t * 1.5) * 0.12
+			model.rotation.z = sin(t) * 0.05
+		EnemyStatsData.BehaviorType.NAVAL_PATROL:
+			model.rotation.x = sin(t * 1.2) * 0.04
+			model.rotation.z = cos(t * 0.9) * 0.04
+		EnemyStatsData.BehaviorType.STATIC_TURRET:
+			if turret_node != null and is_instance_valid(turret_node):
+				var radar: Node3D = turret_node.get_node_or_null("RadarDome") as Node3D
+				if radar != null:
+					radar.rotate_y(2.5 * delta)
 
 
 ## Atualiza a referência do jogador ativo na árvore de cena.
@@ -165,27 +196,33 @@ func _update_combat_loop(delta: float) -> void:
 ## Returns:
 ##     void
 func _orient_towards(target_pos: Vector3, delta: float) -> void:
+	if parent_body == null or not is_instance_valid(parent_body):
+		return
+	
 	var my_pos: Vector3 = parent_body.global_position
 	var look_dir: Vector3 = (target_pos - my_pos)
-	if stats_data.behavior != EnemyStatsData.BehaviorType.AIR_INTERCEPTOR:
+	var is_air: bool = stats_data != null and stats_data.behavior == EnemyStatsData.BehaviorType.AIR_INTERCEPTOR
+	var is_static: bool = stats_data != null and stats_data.behavior == EnemyStatsData.BehaviorType.STATIC_TURRET
+	
+	if not is_air:
 		look_dir.y = 0.0
 	
 	if look_dir.length_squared() > 0.01:
 		var target_basis: Basis = Basis.looking_at(look_dir.normalized(), Vector3.UP)
 		
-		# Apontamento angular da torreta desacoplada em direção ao alvo
+		# 1. Corpo pai rotaciona suavemente primeiro (exceto STATIC_TURRET, cuja base permanece estática)
+		if not is_static:
+			parent_body.global_transform.basis = parent_body.global_transform.basis.slerp(target_basis, clampf(6.0 * delta, 0.0, 1.0))
+		
+		# 2. Apontamento angular da torreta desacoplada em direção ao alvo calculado após a rotação da base
 		if turret_node != null and is_instance_valid(turret_node):
 			var turret_pos: Vector3 = turret_node.global_position
 			var turret_dir: Vector3 = (target_pos - turret_pos)
-			if stats_data.behavior != EnemyStatsData.BehaviorType.AIR_INTERCEPTOR and stats_data.behavior != EnemyStatsData.BehaviorType.STATIC_TURRET:
+			if not is_air and not is_static:
 				turret_dir.y = 0.0
 			if turret_dir.length_squared() > 0.01:
 				var t_basis: Basis = Basis.looking_at(turret_dir.normalized(), Vector3.UP)
-				turret_node.global_transform.basis = turret_node.global_transform.basis.slerp(t_basis, 8.0 * delta)
-		
-		# Corpo pai rotaciona suavemente (exceto STATIC_TURRET, cuja base permanece estática)
-		if stats_data.behavior != EnemyStatsData.BehaviorType.STATIC_TURRET:
-			parent_body.global_transform.basis = parent_body.global_transform.basis.slerp(target_basis, 6.0 * delta)
+				turret_node.global_transform.basis = turret_node.global_transform.basis.slerp(t_basis, clampf(8.0 * delta, 0.0, 1.0))
 
 
 ## Dispara um projétil contra o alvo especificado.
@@ -216,7 +253,7 @@ func fire_weapon_at(target: Node3D) -> Projectile:
 	if projectile.is_homing and target != null:
 		projectile.homing_target = target
 	
-	# Posição e orientação
+	# Posição e orientação de saída
 	var muzzle_pos: Vector3 = parent_body.global_position if parent_body.is_inside_tree() else parent_body.position
 	if muzzle_marker != null and is_instance_valid(muzzle_marker) and muzzle_marker.is_inside_tree():
 		muzzle_pos = muzzle_marker.global_position
@@ -231,23 +268,22 @@ func fire_weapon_at(target: Node3D) -> Projectile:
 	else:
 		parent_body.add_child(projectile)
 	
-	if target != null:
-		var dir: Vector3 = (target_pos - muzzle_pos).normalized()
-		projectile.global_position = muzzle_pos + dir * 0.8
-		if dir.length_squared() > 0.01:
-			var target_look: Vector3 = projectile.global_position + dir
-			if projectile.is_inside_tree():
-				projectile.look_at(target_look, Vector3.UP)
-	else:
-		if turret_node != null and is_instance_valid(turret_node) and turret_node.is_inside_tree():
-			projectile.global_position = muzzle_pos
-			projectile.global_transform.basis = turret_node.global_transform.basis
-		else:
-			projectile.global_position = muzzle_pos
-			if parent_body.is_inside_tree():
-				projectile.global_transform = parent_body.global_transform
+	var shot_dir: Vector3 = -parent_body.global_transform.basis.z.normalized() if parent_body.is_inside_tree() else Vector3.FORWARD
+	if turret_node != null and is_instance_valid(turret_node) and turret_node.is_inside_tree():
+		shot_dir = -turret_node.global_transform.basis.z.normalized()
+	elif target != null:
+		var dir_to_target: Vector3 = (target_pos - muzzle_pos).normalized()
+		if dir_to_target.length_squared() > 0.01:
+			shot_dir = dir_to_target
+	
+	projectile.global_position = muzzle_pos + shot_dir * 0.8
+	if shot_dir.length_squared() > 0.01:
+		var target_look: Vector3 = projectile.global_position + shot_dir
+		if projectile.is_inside_tree():
+			projectile.look_at(target_look, Vector3.UP)
 	
 	weapon_fired.emit(projectile)
+	return projectile
 	return projectile
 
 
