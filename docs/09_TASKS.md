@@ -133,7 +133,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 6: Superfícies PBR, Shaders e Cenário Litorâneo
 
-- [ ] **TASK-060: Normal Maps Procedurais e Ativação Plena do Oceano PBR**
+- [x] **TASK-060: Normal Maps Procedurais e Ativação Plena do Oceano PBR**
   - **Dependência:** TASK-052.
   - **Arquivos:** `res://assets/textures/water/ocean_wave_normal_1.tres`, `res://assets/textures/water/ocean_wave_normal_2.tres`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Gerar e vincular duas texturas de normais contínuas cruzadas aos uniforms `wave_normal_1` e `wave_normal_2` do material em `ocean_pbr.gdshader`. Calibrar a atenuação ótica pela profundidade (Beer-Lambert de turquesa raso `#14A6B8` a azul-marinho abissal `#031438`) e afinar a faixa de espuma de intersecção (`foam_intersection_depth = 0.45`).
