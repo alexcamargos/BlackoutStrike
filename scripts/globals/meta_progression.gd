@@ -4,20 +4,30 @@
 ## e armazena os niveis de melhorias em disco em formato JSON.
 extends Node
 
-## Caminho do arquivo de persistencia local.
-const SAVE_PATH: String = "user://meta_progression.json"
+## Caminho padrao do arquivo de persistencia local.
+const DEFAULT_SAVE_PATH: String = "user://meta_progression.json"
+
+## Caminho ativo de persistencia (permite redirecionamento em testes unitarios).
+var save_path: String = DEFAULT_SAVE_PATH
 
 ## Saldo de fichas de pessoal para compras no Hangar.
 var personnel_tokens: int = 0
 
-## Niveis atuais das melhorias do Hangar.
-var upgrade_levels: Dictionary = {
+## Niveis atuais das melhorias do Hangar com tipagem forte.
+var upgrade_levels: Dictionary[String, int] = {
 	"expand_cabin": 0,
 	"reinforce_armor": 0,
 	"ammo_logistics": 0
 }
 
 
+## Inicializa o singleton e restaura os dados persistidos em disco.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
 func _ready() -> void:
 	load_from_disk()
 
@@ -81,7 +91,23 @@ func purchase_upgrade(upgrade: HangarUpgradeData) -> bool:
 ## Returns:
 ##     int: Nivel atual registrado ou 0 caso nao exista.
 func get_upgrade_level(upgrade_id: String) -> int:
-	return int(upgrade_levels.get(upgrade_id, 0))
+	return upgrade_levels.get(upgrade_id, 0)
+
+
+## Reseta os valores em memoria para o estado inicial sem persistir em disco.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func reset_state() -> void:
+	personnel_tokens = 0
+	upgrade_levels = {
+		"expand_cabin": 0,
+		"reinforce_armor": 0,
+		"ammo_logistics": 0
+	}
 
 
 ## Salva os dados de meta-progressao no arquivo JSON em disco.
@@ -96,7 +122,7 @@ func save_to_disk() -> void:
 		"personnel_tokens": personnel_tokens,
 		"upgrade_levels": upgrade_levels
 	}
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if file != null:
 		var json_string: String = JSON.stringify(payload, "\t")
 		file.store_string(json_string)
@@ -111,9 +137,9 @@ func save_to_disk() -> void:
 ## Returns:
 ##     void
 func load_from_disk() -> void:
-	if not FileAccess.file_exists(SAVE_PATH):
+	if not FileAccess.file_exists(save_path):
 		return
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
 	if file == null:
 		return
 	var content: String = file.get_as_text()

@@ -2,6 +2,26 @@ extends GutTest
 
 ## Testes unitarios para validacao da TASK-010 (Configuracao Base, InputMap, Audio e Autoloads).
 
+const TEST_SAVE_PATH: String = "user://test_meta_progression.json"
+var _original_save_path: String = ""
+var _original_tokens: int = 0
+var _original_upgrades: Dictionary[String, int] = {}
+
+
+func before_all() -> void:
+	_original_save_path = MetaProgression.save_path
+	_original_tokens = MetaProgression.personnel_tokens
+	_original_upgrades = MetaProgression.upgrade_levels.duplicate()
+	MetaProgression.save_path = TEST_SAVE_PATH
+
+
+func after_all() -> void:
+	if FileAccess.file_exists(TEST_SAVE_PATH):
+		DirAccess.remove_absolute(TEST_SAVE_PATH)
+	MetaProgression.save_path = _original_save_path
+	MetaProgression.personnel_tokens = _original_tokens
+	MetaProgression.upgrade_levels = _original_upgrades
+
 
 func test_singletons_exist() -> void:
 	assert_not_null(EventBus, "EventBus deve estar acessivel globalmente.")
@@ -91,9 +111,12 @@ func test_game_state_lifecycle() -> void:
 
 
 func test_meta_progression_tokens_and_upgrades() -> void:
-	var initial_tokens: int = MetaProgression.personnel_tokens
+	MetaProgression.reset_state()
+	assert_eq(MetaProgression.personnel_tokens, 0, "reset_state deve zerar tokens.")
+	
 	MetaProgression.add_personnel_tokens(10)
-	assert_eq(MetaProgression.personnel_tokens, initial_tokens + 10, "add_personnel_tokens deve incrementar saldo.")
+	assert_eq(MetaProgression.personnel_tokens, 10, "add_personnel_tokens deve incrementar saldo para 10.")
+	assert_true(FileAccess.file_exists(TEST_SAVE_PATH), "Arquivo de teste deve ser criado no caminho isolado.")
 	
 	var lvl: int = MetaProgression.get_upgrade_level("expand_cabin")
-	assert_true(lvl >= 0, "Nivel de upgrade expand_cabin deve ser maior ou igual a 0.")
+	assert_eq(lvl, 0, "Nivel de upgrade expand_cabin inicial deve ser 0.")
