@@ -45,6 +45,8 @@ var has_aim_target: bool = false
 ## Returns:
 ##     void
 func _ready() -> void:
+	add_to_group("player")
+	
 	if fuel_component != null:
 		fuel_component.fuel_depleted.connect(_on_fuel_depleted)
 		fuel_component.fuel_changed.connect(_on_fuel_changed)
