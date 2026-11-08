@@ -11,7 +11,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Entregáveis:** `res://scripts/globals/event_bus.gd`, `res://scripts/globals/game_state.gd`, `res://scripts/globals/meta_progression.gd` e `res://default_bus_layout.tres` registrados no `project.godot`.
   - **Critério de Aceite:** O projeto compila em modo headless (`godot --headless --quit`) sem erros de script e com os 3 singletons acessíveis globalmente.
 
-- [ ] **TASK-011: Componente de Combustível (`FuelComponent.gd`)**
+- [x] **TASK-011: Componente de Combustível (`FuelComponent.gd`)**
   - **Dependência:** TASK-010.
   - **Arquivos:** `res://scripts/components/fuel_component.gd`, `res://tests/unit/test_fuel_component.gd`.
   - **Lógica:** Drenagem passiva ($0.7\text{ u/s}$), drenagem ativa em aceleração ($1.6\text{ u/s}$), emissão do sinal `fuel_changed(current, max_fuel)` e emissão de `fuel_depleted` quando $current \le 0.0$.
