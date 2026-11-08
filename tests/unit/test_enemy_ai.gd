@@ -92,6 +92,20 @@ func test_patrol_waypoints_cycle() -> void:
 	enemy_controller._move_along_patrol(0.1)
 	assert_eq(enemy_controller.current_waypoint_index, 1, "Ao aproximar do waypoint 0 deve alternar para o 1.")
 
+func test_architecture_contract_methods() -> void:
+	var origin: Vector3 = Vector3(0, 0, 0)
+	var target_near: Vector3 = Vector3(15, 0, 0)
+	var target_far: Vector3 = Vector3(50, 0, 0)
+	
+	var vel: Vector3 = enemy_controller.compute_movement_velocity(origin, target_near, 0.1)
+	assert_eq(vel, Vector3(5.0, 0.0, 0.0), "Velocidade calculada deve respeitar direcao e move_speed.")
+	
+	assert_true(enemy_controller.can_engage_target(origin, target_near), "Deve engajar alvo dentro de detection_range (25m).")
+	assert_false(enemy_controller.can_engage_target(origin, target_far), "Nao deve engajar alvo alem de detection_range.")
+	
+	assert_true(enemy_controller.is_suppressing_position(origin, Vector3(5, 0, 0)), "Deve suprimir civis a menos de 10m.")
+	assert_false(enemy_controller.is_suppressing_position(origin, Vector3(12, 0, 0)), "Nao deve suprimir alem de suppression_radius.")
+
 func test_all_five_archetype_scenes_instantiate_cleanly() -> void:
 	var archetypes: Array[String] = [
 		"res://scenes/entities/enemies/mercenary_squad.tscn",

@@ -16,6 +16,11 @@ signal weapon_fired(projectile: Projectile)
 signal enemy_killed(enemy_node: Node3D)
 
 ## Recurso com as estatísticas e tipo de comportamento da unidade.
+@export var stats: EnemyStatsData:
+	get:
+		return stats_data
+	set(val):
+		stats_data = val
 @export var stats_data: EnemyStatsData
 
 ## Cena do projétil a ser instanciado nos disparos.
@@ -287,6 +292,59 @@ func _move_air_interceptor(delta: float) -> void:
 			cb.move_and_slide()
 		else:
 			parent_body.global_position += step
+
+
+## Computa a velocidade direcional vetorial de deslocamento em direção a um destino.
+##
+## Args:
+##     current_pos (Vector3): Posição atual de origem da entidade.
+##     target_pos (Vector3): Posição de destino almejada.
+##     delta (float): Intervalo de tempo do frame de física.
+##
+## Returns:
+##     Vector3: Vetor velocidade linear a ser aplicado.
+func compute_movement_velocity(current_pos: Vector3, target_pos: Vector3, delta: float) -> Vector3:
+	var speed: float = stats_data.move_speed if stats_data != null else 0.0
+	if speed <= 0.0:
+		return Vector3.ZERO
+	
+	var diff: Vector3 = target_pos - current_pos
+	if stats_data != null and stats_data.behavior != EnemyStatsData.BehaviorType.AIR_INTERCEPTOR:
+		diff.y = 0.0
+	
+	if diff.length_squared() < 0.01:
+		return Vector3.ZERO
+	
+	return diff.normalized() * speed
+
+
+## Avalia se o alvo está dentro do alcance de detecção e combate da unidade.
+##
+## Args:
+##     current_pos (Vector3): Posição atual da entidade hostil.
+##     target_pos (Vector3): Posição da entidade a ser engajada.
+##
+## Returns:
+##     bool: true se a distância for menor ou igual a stats_data.detection_range.
+func can_engage_target(current_pos: Vector3, target_pos: Vector3) -> bool:
+	if stats_data == null:
+		return false
+	return current_pos.distance_to(target_pos) <= stats_data.detection_range
+
+
+## Avalia se a entidade está suprimindo a operação de resgate na posição de civis.
+##
+## Args:
+##     enemy_pos (Vector3): Posição global do inimigo.
+##     civilian_pos (Vector3): Posição global dos sobreviventes.
+##
+## Returns:
+##     bool: true se a unidade estiver configurada para suprimir e dentro do raio.
+func is_suppressing_position(enemy_pos: Vector3, civilian_pos: Vector3) -> bool:
+	if is_dead or stats_data == null or not stats_data.suppresses_rescue_ring:
+		return false
+	var dist: float = enemy_pos.distance_to(civilian_pos)
+	return dist <= stats_data.suppression_radius
 
 
 ## Processa destruição, concede chance de drop de suprimentos e libera nó.
