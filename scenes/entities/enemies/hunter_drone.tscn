@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://enemy_hunter_drone_scene_01"]
+[gd_scene load_steps=13 format=3 uid="uid://enemy_hunter_drone_scene_01"]
 
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
@@ -7,17 +7,46 @@
 [sub_resource type="SphereShape3D" id="SphereShape3D_hitbox"]
 radius = 0.8
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drone"]
-albedo_color = Color(0.18, 0.2, 0.24, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_antracite"]
+albedo_color = Color(0.121569, 0.133333, 0.14902, 1)
 metallic = 0.8
-roughness = 0.3
+roughness = 0.28
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_metal"]
+albedo_color = Color(0.08, 0.09, 0.11, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emissive_red"]
+albedo_color = Color(0.85098, 0.219608, 0.117647, 1)
 emission_enabled = true
-emission = Color(0.8, 0.1, 0.1, 1)
-emission_energy_multiplier = 2.0
+emission = Color(0.85098, 0.219608, 0.117647, 1)
+emission_energy_multiplier = 3.5
 
 [sub_resource type="BoxMesh" id="BoxMesh_drone_hull"]
-material = SubResource("StandardMaterial3D_drone")
-size = Vector3(1.2, 0.3, 1.2)
+material = SubResource("StandardMaterial3D_antracite")
+size = Vector3(1.1, 0.35, 1.3)
+
+[sub_resource type="SphereMesh" id="SphereMesh_sensor_eye"]
+material = SubResource("StandardMaterial3D_emissive_red")
+radius = 0.2
+height = 0.4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_nacelle"]
+material = SubResource("StandardMaterial3D_dark_metal")
+top_radius = 0.18
+bottom_radius = 0.18
+height = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_glow_ring"]
+material = SubResource("StandardMaterial3D_emissive_red")
+top_radius = 0.16
+bottom_radius = 0.16
+height = 0.05
+
+[sub_resource type="BoxMesh" id="BoxMesh_plasma_cannons"]
+material = SubResource("StandardMaterial3D_dark_metal")
+size = Vector3(0.5, 0.14, 0.65)
 
 [node name="HunterDrone" type="CharacterBody3D" groups=["air_enemies", "enemies"]]
 collision_layer = 8
@@ -27,8 +56,55 @@ motion_mode = 1
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_hitbox")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="ModelContainer" type="Node3D" parent="."]
+
+[node name="DroneHull" type="MeshInstance3D" parent="ModelContainer"]
 mesh = SubResource("BoxMesh_drone_hull")
+
+[node name="SensorEye" type="MeshInstance3D" parent="ModelContainer/DroneHull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, -0.65)
+mesh = SubResource("SphereMesh_sensor_eye")
+
+[node name="ThrusterFL" type="MeshInstance3D" parent="ModelContainer/DroneHull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.08, -0.45)
+mesh = SubResource("CylinderMesh_nacelle")
+
+[node name="GlowRingFL" type="MeshInstance3D" parent="ModelContainer/DroneHull/ThrusterFL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+mesh = SubResource("CylinderMesh_glow_ring")
+
+[node name="ThrusterFR" type="MeshInstance3D" parent="ModelContainer/DroneHull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.08, -0.45)
+mesh = SubResource("CylinderMesh_nacelle")
+
+[node name="GlowRingFR" type="MeshInstance3D" parent="ModelContainer/DroneHull/ThrusterFR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+mesh = SubResource("CylinderMesh_glow_ring")
+
+[node name="ThrusterRL" type="MeshInstance3D" parent="ModelContainer/DroneHull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.08, 0.45)
+mesh = SubResource("CylinderMesh_nacelle")
+
+[node name="GlowRingRL" type="MeshInstance3D" parent="ModelContainer/DroneHull/ThrusterRL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+mesh = SubResource("CylinderMesh_glow_ring")
+
+[node name="ThrusterRR" type="MeshInstance3D" parent="ModelContainer/DroneHull"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.08, 0.45)
+mesh = SubResource("CylinderMesh_nacelle")
+
+[node name="GlowRingRR" type="MeshInstance3D" parent="ModelContainer/DroneHull/ThrusterRR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
+mesh = SubResource("CylinderMesh_glow_ring")
+
+[node name="Turret" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.22, -0.2)
+
+[node name="PlasmaCannons" type="MeshInstance3D" parent="Turret"]
+mesh = SubResource("BoxMesh_plasma_cannons")
+
+[node name="Muzzle" type="Marker3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("1_health")
