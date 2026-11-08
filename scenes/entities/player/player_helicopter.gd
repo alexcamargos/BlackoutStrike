@@ -20,6 +20,7 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
+@onready var rotor_wash_mesh: MeshInstance3D = get_node_or_null("RotorWashMesh") as MeshInstance3D
 @onready var vulcan_muzzle: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/VulcanMuzzle
 @onready var hydra_pod_left: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodLeft
 @onready var hydra_pod_right: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodRight
@@ -311,6 +312,14 @@ func _process_flight_controls(delta: float) -> void:
 		main_rotor.rotate_y(35.0 * delta)
 	if tail_rotor != null:
 		tail_rotor.rotate_x(45.0 * delta)
+	
+	# Atualiza intensidade visual do rotor wash com base na cota de altitude
+	if rotor_wash_mesh != null:
+		var alt: float = global_position.y
+		var intensity: float = clampf(1.0 - ((alt - 0.8) / 4.0), 0.2, 1.0)
+		var mat: ShaderMaterial = rotor_wash_mesh.get_active_material(0) as ShaderMaterial
+		if mat != null:
+			mat.set_shader_parameter("intensity", intensity)
 
 
 ## Processa a sequencia incontrolavel de queda em autorrotacao apos pane seca.

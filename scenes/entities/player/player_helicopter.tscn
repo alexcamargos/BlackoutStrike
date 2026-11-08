@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://player_helicopter_entity_01"]
+[gd_scene load_steps=20 format=3 uid="uid://player_helicopter_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/player/player_helicopter.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
@@ -12,6 +12,19 @@
 [ext_resource type="Script" path="res://scripts/components/cargo_component.gd" id="10_cargo"]
 [ext_resource type="Script" path="res://scripts/components/rescue_sensor_area.gd" id="11_rescue"]
 [ext_resource type="Script" path="res://scripts/components/boon_receiver_component.gd" id="12_boon"]
+[ext_resource type="Shader" path="res://assets/shaders/rotor_wash.gdshader" id="13_wash_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rotor_wash"]
+render_priority = 0
+shader = ExtResource("13_wash_shader")
+shader_parameter/wash_color = Color(1, 1, 1, 0.45)
+shader_parameter/ring_frequency = 18.0
+shader_parameter/expansion_speed = 4.0
+shader_parameter/intensity = 1.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_rotor_wash"]
+material = SubResource("ShaderMaterial_rotor_wash")
+size = Vector2(8, 8)
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_rescue"]
 height = 6.0
@@ -107,4 +120,8 @@ shape = SubResource("CylinderShape3D_rescue")
 
 [node name="BoonReceiverComponent" type="Node" parent="."]
 script = ExtResource("12_boon")
+
+[node name="RotorWashMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.8, 0)
+mesh = SubResource("PlaneMesh_rotor_wash")
 
