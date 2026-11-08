@@ -167,7 +167,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Importar e configurar malhas dos pacotes CC0 (*Kenney Military Kit* e *Vehicle Kit*) aplicando a paleta antracite (`#1F2226`) com óticas e miras laser emissivas em vermelho-alaranjado (`#D9381E`) em HDR. Manter nós móveis de torreta desacoplados para apontamento angular em direção ao alvo.
   - **Critério de Aceite:** `test_enemy_ai.gd` passa com todos os 5 arquétipos operacionais; rotação visual das armas coincide com o vetor de disparo dos projéteis.
 
-- [ ] **TASK-072: Modelo Modular de Guerra Naval: Chefe Apex Bastion**
+- [x] **TASK-072: Modelo Modular de Guerra Naval: Chefe Apex Bastion**
   - **Dependência:** TASK-051.
   - **Arquivos:** `res://scenes/entities/enemies/boss_apex_bastion.tscn`.
   - **Lógica:** Substituir os blocos do chefe por modelo naval detalhado com separação em nós de topo: casco principal com linhas de flutuação, Torreta de Proa (canhão 76mm móvel), Torreta de Popa (CIWS quádruplo) e Núcleo Central de Comando com blindagem retrátil e pulso emissivo ativado na Fase 2.

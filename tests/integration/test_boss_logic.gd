@@ -52,3 +52,71 @@ func test_boss_phase_attacks_and_mine_dropping_without_errors() -> void:
 	boss._fire_missile_salvo()
 	
 	assert_true(boss.is_inside_tree(), "O chefe deve permanecer estavel e funcional na arvore.")
+
+
+func test_boss_naval_modular_model_structure() -> void:
+	# Casco com linha de flutuacao
+	var hull: Node3D = boss.get_node_or_null("HullStaticBody/ModelContainer/MainHull") as Node3D
+	assert_not_null(hull, "O chefe deve possuir malha principal de casco naval.")
+	var waterline: Node3D = boss.get_node_or_null("HullStaticBody/ModelContainer/WaterlineTrim") as Node3D
+	assert_not_null(waterline, "O casco deve possuir detalhe de linha de flutuacao.")
+	
+	# Torreta de proa com canhao duplo 76mm
+	var bow_barbette: Node3D = boss.get_node_or_null("BowTurret/TurretBarbette") as Node3D
+	assert_not_null(bow_barbette, "Torreta de proa deve possuir barbete de sustentacao.")
+	var bow_barrel_l: Node3D = boss.get_node_or_null("BowTurret/BarrelLeft") as Node3D
+	var bow_barrel_r: Node3D = boss.get_node_or_null("BowTurret/BarrelRight") as Node3D
+	assert_not_null(bow_barrel_l, "Torreta de proa deve possuir canhao esquerdo 76mm.")
+	assert_not_null(bow_barrel_r, "Torreta de proa deve possuir canhao direito 76mm.")
+	
+	# Torreta de popa com CIWS quad
+	var stern_barbette: Node3D = boss.get_node_or_null("SternTurret/TurretBarbette") as Node3D
+	assert_not_null(stern_barbette, "Torreta de popa deve possuir barbete.")
+	var quad_barrels: Node3D = boss.get_node_or_null("SternTurret/QuadBarrels") as Node3D
+	assert_not_null(quad_barrels, "Torreta de popa deve possuir canos quadruplos CIWS.")
+	
+	# Nucleo central com blindagem retratil
+	var left_armor: Node3D = boss.get_node_or_null("CoreBridge/RetractableArmorLeft") as Node3D
+	var right_armor: Node3D = boss.get_node_or_null("CoreBridge/RetractableArmorRight") as Node3D
+	var reactor: MeshInstance3D = boss.get_node_or_null("CoreBridge/CoreReactorMesh") as MeshInstance3D
+	assert_not_null(left_armor, "Nucleo deve conter blindagem retratil esquerda.")
+	assert_not_null(right_armor, "Nucleo deve conter blindagem retratil direita.")
+	assert_not_null(reactor, "Nucleo deve conter malha do reator central.")
+
+
+func test_turret_destruction_applies_damaged_material() -> void:
+	var bow_house: MeshInstance3D = boss.get_node_or_null("BowTurret/TurretHouse") as MeshInstance3D
+	assert_not_null(bow_house, "Deve encontrar TurretHouse na proa.")
+	
+	# Destroi a torreta de proa
+	boss.bow_turret.health.take_damage(9999.0)
+	assert_true(boss.bow_turret.is_destroyed(), "Torreta de proa deve ser dada como destruida.")
+	
+	# Verifica se o material de superficie foi alterado para danificado/carbonizado
+	var override_mat: StandardMaterial3D = bow_house.get_surface_override_material(0) as StandardMaterial3D
+	assert_not_null(override_mat, "A malha da torreta destruida deve receber material de override danificado.")
+	assert_true(override_mat.roughness >= 0.8, "Material avariado deve apresentar alta rugosidade (>= 0.8).")
+	assert_true(override_mat.albedo_color.r <= 0.15, "Albedo do material danificado deve ser escurecido/carbonizado.")
+
+
+func test_phase_two_retracts_armor_and_activates_pulse() -> void:
+	var left_armor: Node3D = boss.get_node_or_null("CoreBridge/RetractableArmorLeft") as Node3D
+	var right_armor: Node3D = boss.get_node_or_null("CoreBridge/RetractableArmorRight") as Node3D
+	var initial_x_left: float = left_armor.position.x
+	var initial_x_right: float = right_armor.position.x
+	
+	# Destroi uma torreta e reduz HP para forcar Fase 2
+	boss.bow_turret.health.take_damage(9999.0)
+	boss.damage_core(1300.0) # Entra na Fase 2 (< 49% HP)
+	assert_eq(boss.current_phase, 2, "Chefe deve estar na Fase 2.")
+	
+	# Placas de blindagem devem ter recuado para as laterais
+	assert_true(left_armor.position.x < initial_x_left, "Blindagem esquerda deve retrair abrindo para o exterior.")
+	assert_true(right_armor.position.x > initial_x_right, "Blindagem direita deve retrair abrindo para o exterior.")
+	
+	# Reator deve estar com pulso emissivo ativo em alta energia
+	var reactor: MeshInstance3D = boss.get_node_or_null("CoreBridge/CoreReactorMesh") as MeshInstance3D
+	var mat: StandardMaterial3D = reactor.mesh.material as StandardMaterial3D
+	assert_true(mat.emission_enabled, "Emissao do reator deve estar ativada na Fase 2.")
+	assert_true(mat.emission_energy_multiplier >= 4.0, "Multiplicador de emissao deve atingir nivel HDR de pulso (>= 4.0).")
+
