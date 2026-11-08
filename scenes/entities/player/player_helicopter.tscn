@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://player_helicopter_entity_01"]
+[gd_scene load_steps=35 format=3 uid="uid://player_helicopter_entity_01"]
 
 [ext_resource type="Script" path="res://scenes/entities/player/player_helicopter.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/flight_movement_controller.gd" id="2_flight"]
@@ -34,13 +34,64 @@ radius = 3.5
 size = Vector3(1.8, 1.2, 4.2)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vanguard_hull"]
-albedo_color = Color(0.231373, 0.301961, 0.368627, 1)
+albedo_color = Color(0.164706, 0.219608, 0.278431, 1)
 metallic = 0.8
 roughness = 0.25
 
 [sub_resource type="BoxMesh" id="BoxMesh_fuselage"]
 material = SubResource("StandardMaterial3D_vanguard_hull")
-size = Vector3(1.6, 1.0, 3.2)
+size = Vector3(1.4, 0.95, 2.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_canopy"]
+transparency = 1
+albedo_color = Color(0.05, 0.08, 0.12, 0.95)
+metallic = 0.95
+roughness = 0.05
+
+[sub_resource type="BoxMesh" id="BoxMesh_canopy"]
+material = SubResource("StandardMaterial3D_canopy")
+size = Vector3(1.0, 0.55, 1.3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carbon"]
+albedo_color = Color(0.1, 0.12, 0.15, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_turboshaft"]
+material = SubResource("StandardMaterial3D_carbon")
+size = Vector3(1.1, 0.42, 1.6)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tail_boom"]
+material = SubResource("StandardMaterial3D_vanguard_hull")
+size = Vector3(0.36, 0.36, 2.3)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vertical_fin"]
+material = SubResource("StandardMaterial3D_carbon")
+size = Vector3(0.12, 0.95, 0.65)
+
+[sub_resource type="BoxMesh" id="BoxMesh_horizontal_stab"]
+material = SubResource("StandardMaterial3D_carbon")
+size = Vector3(1.4, 0.06, 0.35)
+
+[sub_resource type="BoxMesh" id="BoxMesh_stub_wings"]
+material = SubResource("StandardMaterial3D_carbon")
+size = Vector3(2.4, 0.12, 0.4)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hydra_pod"]
+material = SubResource("StandardMaterial3D_carbon")
+top_radius = 0.18
+bottom_radius = 0.18
+height = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vulcan_chin"]
+material = SubResource("StandardMaterial3D_carbon")
+top_radius = 0.12
+bottom_radius = 0.14
+height = 0.5
+
+[sub_resource type="BoxMesh" id="BoxMesh_skid"]
+material = SubResource("StandardMaterial3D_carbon")
+size = Vector3(0.08, 0.08, 2.4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rotor"]
 albedo_color = Color(0.12, 0.14, 0.16, 1)
@@ -49,7 +100,29 @@ roughness = 0.2
 
 [sub_resource type="BoxMesh" id="BoxMesh_rotor_blade"]
 material = SubResource("StandardMaterial3D_rotor")
-size = Vector3(4.8, 0.05, 0.25)
+size = Vector3(4.8, 0.04, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rotor_blur"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.18, 0.24, 0.3, 0.22)
+roughness = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_main_blur"]
+material = SubResource("StandardMaterial3D_rotor_blur")
+top_radius = 2.45
+bottom_radius = 2.45
+height = 0.02
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_tail_blur"]
+material = SubResource("StandardMaterial3D_rotor_blur")
+top_radius = 0.5
+bottom_radius = 0.5
+height = 0.02
+
+[sub_resource type="BoxMesh" id="BoxMesh_tail_blade"]
+material = SubResource("StandardMaterial3D_rotor")
+size = Vector3(0.04, 0.95, 0.12)
 
 [node name="PlayerHelicopter" type="CharacterBody3D"]
 collision_layer = 2
@@ -62,29 +135,89 @@ shape = SubResource("BoxShape3D_fuselage")
 [node name="HelicopterMeshContainer" type="Node3D" parent="."]
 
 [node name="FuselageMesh" type="MeshInstance3D" parent="HelicopterMeshContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
 mesh = SubResource("BoxMesh_fuselage")
 
-[node name="MainRotor" type="MeshInstance3D" parent="HelicopterMeshContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0.2)
+[node name="Canopy" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, 0, 0.28, -1.0)
+mesh = SubResource("BoxMesh_canopy")
+
+[node name="TurboshaftHousing" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.05)
+mesh = SubResource("BoxMesh_turboshaft")
+
+[node name="TailBoom" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 2.1)
+mesh = SubResource("BoxMesh_tail_boom")
+
+[node name="VerticalFin" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 0.951057, 0.309017, 0, -0.309017, 0.951057, 0, 0.55, 3.2)
+mesh = SubResource("BoxMesh_vertical_fin")
+
+[node name="HorizontalStabilizer" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 3.0)
+mesh = SubResource("BoxMesh_horizontal_stab")
+
+[node name="StubWings" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
+mesh = SubResource("BoxMesh_stub_wings")
+
+[node name="HydraPodLeftMesh" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.15, -0.15, -0.4)
+mesh = SubResource("CylinderMesh_hydra_pod")
+
+[node name="HydraPodRightMesh" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.15, -0.15, -0.4)
+mesh = SubResource("CylinderMesh_hydra_pod")
+
+[node name="VulcanTurretFairing" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.32, -1.95)
+mesh = SubResource("CylinderMesh_vulcan_chin")
+
+[node name="SkidLeft" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, -0.55, -0.1)
+mesh = SubResource("BoxMesh_skid")
+
+[node name="SkidRight" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, -0.55, -0.1)
+mesh = SubResource("BoxMesh_skid")
+
+[node name="MainRotor" type="Node3D" parent="HelicopterMeshContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0.25)
+
+[node name="BladesLongitudinal" type="MeshInstance3D" parent="HelicopterMeshContainer/MainRotor"]
 mesh = SubResource("BoxMesh_rotor_blade")
 
-[node name="TailRotor" type="MeshInstance3D" parent="HelicopterMeshContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.3, 2.3)
+[node name="BladesLateral" type="MeshInstance3D" parent="HelicopterMeshContainer/MainRotor"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("BoxMesh_rotor_blade")
+
+[node name="MainRotorBlurDisk" type="MeshInstance3D" parent="HelicopterMeshContainer/MainRotor"]
+mesh = SubResource("CylinderMesh_main_blur")
+
+[node name="TailRotor" type="Node3D" parent="HelicopterMeshContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.55, 3.4)
+
+[node name="TailBlades" type="MeshInstance3D" parent="HelicopterMeshContainer/TailRotor"]
+mesh = SubResource("BoxMesh_tail_blade")
+
+[node name="TailRotorBlurDisk" type="MeshInstance3D" parent="HelicopterMeshContainer/TailRotor"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_tail_blur")
 
 [node name="MuzzleMarkers" type="Node3D" parent="HelicopterMeshContainer"]
 
 [node name="VulcanMuzzle" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, -1.8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.32, -1.95)
 
 [node name="HydraPodLeft" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, -0.1, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, -0.15, -0.4)
 
 [node name="HydraPodRight" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, -0.1, -0.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, -0.15, -0.4)
 
 [node name="HellfireHardpoint" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0.1)
 
 [node name="FlightMovementController" type="Node" parent="."]
 script = ExtResource("2_flight")
@@ -124,4 +257,3 @@ script = ExtResource("12_boon")
 [node name="RotorWashMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.8, 0)
 mesh = SubResource("PlaneMesh_rotor_wash")
-
