@@ -152,6 +152,7 @@ func test_rotor_wash_intensity_altitude_modulation() -> void:
 	assert_almost_eq(int_low, 1.0, 0.01, "Em altitude Y <= 1.8m, intensidade do rotor wash deve ser maxima (1.0).")
 	assert_almost_eq(mat.get_shader_parameter("intensity"), 1.0, 0.01, "Parametro do shader deve ser 1.0.")
 	assert_true(wash_mesh.visible, "Malha do rotor wash deve estar visivel em altitude de resgate.")
+	assert_almost_eq(wash_mesh.global_position.y, 0.05, 0.01, "Malha do rotor wash deve se manter na superficie da agua (Y = 0.05m).")
 	
 	# Altitude de transicao (Y = 2.9m)
 	var int_mid: float = helo.update_rotor_wash(2.9)
