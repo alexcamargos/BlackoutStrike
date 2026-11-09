@@ -84,6 +84,73 @@ func test_radio_transmission_box_displays_message_and_auto_hides() -> void:
 	assert_false(radio_box.visible, "A caixa de radio deve auto-ocultar-se apos esgotar a duracao.")
 
 
+func test_hud_military_styling_and_segmented_bars() -> void:
+	# Verificacao dos materiais de barras segmentadas
+	assert_not_null(hud.health_bar.material, "HealthBar deve possuir um ShaderMaterial para visual segmentado militar.")
+	var health_mat: ShaderMaterial = hud.health_bar.material as ShaderMaterial
+	assert_not_null(health_mat, "Material da barra de vida deve ser ShaderMaterial.")
+	
+	assert_not_null(hud.fuel_bar.material, "FuelBar deve possuir um ShaderMaterial para visual segmentado militar.")
+	var fuel_mat: ShaderMaterial = hud.fuel_bar.material as ShaderMaterial
+	assert_not_null(fuel_mat, "Material da barra de combustivel deve ser ShaderMaterial.")
+	
+	# Atualizacao do fill_ratio no shader ao alterar vida
+	EventBus.player_health_changed.emit(500.0, 1000.0)
+	var health_ratio: float = health_mat.get_shader_parameter("fill_ratio")
+	assert_almost_eq(health_ratio, 0.5, 0.01, "fill_ratio do shader de vida deve refletir 50%.")
+	
+	# Atualizacao do fill_ratio no shader ao alterar combustivel
+	EventBus.player_fuel_changed.emit(25.0, 100.0)
+	var fuel_ratio: float = fuel_mat.get_shader_parameter("fill_ratio")
+	assert_almost_eq(fuel_ratio, 0.25, 0.01, "fill_ratio do shader de combustivel deve refletir 25%.")
+	
+	# Indicadores segmentados de passageiros (pips)
+	assert_not_null(hud.passenger_pips_container, "HUD deve conter passenger_pips_container para exibicao diegetica.")
+	EventBus.civilian_boarded.emit(3, 5)
+	assert_eq(hud.passenger_pips_container.get_child_count(), 5, "Devem existir 5 pips de passageiros para capacidade 5.")
+	var active_pips: int = 0
+	for pip: Control in hud.passenger_pips_container.get_children():
+		if pip.modulate.a > 0.5:
+			active_pips += 1
+	assert_eq(active_pips, 3, "3 pips devem estar acesos/ativos para 3 passageiros embarcados.")
+	
+	# Reticula de mira com feedback de travamento
+	assert_not_null(hud.reticle_rect, "HUD deve possuir reticle_rect para feedback de mira militar.")
+	var reticle_mat: ShaderMaterial = hud.reticle_rect.material as ShaderMaterial
+	assert_not_null(reticle_mat, "reticle_rect deve possuir ShaderMaterial.")
+	var dummy_enemy: Node3D = Node3D.new()
+	add_child_autofree(dummy_enemy)
+	EventBus.target_locked.emit(dummy_enemy)
+	var is_locked_val: bool = reticle_mat.get_shader_parameter("is_locked")
+	assert_true(is_locked_val, "is_locked no shader de reticula deve ser true apos travamento.")
+	EventBus.target_lost.emit()
+	var is_unlocked_val: bool = reticle_mat.get_shader_parameter("is_locked")
+	assert_false(is_unlocked_val, "is_locked no shader deve retornar a false apos perda de alvo.")
+
+
+func test_radio_transmission_box_portrait_and_scanlines() -> void:
+	assert_not_null(radio_box.portrait_rect, "RadioTransmissionBox deve conter portrait_rect.")
+	assert_not_null(radio_box.scanlines_overlay, "RadioTransmissionBox deve conter scanlines_overlay.")
+	assert_not_null(radio_box.scanlines_overlay.material, "scanlines_overlay deve possuir ShaderMaterial.")
+	
+	# Transmissao de Nathan Cross
+	EventBus.radio_transmission_requested.emit("cross", "GHOST-1 / NATHAN CROSS", "Incursao iniciada.", 3.0)
+	assert_true(radio_box.visible, "Caixa deve estar visivel.")
+	assert_not_null(radio_box.portrait_rect.texture, "Retrato de Nathan Cross deve estar atribuido.")
+	assert_true(radio_box.portrait_rect.texture.resource_name.contains("cross"), "Textura deve ser de Nathan Cross.")
+	
+	# Transmissao de Julian Vane
+	EventBus.radio_transmission_requested.emit("vane", "JULIAN VANE", "A ApexNet antecipou seus passos.", 3.0)
+	assert_not_null(radio_box.portrait_rect.texture, "Retrato de Julian Vane deve estar atribuido.")
+	assert_true(radio_box.portrait_rect.texture.resource_name.contains("vane"), "Textura deve ser de Julian Vane.")
+	
+	# Transmissao de Commander Vance
+	EventBus.radio_transmission_requested.emit("vance", "COM. VANCE", "Extraiam os alvos imediatamente.", 3.0)
+	assert_not_null(radio_box.portrait_rect.texture, "Retrato de Commander Vance deve estar atribuido.")
+	assert_true(radio_box.portrait_rect.texture.resource_name.contains("vance"), "Textura deve ser de Commander Vance.")
+
+
+
 const Mission01MidwayScript = preload("res://scenes/core/mission_01_midway.gd")
 
 
