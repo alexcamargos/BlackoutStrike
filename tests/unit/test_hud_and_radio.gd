@@ -175,18 +175,22 @@ func test_hud_deferred_telemetry_synchronization() -> void:
 func test_hud_tactical_compass_navigation() -> void:
 	assert_not_null(hud.compass_label, "O HUD deve possuir o rotulo de bussola tatica CompassLabel.")
 	
-	# 1. Verificacao da rosa dos ventos / rumo cardinal
+	# 1. Verificacao da rosa dos ventos / rumo cardinal e setas direcionais
 	var dir_nw: String = hud.get_cardinal_direction(Vector3(800.0, 0.0, 950.0), Vector3(0.0, 0.0, 0.0))
 	assert_eq(dir_nw, "NW", "Rumo do USS Vanguard para o Atol de Midway deve ser NW.")
+	assert_eq(hud.get_direction_arrow("NW"), "↖", "Seta direcional para NW deve ser ↖.")
 	
 	var dir_se: String = hud.get_cardinal_direction(Vector3(0.0, 0.0, 0.0), Vector3(800.0, 0.0, 950.0))
 	assert_eq(dir_se, "SE", "Rumo do Atol de Midway para o USS Vanguard deve ser SE.")
+	assert_eq(hud.get_direction_arrow("SE"), "↘", "Seta direcional para SE deve ser ↘.")
 	
 	var dir_n: String = hud.get_cardinal_direction(Vector3(0.0, 0.0, 100.0), Vector3(0.0, 0.0, -100.0))
 	assert_eq(dir_n, "N", "Voo para Z negativo deve ser Norte (N).")
+	assert_eq(hud.get_direction_arrow("N"), "↑", "Seta direcional para N deve ser ↑.")
 	
 	var dir_e: String = hud.get_cardinal_direction(Vector3(-100.0, 0.0, 0.0), Vector3(100.0, 0.0, 0.0))
 	assert_eq(dir_e, "E", "Voo para X positivo deve ser Leste (E).")
+	assert_eq(hud.get_direction_arrow("E"), "→", "Seta direcional para E deve ser →.")
 	
 	# 2. Testa atualizacao de bussola quando distante do Atol
 	hud.current_cargo_count = 0
@@ -194,11 +198,15 @@ func test_hud_tactical_compass_navigation() -> void:
 	assert_true(hud.compass_label.text.contains("MIDWAY"), "Deve apontar para o Atol de Midway quando afastado.")
 	assert_true(hud.compass_label.text.contains("NW"), "Deve indicar orientacao NW.")
 	
-	# 3. Testa identificacao ao sobrevoar o Atol Central
+	# 3. Testa alerta de desvio de rota ao se afastar para o oceano (> 1250m)
+	hud._update_tactical_compass(Vector3(950.0, 1.0, 1100.0))
+	assert_true(hud.compass_label.text.contains("DESVIO"), "Deve alertar desvio de rota ao se afastar excessivamente.")
+	
+	# 4. Testa identificacao ao sobrevoar o Atol Central
 	hud._update_tactical_compass(Vector3(50.0, 1.0, 20.0))
 	assert_true(hud.compass_label.text.contains("SETOR TERRESTRE"), "Deve identificar setor terrestre ao sobrevoar o Atol.")
 	
-	# 4. Testa priorizacao de evacuacao ao embarcar sobreviventes
+	# 5. Testa priorizacao de evacuacao ao embarcar sobreviventes
 	EventBus.civilian_boarded.emit(2, 5)
 	hud._update_tactical_compass(Vector3(50.0, 1.0, 20.0))
 	assert_true(hud.compass_label.text.contains("VANGUARD"), "Com civis a bordo, bussola deve priorizar retorno a base Vanguard.")

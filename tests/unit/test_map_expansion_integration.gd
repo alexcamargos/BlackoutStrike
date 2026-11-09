@@ -71,3 +71,8 @@ func test_mission_01_midway_macro_layout_integration() -> void:
 	assert_almost_eq(ocean.global_position.x, -500.0, 0.1, "Oceano deve acompanhar a posicao X do jogador.")
 	assert_almost_eq(ocean.global_position.y, 0.0, 0.001, "Oceano deve permanecer estritamente em Y = 0.0.")
 	assert_almost_eq(ocean.global_position.z, -400.0, 0.1, "Oceano deve acompanhar a posicao Z do jogador.")
+	
+	# 7. Canal balizado de boias maritimas de aproximacao
+	var channel_markers: Node3D = mission_node.get_node_or_null("SeaChannelMarkers") as Node3D
+	assert_not_null(channel_markers, "SeaChannelMarkers deve existir para balizar a rota ate o Atol.")
+	assert_gt(channel_markers.get_child_count(), 0, "Deve conter boias no canal maritimo de aproximacao.")
