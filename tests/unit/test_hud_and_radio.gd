@@ -148,6 +148,28 @@ func test_radio_transmission_box_portrait_and_scanlines() -> void:
 	EventBus.radio_transmission_requested.emit("vance", "COM. VANCE", "Extraiam os alvos imediatamente.", 3.0)
 	assert_not_null(radio_box.portrait_rect.texture, "Retrato de Commander Vance deve estar atribuido.")
 	assert_true(radio_box.portrait_rect.texture.resource_name.contains("vance"), "Textura deve ser de Commander Vance.")
+	
+	# Transmissao canonica de Dra. Elena Vasquez (Overwatch Vanguard)
+	EventBus.radio_transmission_requested.emit("vasquez", "OVERWATCH VANGUARD (DRA. VASQUEZ)", "Perimetro seguro.", 3.0)
+	assert_not_null(radio_box.portrait_rect.texture, "Retrato da Dra. Elena Vasquez deve estar atribuido.")
+	assert_true(radio_box.portrait_rect.texture.resource_name.contains("vasquez"), "Textura deve ser da Dra. Elena Vasquez.")
+
+
+func test_hud_deferred_telemetry_synchronization() -> void:
+	var helo_scene: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	var helo: PlayerHelicopter = helo_scene.instantiate() as PlayerHelicopter
+	add_child_autofree(helo)
+	
+	# Simula meta-progressao aplicando valores customizados
+	helo.health_component.max_health = 1250.0
+	helo.health_component.current_health = 1250.0
+	helo.cargo_component.max_capacity = 8
+	
+	# Invoca a sincronizacao de telemetria
+	helo.publish_telemetry()
+	
+	assert_almost_eq(hud.health_bar.max_value, 1250.0, 0.01, "HUD deve sincronizar a capacidade expandida de blindagem.")
+	assert_true(hud.cargo_label.text.contains("8"), "HUD deve sincronizar o teto de passageiros para 8.")
 
 
 

@@ -150,6 +150,25 @@ func test_combat_and_impact_spatial_audio() -> void:
 	assert_not_null(audio_player, "ImpactEffect deve conter AudioStreamPlayer3D para atenuacao acustica espacial.")
 	assert_eq(audio_player.bus, &"SFX_Combat", "ImpactAudio deve estar direcionado ao bus SFX_Combat.")
 	assert_lte(audio_player.max_distance, 35.0, "Distancia maxima de corte acustico 3D deve ser <= 35m.")
+	
+	# Verificacao de AudioStreamPlayer3D no Boss Apex Bastion
+	var boss_scene: PackedScene = load("res://scenes/entities/enemies/boss_apex_bastion.tscn")
+	var boss: BossApexBastion = boss_scene.instantiate() as BossApexBastion
+	add_child_autofree(boss)
+	assert_not_null(boss.boss_audio, "BossApexBastion deve conter boss_audio do tipo AudioStreamPlayer3D.")
+	assert_eq(boss.boss_audio.bus, &"SFX_Combat", "Audio do chefe deve estar no bus SFX_Combat.")
+	
+	# Verificacao de AudioStreamPlayer3D em unidades inimigas regulares
+	var enemy_ctrl: EnemyAIController = EnemyAIController.new()
+	add_child_autofree(enemy_ctrl)
+	assert_not_null(enemy_ctrl.enemy_audio, "EnemyAIController deve conter emissor 3D de disparo hostil.")
+	assert_eq(enemy_ctrl.enemy_audio.bus, &"SFX_Combat", "Audio de disparo inimigo deve estar no bus SFX_Combat.")
+	
+	# Verificacao de AudioStreamPlayer do Chime de resgate
+	var rescue_sensor: RescueSensorArea = RescueSensorArea.new()
+	add_child_autofree(rescue_sensor)
+	assert_not_null(rescue_sensor.rescue_audio, "RescueSensorArea deve conter rescue_audio para chime harmônico.")
+	assert_eq(rescue_sensor.rescue_audio.bus, &"UI_Chimes", "Chime de resgate deve estar no bus UI_Chimes.")
 
 
 
