@@ -9,6 +9,8 @@
 class_name EnemyAIController
 extends Node
 
+const EXPLOSION_HEAVY_SCENE: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+
 ## Sinal emitido quando a entidade dispara um projétil.
 signal weapon_fired(projectile: Projectile)
 
@@ -512,9 +514,7 @@ func _spawn_heavy_explosion(epicenter: Vector3) -> void:
 	if root == null:
 		return
 	
-	var explosion_scene: PackedScene = load("res://scenes/vfx/explosion_heavy.tscn") as PackedScene
-	if explosion_scene != null:
-		var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
-		if explosion_inst != null:
-			root.add_child(explosion_inst)
-			explosion_inst.global_position = epicenter
+	var explosion_inst: Node3D = EXPLOSION_HEAVY_SCENE.instantiate() as Node3D
+	if explosion_inst != null:
+		root.add_child(explosion_inst)
+		explosion_inst.global_position = epicenter
