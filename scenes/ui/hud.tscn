@@ -1,6 +1,40 @@
-[gd_scene load_steps=2 format=3 uid="uid://hud_ui_main_01"]
+[gd_scene load_steps=6 format=3 uid="uid://hud_ui_main_01"]
 
 [ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1_hud"]
+[ext_resource type="Shader" path="res://assets/shaders/military_segmented_bar.gdshader" id="2_bar_shader"]
+[ext_resource type="Shader" path="res://assets/shaders/military_reticle.gdshader" id="3_reticle_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_health"]
+shader = ExtResource("2_bar_shader")
+shader_parameter/fill_ratio = 1.0
+shader_parameter/segment_count = 20
+shader_parameter/segment_gap = 0.15
+shader_parameter/slant = 0.25
+shader_parameter/active_color = Color(0, 0.9, 0.85, 1)
+shader_parameter/warning_color = Color(1, 0.25, 0.2, 1)
+shader_parameter/background_color = Color(0.06, 0.1, 0.16, 0.8)
+shader_parameter/border_color = Color(0.15, 0.35, 0.5, 0.9)
+shader_parameter/warning_threshold = 0.25
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fuel"]
+shader = ExtResource("2_bar_shader")
+shader_parameter/fill_ratio = 1.0
+shader_parameter/segment_count = 16
+shader_parameter/segment_gap = 0.15
+shader_parameter/slant = 0.25
+shader_parameter/active_color = Color(1, 0.75, 0.15, 1)
+shader_parameter/warning_color = Color(1, 0.25, 0.2, 1)
+shader_parameter/background_color = Color(0.06, 0.1, 0.16, 0.8)
+shader_parameter/border_color = Color(0.4, 0.3, 0.1, 0.9)
+shader_parameter/warning_threshold = 0.2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_reticle"]
+shader = ExtResource("3_reticle_shader")
+shader_parameter/is_locked = false
+shader_parameter/search_color = Color(0, 0.9, 0.85, 0.75)
+shader_parameter/locked_color = Color(1, 0.25, 0.15, 1)
+shader_parameter/corner_size = 0.22
+shader_parameter/thickness = 0.035
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -24,6 +58,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="HealthBar" type="ProgressBar" parent="TopLeft/VBox"]
+material = SubResource("ShaderMaterial_health")
 custom_minimum_size = Vector2(280, 24)
 layout_mode = 2
 max_value = 1000.0
@@ -37,11 +72,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 text = "ARMOR: 1000 / 1000"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="FuelBar" type="ProgressBar" parent="TopLeft/VBox"]
+material = SubResource("ShaderMaterial_fuel")
 custom_minimum_size = Vector2(280, 20)
 layout_mode = 2
 value = 100.0
@@ -54,6 +93,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 text = "FUEL: 100%"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -135,7 +177,7 @@ anchor_right = 1.0
 offset_left = -280.0
 offset_top = 24.0
 offset_right = -24.0
-offset_bottom = 110.0
+offset_bottom = 120.0
 grow_horizontal = 0
 
 [node name="VBox" type="VBoxContainer" parent="TopRight"]
@@ -151,6 +193,11 @@ layout_mode = 2
 text = "PASSENGERS: 0 / 5"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PassengerPips" type="HBoxContainer" parent="TopRight/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
 
 [node name="CabinFullAlert" type="Label" parent="TopRight/VBox"]
 visible = false
@@ -169,16 +216,27 @@ anchor_bottom = 0.5
 offset_left = -120.0
 offset_top = -80.0
 offset_right = 120.0
-offset_bottom = -30.0
+offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LockIndicator" type="PanelContainer" parent="CenterScreen"]
+[node name="VBox" type="VBoxContainer" parent="CenterScreen"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="ReticleRect" type="ColorRect" parent="CenterScreen/VBox"]
+material = SubResource("ShaderMaterial_reticle")
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="LockIndicator" type="PanelContainer" parent="CenterScreen/VBox"]
 visible = false
 custom_minimum_size = Vector2(220, 34)
 layout_mode = 2
 
-[node name="LockLabel" type="Label" parent="CenterScreen/LockIndicator"]
+[node name="LockLabel" type="Label" parent="CenterScreen/VBox/LockIndicator"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.3, 0.2, 1)
 text = "[ LOCK ACQUIRED ]"

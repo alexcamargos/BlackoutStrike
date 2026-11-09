@@ -1,7 +1,8 @@
 ## Interface de Usuario (HUD) tatica no estilo retro-moderno militar.
 ##
-## Exibe barras de blindagem e combustivel, selecao e contagem de municao
-## dos tres slots de armas, alerta de cabine lotada e status de travamento teleguiado.
+## Exibe barras angulares segmentadas de blindagem e combustivel, selecao e contagem de municao
+## dos tres slots de armas, indicadores de contagem de passageiros (pips), alerta de cabine lotada
+## e reticula tatica com feedback de travamento de alvos.
 ## Conecta-se exclusivamente atraves dos sinais do EventBus.
 class_name HUD
 extends Control
@@ -29,7 +30,10 @@ extends Control
 
 @onready var cargo_label: Label = $TopRight/VBox/CargoContainer/CargoLabel
 @onready var cabin_full_alert: Label = $TopRight/VBox/CabinFullAlert
-@onready var lock_indicator: PanelContainer = $CenterScreen/LockIndicator
+@onready var passenger_pips_container: HBoxContainer = $TopRight/VBox/PassengerPips
+@onready var lock_indicator: PanelContainer = $CenterScreen/VBox/LockIndicator
+@onready var reticle_rect: ColorRect = $CenterScreen/VBox/ReticleRect
+
 
 ## Indice da arma ativa atualmente na interface.
 var active_slot_index: int = 0
@@ -49,6 +53,7 @@ func _ready() -> void:
 	cabin_full_alert.visible = false
 	lock_indicator.visible = false
 	_highlight_active_slot(0)
+	_update_passenger_pips(0, max_passenger_capacity)
 	
 	if EventBus == null:
 		return
@@ -63,7 +68,7 @@ func _ready() -> void:
 	EventBus.target_lost.connect(_on_target_lost)
 
 
-## Atualiza os valores nominais da barra de integridade estrutural.
+## Atualiza os valores nominais e o shader segmentado da integridade estrutural.
 ##
 ## Args:
 ##     current (float): Pontos de integridade restantes.
@@ -75,9 +80,12 @@ func _on_health_changed(current: float, max_health: float) -> void:
 	health_bar.max_value = max_health
 	health_bar.value = current
 	health_label.text = "ARMOR: %d / %d" % [int(current), int(max_health)]
+	if health_bar.material is ShaderMaterial:
+		var ratio: float = clampf(current / maxf(1.0, max_health), 0.0, 1.0)
+		(health_bar.material as ShaderMaterial).set_shader_parameter("fill_ratio", ratio)
 
 
-## Atualiza a barra de combustivel e ajusta a cor em caso de reserva critica.
+## Atualiza a barra angular segmentada de combustivel e seu shader.
 ##
 ## Args:
 ##     current (float): Unidades restantes de combustivel.
@@ -88,7 +96,10 @@ func _on_health_changed(current: float, max_health: float) -> void:
 func _on_fuel_changed(current: float, max_fuel: float) -> void:
 	fuel_bar.max_value = max_fuel
 	fuel_bar.value = current
-	fuel_label.text = "FUEL: %d%%" % [int((current / maxf(1.0, max_fuel)) * 100.0)]
+	var ratio: float = clampf(current / maxf(1.0, max_fuel), 0.0, 1.0)
+	fuel_label.text = "FUEL: %d%%" % [int(ratio * 100.0)]
+	if fuel_bar.material is ShaderMaterial:
+		(fuel_bar.material as ShaderMaterial).set_shader_parameter("fill_ratio", ratio)
 
 
 ## Atualiza o destaque visual do slot de armamento selecionado.
@@ -118,7 +129,7 @@ func _on_weapon_ammo_changed(slot_index: int, current: int, max_ammo: int) -> vo
 		ammo_labels[slot_index].text = "%d / %d" % [current, max_ammo]
 
 
-## Notifica a contagem de sobreviventes a bordo e ativa alerta de cabine lotada.
+## Notifica a contagem de sobreviventes a bordo, pips segmentados e ativa alerta de lotacao.
 ##
 ## Args:
 ##     current_cargo (int): Quantidade de passageiros embarcados.
@@ -130,6 +141,7 @@ func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
 	max_passenger_capacity = max_cargo
 	cargo_label.text = "PASSENGERS: %d / %d" % [current_cargo, max_cargo]
 	cabin_full_alert.visible = (current_cargo >= max_cargo)
+	_update_passenger_pips(current_cargo, max_cargo)
 
 
 ## Notifica a conclusao de entrega de sobreviventes ao Heliponto Aliado.
@@ -142,6 +154,40 @@ func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
 func _on_civilian_extracted(_total_rescued: int) -> void:
 	cargo_label.text = "PASSENGERS: 0 / %d" % [max_passenger_capacity]
 	cabin_full_alert.visible = false
+	_update_passenger_pips(0, max_passenger_capacity)
+
+
+## Sincroniza a exibicao dos pips graficos de passageiros embarcados.
+##
+## Args:
+##     current (int): Quantidade de ocupantes atuais.
+##     total (int): Capacidade total da cabine.
+##
+## Returns:
+##     void
+func _update_passenger_pips(current: int, total: int) -> void:
+	if passenger_pips_container == null:
+		return
+	
+	# Ajusta a quantidade de blocos indicadores para a capacidade total
+	while passenger_pips_container.get_child_count() < total:
+		var pip: ColorRect = ColorRect.new()
+		pip.custom_minimum_size = Vector2(16.0, 10.0)
+		passenger_pips_container.add_child(pip)
+	
+	while passenger_pips_container.get_child_count() > total:
+		var last_child: Node = passenger_pips_container.get_child(passenger_pips_container.get_child_count() - 1)
+		passenger_pips_container.remove_child(last_child)
+		last_child.queue_free()
+	
+	# Atualiza o estado de ativacao (aceso vs vazio)
+	for i in range(passenger_pips_container.get_child_count()):
+		var pip: Control = passenger_pips_container.get_child(i) as Control
+		if pip != null:
+			if i < current:
+				pip.modulate = Color(0.2, 0.9, 0.85, 1.0)
+			else:
+				pip.modulate = Color(0.2, 0.3, 0.4, 0.25)
 
 
 ## Habilita o indicador visual de reticula de travamento do Hellfire.
@@ -153,9 +199,11 @@ func _on_civilian_extracted(_total_rescued: int) -> void:
 ##     void
 func _on_target_locked(_target: Node3D) -> void:
 	lock_indicator.visible = true
+	if reticle_rect != null and reticle_rect.material is ShaderMaterial:
+		(reticle_rect.material as ShaderMaterial).set_shader_parameter("is_locked", true)
 
 
-## Oculta o indicador de travamento teleguiado.
+## Oculta o indicador de travamento teleguiado e reseta a reticula de mira.
 ##
 ## Args:
 ##     Nenhum.
@@ -164,6 +212,8 @@ func _on_target_locked(_target: Node3D) -> void:
 ##     void
 func _on_target_lost() -> void:
 	lock_indicator.visible = false
+	if reticle_rect != null and reticle_rect.material is ShaderMaterial:
+		(reticle_rect.material as ShaderMaterial).set_shader_parameter("is_locked", false)
 
 
 ## Modifica a modulacao de cor para distinguir o armamento ativo dos inativos.
@@ -178,4 +228,4 @@ func _highlight_active_slot(active_idx: int) -> void:
 		if i == active_idx:
 			slot_panels[i].modulate = Color(1.0, 0.85, 0.2, 1.0) # Ambar ativo
 		else:
-			slot_panels[i].modulate = Color(0.6, 0.65, 0.7, 0.6) # Desativado / translúcido
+			slot_panels[i].modulate = Color(0.6, 0.65, 0.7, 0.6) # Desativado / translucido
