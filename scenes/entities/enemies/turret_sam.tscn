@@ -3,6 +3,8 @@
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
 [ext_resource type="Resource" uid="uid://enemy_turret_sam_01" path="res://scripts/data/enemy_turret_sam.tres" id="3_stats"]
+[ext_resource type="PackedScene" uid="uid://o1cp532lpk2f" path="res://assets/models/military/turret_double.glb" id="4_turret_sam_model"]
+
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_hitbox"]
 height = 2.0
@@ -85,6 +87,9 @@ mesh = SubResource("CylinderMesh_status_glow")
 
 [node name="Turret" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+
+[node name="TurretDoubleModel" parent="Turret" instance=ExtResource("4_turret_sam_model")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0, 0.1, 0)
 
 [node name="LauncherMount" type="MeshInstance3D" parent="Turret"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
