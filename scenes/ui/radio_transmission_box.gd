@@ -8,6 +8,7 @@ extends Control
 const PORTRAIT_CROSS: Texture2D = preload("res://assets/textures/ui/portrait_cross.tres")
 const PORTRAIT_VANE: Texture2D = preload("res://assets/textures/ui/portrait_vane.tres")
 const PORTRAIT_VANCE: Texture2D = preload("res://assets/textures/ui/portrait_vance.tres")
+const PORTRAIT_VASQUEZ: Texture2D = preload("res://assets/textures/ui/portrait_vasquez.tres")
 
 @onready var callsign_label: Label = $PanelContainer/Margin/HBox/VBox/Header/CallsignLabel
 @onready var message_label: Label = $PanelContainer/Margin/HBox/VBox/MessageLabel
@@ -71,7 +72,9 @@ func _on_radio_transmission_requested(speaker_id: String, callsign: String, mess
 		portrait_rect.texture = PORTRAIT_CROSS
 	elif sid_lower.contains("vane") or sid_lower.contains("apex"):
 		portrait_rect.texture = PORTRAIT_VANE
-	else:
+	elif sid_lower.contains("vance"):
 		portrait_rect.texture = PORTRAIT_VANCE
+	else:
+		portrait_rect.texture = PORTRAIT_VASQUEZ
 	
 	visible = true

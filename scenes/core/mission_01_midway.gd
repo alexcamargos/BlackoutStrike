@@ -36,8 +36,8 @@ func _ready() -> void:
 	# Transmissao inicial de radio militar
 	if EventBus != null:
 		EventBus.radio_transmission_requested.emit(
-			"vance",
-			"COM. VANCE",
+			"vasquez",
+			"OVERWATCH VANGUARD (DRA. VASQUEZ)",
 			"Infiltracao iniciada no Atol de Midway. Resgate os especialistas e neutralize o Apex Bastion.",
 			5.0
 		)
