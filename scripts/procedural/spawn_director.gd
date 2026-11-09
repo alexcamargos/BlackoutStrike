@@ -128,6 +128,14 @@ func spawn_initial_layout() -> Dictionary:
 		# 3 Esquadroes de infantaria guarnecendo diretamente cada abrigo sorteado (offset de 3m)
 		var merc_pos: Vector3 = pos + Vector3(2.5, 0.0, 2.0)
 		var merc: Node3D = _instantiate_or_placeholder(mercenary_squad_scene, "MercenarySquad", merc_pos, enemies_container)
+		var merc_ai: EnemyAIController = merc.get_node_or_null("EnemyAIController") as EnemyAIController
+		if merc_ai != null:
+			merc_ai.patrol_waypoints = [
+				pos + Vector3(6.0, 0.0, 4.0),
+				pos + Vector3(4.0, 0.0, -6.0),
+				pos + Vector3(-6.0, 0.0, -4.0),
+				pos + Vector3(-4.0, 0.0, 6.0)
+			]
 		result["mercenaries"].append(merc)
 	
 	# 2. 4 Baterias SAM distribuidas entre 8 pontos
@@ -142,6 +150,14 @@ func spawn_initial_layout() -> Dictionary:
 	for idx: int in tank_indices:
 		var pos: Vector3 = candidate_light_tank_points[idx]
 		var tank: Node3D = _instantiate_or_placeholder(light_tank_scene, "LightTank_IFV", pos, enemies_container)
+		var tank_ai: EnemyAIController = tank.get_node_or_null("EnemyAIController") as EnemyAIController
+		if tank_ai != null:
+			tank_ai.patrol_waypoints = [
+				pos + Vector3(18.0, 0.0, 0.0),
+				pos + Vector3(0.0, 0.0, 18.0),
+				pos + Vector3(-18.0, 0.0, 0.0),
+				pos + Vector3(0.0, 0.0, -18.0)
+			]
 		result["tanks"].append(tank)
 	
 	# 4. 2 Lanchas de Patrulha
@@ -149,6 +165,14 @@ func spawn_initial_layout() -> Dictionary:
 	for idx: int in boat_indices:
 		var pos: Vector3 = candidate_patrol_boat_points[idx]
 		var boat: Node3D = _instantiate_or_placeholder(patrol_boat_scene, "PatrolBoat", pos, enemies_container)
+		var boat_ai: EnemyAIController = boat.get_node_or_null("EnemyAIController") as EnemyAIController
+		if boat_ai != null:
+			boat_ai.patrol_waypoints = [
+				pos + Vector3(30.0, 0.0, 0.0),
+				pos + Vector3(0.0, 0.0, 20.0),
+				pos + Vector3(-30.0, 0.0, 0.0),
+				pos + Vector3(0.0, 0.0, -20.0)
+			]
 		result["boats"].append(boat)
 	
 	# 5. 2 Caixas de Dados entre 4 pontos
@@ -197,6 +221,14 @@ func trigger_reactive_wave(origin_pos: Vector3) -> Array[Node3D]:
 	var merc_pos: Vector3 = center + Vector3(cos(merc_angle), 0.0, sin(merc_angle)) * 30.0
 	merc_pos.y = 0.0
 	var merc: Node3D = _instantiate_or_placeholder(mercenary_squad_scene, "MercenarySquad", merc_pos, enemies_container)
+	var reactive_merc_ai: EnemyAIController = merc.get_node_or_null("EnemyAIController") as EnemyAIController
+	if reactive_merc_ai != null:
+		reactive_merc_ai.patrol_waypoints = [
+			origin_pos,
+			origin_pos + Vector3(6.0, 0.0, 6.0),
+			origin_pos + Vector3(-6.0, 0.0, 6.0),
+			origin_pos + Vector3(-6.0, 0.0, -6.0)
+		]
 	dispatched.append(merc)
 	
 	reactive_wave_dispatched.emit(origin_pos, dispatched)

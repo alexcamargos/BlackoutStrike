@@ -106,6 +106,9 @@ func _ready() -> void:
 	if projectile_scene == null:
 		_load_default_projectile()
 	
+	if patrol_waypoints.is_empty() and stats_data != null and parent_body != null:
+		_setup_default_patrol_circuit()
+	
 	enemy_audio = get_node_or_null("EnemyAudioPlayer") as AudioStreamPlayer3D
 	if enemy_audio == null:
 		enemy_audio = AudioStreamPlayer3D.new()
@@ -535,3 +538,34 @@ func _spawn_heavy_explosion(epicenter: Vector3) -> void:
 	if explosion_inst != null:
 		root.add_child(explosion_inst)
 		explosion_inst.global_position = epicenter
+
+
+## Gera um circuito fechado de waypoints procedurais baseado na posicao de spawn.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _setup_default_patrol_circuit() -> void:
+	if parent_body == null or stats_data == null:
+		return
+	var base_pos: Vector3 = parent_body.global_position if parent_body.is_inside_tree() else parent_body.position
+	match stats_data.behavior:
+		EnemyStatsData.BehaviorType.GROUND_PATROL:
+			var r: float = 12.0
+			patrol_waypoints = [
+				base_pos + Vector3(r, 0.0, 0.0),
+				base_pos + Vector3(0.0, 0.0, r),
+				base_pos + Vector3(-r, 0.0, 0.0),
+				base_pos + Vector3(0.0, 0.0, -r)
+			]
+		EnemyStatsData.BehaviorType.NAVAL_PATROL:
+			var r_x: float = 24.0
+			var r_z: float = 16.0
+			patrol_waypoints = [
+				base_pos + Vector3(r_x, 0.0, 0.0),
+				base_pos + Vector3(0.0, 0.0, r_z),
+				base_pos + Vector3(-r_x, 0.0, 0.0),
+				base_pos + Vector3(0.0, 0.0, -r_z)
+			]
