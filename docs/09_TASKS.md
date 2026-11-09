@@ -249,19 +249,19 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 11: Cinemática, FuelComponent e Posto Terrestre FOB
 
-- [ ] **TASK-110: Recalibração de Combustível no FuelComponent**
+- [x] **TASK-110: Recalibração de Combustível no FuelComponent**
   - **Dependência:** TASK-102.
   - **Arquivos:** `res://scripts/components/fuel_component.gd`, `res://tests/unit/test_fuel_component.gd`.
   - **Lógica:** Ajustar `max_fuel` padrão para $150.0$, `current_fuel` para $150.0$, `passive_burn_rate` para $0.5$ e `active_burn_rate` para $1.2$. Implementar método `refuel_capped(amount: float, cap_limit: float)` para permitir abastecimento parcial em postos com cota limitada.
   - **Critério de Aceite:** Testes unitários de queima passiva/ativa e reabastecimento com teto restrito passam integralmente.
 
-- [ ] **TASK-111: Posto Avançado Terrestre de Combustível (FuelDepot)**
+- [x] **TASK-111: Posto Avançado Terrestre de Combustível (FuelDepot)**
   - **Dependência:** TASK-110.
   - **Arquivos:** `res://scenes/environment/fuel_depot.gd`, `res://scenes/environment/fuel_depot.tscn`.
   - **Lógica:** `Area3D` com heliponto terrestre secundário no Atol Central. Quando a aeronave pousa ($Y \le 1.2\text{ m}$), abastece até o limite máximo de $75.0\text{ u}$ (taxa de $12.0\text{ u/s}$). Não fornece reparos nem descarrega sobreviventes.
   - **Critério de Aceite:** O abastecimento cessa imediatamente ao atingir $75.0\text{ u}$ ou ao decolar da área.
 
-- [ ] **TASK-112: Adequação das Suítes GUT de Combustível e Heliponto**
+- [x] **TASK-112: Adequação das Suítes GUT de Combustível e Heliponto**
   - **Dependência:** TASK-111.
   - **Arquivos:** `res://tests/unit/test_fuel_component.gd`, `res://tests/unit/test_helipad_and_supplies.gd`.
   - **Lógica:** Atualizar asserções de estado inicial para os novos parâmetros e adicionar testes específicos para o comportamento do `FuelDepot`.

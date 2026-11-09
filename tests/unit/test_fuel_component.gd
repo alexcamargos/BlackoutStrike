@@ -17,11 +17,24 @@ func before_each() -> void:
 func test_fuel_initial_state() -> void:
 	var fresh_component: FuelComponent = FuelComponent.new()
 	add_child_autofree(fresh_component)
-	assert_eq(fresh_component.max_fuel, 100.0, "O teto padrao de combustivel deve ser 100.0.")
-	assert_eq(fresh_component.current_fuel, 100.0, "O combustivel inicial padrao deve ser 100.0.")
-	assert_almost_eq(fresh_component.passive_burn_rate, 0.7, 0.001, "Queima passiva padrao deve ser 0.7 u/s.")
-	assert_almost_eq(fresh_component.active_burn_rate, 1.6, 0.001, "Queima ativa padrao deve ser 1.6 u/s.")
+	assert_eq(fresh_component.max_fuel, 150.0, "O teto padrao de combustivel deve ser 150.0.")
+	assert_eq(fresh_component.current_fuel, 150.0, "O combustivel inicial padrao deve ser 150.0.")
+	assert_almost_eq(fresh_component.passive_burn_rate, 0.5, 0.001, "Queima passiva padrao deve ser 0.5 u/s.")
+	assert_almost_eq(fresh_component.active_burn_rate, 1.2, 0.001, "Queima ativa padrao deve ser 1.2 u/s.")
 	assert_false(fresh_component.is_empty(), "Componente recem-instanciado nao deve estar vazio.")
+
+
+func test_refuel_capped_respects_limit() -> void:
+	fuel_component.current_fuel = 40.0
+	fuel_component.refuel_capped(50.0, 75.0)
+	assert_almost_eq(fuel_component.current_fuel, 75.0, 0.01, "Reabastecimento capped nao pode ultrapassar o teto informado.")
+	
+	fuel_component.refuel_capped(20.0, 75.0)
+	assert_almost_eq(fuel_component.current_fuel, 75.0, 0.01, "Reabastecimento ja no teto deve manter o nivel.")
+	
+	fuel_component.current_fuel = 90.0
+	fuel_component.refuel_capped(20.0, 75.0)
+	assert_almost_eq(fuel_component.current_fuel, 90.0, 0.01, "Reabastecimento com combustivel acima do teto nao altera nivel.")
 
 
 func test_fuel_depletes_passively_over_time() -> void:

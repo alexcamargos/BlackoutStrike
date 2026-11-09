@@ -62,7 +62,7 @@ func test_apply_auxiliary_fuel_tanks() -> void:
 	
 	boon_receiver.apply_boon(boon)
 	
-	assert_eq(player.fuel_component.max_fuel, 130.0, "Capacidade do tanque deve subir para 130 unidades.")
+	assert_eq(player.fuel_component.max_fuel, 180.0, "Capacidade do tanque deve subir para 180 unidades (150 base + 30).")
 	assert_almost_eq(player.fuel_component.passive_burn_rate, initial_passive_burn * 0.85, 0.01, "Consumo passivo deve reduzir em 15%.")
 
 

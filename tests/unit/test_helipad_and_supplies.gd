@@ -156,3 +156,31 @@ func test_supply_pickup_reactive_type_styling() -> void:
 	var mat_fuel: StandardMaterial3D = pickup.mesh_instance.material_override as StandardMaterial3D
 	assert_almost_eq(mat_fuel.albedo_color.r, 0.85, 0.05, "Cor albedo atualizada deve ser amarela.")
 
+
+func test_fuel_depot_refuels_up_to_cap_and_does_not_repair_or_unload() -> void:
+	var depot_scene: PackedScene = preload("res://scenes/environment/fuel_depot.tscn")
+	var depot: FuelDepot = depot_scene.instantiate() as FuelDepot
+	add_child_autofree(depot)
+	depot.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	var player: PlayerHelicopter = player_scene.instantiate() as PlayerHelicopter
+	add_child_autofree(player)
+	player.global_position = Vector3(0.0, 0.8, 0.0) # Pousado no FOB
+	
+	player.health_component.current_health = 700.0
+	player.fuel_component.current_fuel = 30.0
+	player.cargo_component.current_occupants = 3
+	
+	depot._on_body_entered(player)
+	
+	# Simula 2.0 segundos de abastecimento (2s * 12 u/s = +24 -> 54.0)
+	depot.step(2.0)
+	assert_almost_eq(player.fuel_component.current_fuel, 54.0, 0.01, "FOB deve abastecer na taxa de 12 u/s.")
+	assert_eq(player.health_component.current_health, 700.0, "FOB nao pode consertar a aeronave.")
+	assert_eq(player.cargo_component.current_occupants, 3, "FOB nao pode desembarcar passageiros.")
+	
+	# Simula mais 5.0 segundos: 54 + 60 = 114 -> mas o teto eh 75.0
+	depot.step(5.0)
+	assert_almost_eq(player.fuel_component.current_fuel, 75.0, 0.01, "FOB deve limitar o reabastecimento a 75 unidades.")
+	assert_false(depot.is_refueling, "Ao atingir o teto de 75 unidades, is_refueling deve ser falso.")
+

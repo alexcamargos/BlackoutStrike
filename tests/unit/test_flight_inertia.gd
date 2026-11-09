@@ -124,8 +124,8 @@ func test_autorotation_sequence_on_fuel_depleted() -> void:
 	
 	assert_false(helicopter.is_autorotating, "Helicóptero nao deve iniciar em autorrotacao.")
 	
-	# Esgota o combustivel para disparar a autorrotacao
-	helicopter.fuel_component.consume_active(100.0)
+	# Esgota o combustivel para disparar a autorrotacao (150u base a 1.2 u/s)
+	helicopter.fuel_component.consume_active(150.0)
 	assert_true(helicopter.is_autorotating, "Deve ativar estado is_autorotating apos pane seca.")
 	
 	# Simula o transcurso de 3 segundos de autorrotacao
@@ -145,8 +145,8 @@ func test_single_death_signal_with_fuel_exhaustion() -> void:
 	
 	watch_signals(EventBus)
 	
-	# Aciona pane seca e completa os 3 segundos de autorrotacao
-	helicopter.fuel_component.consume_active(100.0)
+	# Aciona pane seca e completa os 3 segundos de autorrotacao (150u base a 1.2 u/s)
+	helicopter.fuel_component.consume_active(150.0)
 	helicopter._physics_process(3.0)
 	
 	assert_signal_emitted(EventBus, "player_died", "EventBus deve emitir player_died no desfecho da autorrotacao.")
