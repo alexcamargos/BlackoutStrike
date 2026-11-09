@@ -272,7 +272,8 @@ func _update_tactical_compass(pos: Vector3) -> void:
 	if current_cargo_count > 0:
 		var dist_vanguard: float = Vector2(pos.x - vanguard_pos.x, pos.z - vanguard_pos.z).length()
 		var card_vanguard: String = get_cardinal_direction(pos, vanguard_pos)
-		compass_label.text = "⚓ BASE VANGUARD [%s] %dm (EVACUACAO)" % [card_vanguard, int(dist_vanguard)]
+		var arrow_vanguard: String = get_direction_arrow(card_vanguard)
+		compass_label.text = "%s BASE VANGUARD [%s] %dm (EVACUACAO)" % [arrow_vanguard, card_vanguard, int(dist_vanguard)]
 		compass_label.modulate = Color(1.0, 0.85, 0.2, 1.0)
 		return
 	
@@ -280,11 +281,36 @@ func _update_tactical_compass(pos: Vector3) -> void:
 	var dist_midway: float = Vector2(pos.x, pos.z).length()
 	if dist_midway > 450.0:
 		var card_midway: String = get_cardinal_direction(pos, midway_center)
-		compass_label.text = "▲ ATOL DE MIDWAY [%s] %dm" % [card_midway, int(dist_midway)]
-		compass_label.modulate = Color(0.0, 0.95, 0.85, 1.0)
+		var arrow_midway: String = get_direction_arrow(card_midway)
+		if dist_midway > 1250.0:
+			compass_label.text = "%s ATOL DE MIDWAY [%s] %dm [⚠ DESVIO: VIRE W+A]" % [arrow_midway, card_midway, int(dist_midway)]
+			compass_label.modulate = Color(1.0, 0.45, 0.2, 1.0)
+		else:
+			compass_label.text = "%s ATOL DE MIDWAY [%s] %dm" % [arrow_midway, card_midway, int(dist_midway)]
+			compass_label.modulate = Color(0.0, 0.95, 0.85, 1.0)
 	else:
 		compass_label.text = "● ATOL DE MIDWAY [SETOR TERRESTRE]"
-		compass_label.modulate = Color(0.3, 0.9, 0.4, 1.0)
+		compass_label.modulate = Color(0.3, 0.95, 0.4, 1.0)
+
+
+## Converte a sigla cardinal em seta de navegacao para o plano de tela.
+##
+## Args:
+##     cardinal (String): Sigla da direcao cardinal (ex: NW, SE, N).
+##
+## Returns:
+##     String: Icone de seta direcional orientada para o vetor da tela.
+func get_direction_arrow(cardinal: String) -> String:
+	match cardinal:
+		"N": return "↑"
+		"NE": return "↗"
+		"E": return "→"
+		"SE": return "↘"
+		"S": return "↓"
+		"SW": return "↙"
+		"W": return "←"
+		"NW": return "↖"
+		_: return "▲"
 
 
 ## Converte o vetor entre dois pontos no plano XZ em direcao cardinal (N, NE, E, SE, S, SW, W, NW).
