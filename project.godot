@@ -24,6 +24,13 @@ EventBus="*res://scripts/globals/event_bus.gd"
 GameState="*res://scripts/globals/game_state.gd"
 MetaProgression="*res://scripts/globals/meta_progression.gd"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
 [input]
 
 move_north={
