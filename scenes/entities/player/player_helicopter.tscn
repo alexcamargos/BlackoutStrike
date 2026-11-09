@@ -15,6 +15,8 @@
 [ext_resource type="Shader" path="res://assets/shaders/rotor_wash.gdshader" id="13_wash_shader"]
 [ext_resource type="AudioStream" uid="uid://dl66tnrofw5kx" path="res://assets/audio/sfx_helo_loop.wav" id="14_audio_helo"]
 [ext_resource type="AudioStream" uid="uid://cefay513ctxac" path="res://assets/audio/sfx_alarm_fuel.wav" id="15_audio_alarm"]
+[ext_resource type="PackedScene" uid="uid://bmdf6ax4leim3" path="res://assets/models/military/craft_speederD.glb" id="16_speeder_model"]
+
 
 
 
@@ -141,6 +143,9 @@ shape = SubResource("BoxShape3D_fuselage")
 [node name="FuselageMesh" type="MeshInstance3D" parent="HelicopterMeshContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
 mesh = SubResource("BoxMesh_fuselage")
+
+[node name="SpeederFuselageModel" parent="HelicopterMeshContainer/FuselageMesh" instance=ExtResource("16_speeder_model")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, -0.15, -0.2)
 
 [node name="Canopy" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
 transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, 0, 0.28, -1.0)
