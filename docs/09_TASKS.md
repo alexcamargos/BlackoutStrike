@@ -316,3 +316,25 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Arquivos:** Todas as suítes de teste em `res://tests/`.
   - **Lógica:** Execução integral de todos os testes unitários e de integração GUT, cobrindo cinemática, armamentos, resgate, boons, meta-progressão e fases do chefe.
   - **Critério de Aceite:** 100% dos testes aprovados (165+ testes) com código de saída 0.
+
+---
+
+## Sprint 14: Escala Real do Terreno, Ponto de Inserção Naval e Orientação Tática
+
+- [x] **TASK-140: Expansão Métrica do Terreno do Atol de Midway (1.200 x 800m)**
+  - **Dependência:** TASK-131.
+  - **Arquivos:** `res://scenes/environment/island_terrain_midway.gd`, `res://scenes/environment/island_terrain_midway.tscn`.
+  - **Lógica:** Expandir a malha modular de terra e os limites de altitude do Atol Central para $1.200 \times 800\text{ m}$ ($X \in [-600, 600]$, $Z \in [-400, 400]$), mantendo a integridade das zonas de praia, platô central e lagoa interna.
+  - **Critério de Aceite:** Terreno cobre as dimensões canônicas da especificação e passa 100% no `test_pbr_surfaces.gd`.
+
+- [x] **TASK-141: Porta-Aviões USS Vanguard e Convés de Pouso em (800, 0, 950)**
+  - **Dependência:** TASK-132.
+  - **Arquivos:** `res://scenes/environment/uss_vanguard.gd`, `res://scenes/environment/uss_vanguard.tscn`, `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Implementar o porta-aviões da Força-Tarefa Vanguard com convés de voo blindado ($150 \times 36\text{ m}$), sinalizações de pista, torre de controle com radar e holofotes, integrando o heliponto `AllyBaseHelipad` e a transmissão inicial de rádio militar.
+  - **Critério de Aceite:** Jogador spawna sobre o convés do USS Vanguard em $(800, 1, 950)$ com colisão firme e visibilidade imediata de embarcação aliada.
+
+- [x] **TASK-142: Bússola Tática e Orientação de Navegação no HUD**
+  - **Dependência:** TASK-140, TASK-141.
+  - **Arquivos:** `res://scenes/ui/hud.gd`, `res://scenes/ui/hud.tscn`, `res://tests/unit/test_hud_and_radio.gd`, `res://tests/unit/test_map_expansion_integration.gd`.
+  - **Lógica:** Implementar indicador de navegação tática no topo do HUD exibindo direção cardinal (N, NE, E, SE, S, SW, W, NW) e distância métrica em tempo real até o Atol de Midway ou para retorno ao USS Vanguard quando houver civis na cabine.
+  - **Critério de Aceite:** HUD guia com precisão matemática a navegação do jogador na escala de $2.500 \times 2.500\text{ m}$ com 174 testes GUT aprovados.
