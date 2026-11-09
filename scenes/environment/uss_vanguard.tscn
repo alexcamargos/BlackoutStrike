@@ -1,0 +1,179 @@
+[gd_scene load_steps=22 format=3 uid="uid://uss_vanguard_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/environment/uss_vanguard.gd" id="1_vanguard"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_flight_deck"]
+size = Vector3(36, 1, 150)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_island_tower"]
+size = Vector3(8, 12, 22)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hull"]
+albedo_color = Color(0.12, 0.14, 0.18, 1)
+metallic = 0.85
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_flight_deck"]
+albedo_color = Color(0.08, 0.09, 0.11, 1)
+metallic = 0.3
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_runway_line"]
+albedo_color = Color(0.9, 0.85, 0.2, 1)
+metallic = 0.1
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_white_mark"]
+albedo_color = Color(0.92, 0.94, 0.96, 1)
+metallic = 0.1
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_superstructure"]
+albedo_color = Color(0.18, 0.21, 0.25, 1)
+metallic = 0.8
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bridge_glass"]
+albedo_color = Color(0.1, 0.3, 0.4, 1)
+emission_enabled = true
+emission = Color(0.2, 0.6, 0.8, 1)
+emission_energy_multiplier = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_radar"]
+albedo_color = Color(0.25, 0.28, 0.32, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nav_green"]
+albedo_color = Color(0.1, 0.9, 0.3, 1)
+emission_enabled = true
+emission = Color(0.1, 0.9, 0.3, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nav_red"]
+albedo_color = Color(0.95, 0.15, 0.15, 1)
+emission_enabled = true
+emission = Color(0.95, 0.15, 0.15, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_hull_main"]
+material = SubResource("StandardMaterial3D_hull")
+size = Vector3(32, 4, 140)
+
+[sub_resource type="BoxMesh" id="BoxMesh_flight_deck"]
+material = SubResource("StandardMaterial3D_flight_deck")
+size = Vector3(36, 0.5, 150)
+
+[sub_resource type="BoxMesh" id="BoxMesh_catapult_stripe"]
+material = SubResource("StandardMaterial3D_runway_line")
+size = Vector3(0.6, 0.05, 90)
+
+[sub_resource type="BoxMesh" id="BoxMesh_deck_border"]
+material = SubResource("StandardMaterial3D_white_mark")
+size = Vector3(0.5, 0.05, 140)
+
+[sub_resource type="BoxMesh" id="BoxMesh_island_base"]
+material = SubResource("StandardMaterial3D_superstructure")
+size = Vector3(7, 8, 20)
+
+[sub_resource type="BoxMesh" id="BoxMesh_island_bridge"]
+material = SubResource("StandardMaterial3D_bridge_glass")
+size = Vector3(7.4, 1.8, 12)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_mast"]
+material = SubResource("StandardMaterial3D_radar")
+top_radius = 0.2
+bottom_radius = 0.4
+height = 6.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_radar_dish"]
+material = SubResource("StandardMaterial3D_radar")
+size = Vector3(4.5, 1.2, 0.3)
+
+[sub_resource type="SphereMesh" id="SphereMesh_nav_light"]
+radius = 0.3
+height = 0.6
+
+[node name="USS_Vanguard" type="Node3D"]
+script = ExtResource("1_vanguard")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape_Deck" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_flight_deck")
+
+[node name="CollisionShape_Island" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 6, -10)
+shape = SubResource("BoxShape3D_island_tower")
+
+[node name="Meshes" type="Node3D" parent="."]
+
+[node name="Hull" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+mesh = SubResource("BoxMesh_hull_main")
+
+[node name="FlightDeck" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = SubResource("BoxMesh_flight_deck")
+
+[node name="CatapultStripe1" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.52, -25)
+mesh = SubResource("BoxMesh_catapult_stripe")
+
+[node name="CatapultStripe2" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.52, -25)
+mesh = SubResource("BoxMesh_catapult_stripe")
+
+[node name="PortBorder" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 0.52, 0)
+mesh = SubResource("BoxMesh_deck_border")
+
+[node name="StarboardBorder" type="MeshInstance3D" parent="Meshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 0.52, 0)
+mesh = SubResource("BoxMesh_deck_border")
+
+[node name="Superstructure" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.5, -10)
+
+[node name="IslandBase" type="MeshInstance3D" parent="Superstructure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+mesh = SubResource("BoxMesh_island_base")
+
+[node name="BridgeWindows" type="MeshInstance3D" parent="Superstructure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, -2)
+mesh = SubResource("BoxMesh_island_bridge")
+
+[node name="RadarMast" type="Node3D" parent="Superstructure"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 2)
+
+[node name="MastPole" type="MeshInstance3D" parent="Superstructure/RadarMast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+mesh = SubResource("CylinderMesh_mast")
+
+[node name="RadarDish" type="Node3D" parent="Superstructure/RadarMast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.5, 0)
+
+[node name="DishMesh" type="MeshInstance3D" parent="Superstructure/RadarMast/RadarDish"]
+mesh = SubResource("BoxMesh_radar_dish")
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="DeckFloodLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 9, -10)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 1.2
+omni_range = 65.0
+omni_attenuation = 1.1
+
+[node name="NavLight_Green" type="MeshInstance3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.5, 0.8, -68)
+material_override = SubResource("StandardMaterial3D_nav_green")
+mesh = SubResource("SphereMesh_nav_light")
+
+[node name="NavLight_Red" type="MeshInstance3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.5, 0.8, -68)
+material_override = SubResource("StandardMaterial3D_nav_red")
+mesh = SubResource("SphereMesh_nav_light")
