@@ -29,8 +29,10 @@ void fragment() {
     float depth_factor = clamp(water_depth / depth_distance, 0.0, 1.0);
     vec4 base_water = mix(shallow_color, deep_color, depth_factor);
 
-    vec2 uv_1 = UV + wave_speed_1 * TIME;
-    vec2 uv_2 = UV + wave_speed_2 * TIME;
+    vec3 world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+    vec2 world_uv = world_pos.xz * 0.04;
+    vec2 uv_1 = world_uv + wave_speed_1 * TIME;
+    vec2 uv_2 = world_uv + wave_speed_2 * TIME;
     vec3 n1 = texture(wave_normal_1, uv_1).rgb * 2.0 - 1.0;
     vec3 n2 = texture(wave_normal_2, uv_2).rgb * 2.0 - 1.0;
     vec3 normal_blended = normalize(n1 + n2);
