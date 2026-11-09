@@ -96,6 +96,61 @@ func test_audio_bus_layout() -> void:
 	
 	var layout: AudioBusLayout = load(layout_path)
 	assert_not_null(layout, "Recurso AudioBusLayout deve ser carregado com sucesso.")
+	
+	# Verificacao das rotas de bus acustico (TASK-092)
+	var expected_buses: Dictionary = {
+		"SFX_Player": "SFX",
+		"SFX_Weapons": "SFX",
+		"SFX_Combat": "SFX",
+		"UI_Alarms": "UI",
+		"UI_Chimes": "UI"
+	}
+	for bus_name in expected_buses:
+		var bus_idx: int = AudioServer.get_bus_index(bus_name)
+		assert_ne(bus_idx, -1, "Bus de audio %s deve existir no AudioServer." % bus_name)
+		var send_name: String = AudioServer.get_bus_send(bus_idx)
+		assert_eq(send_name, expected_buses[bus_name], "Bus %s deve enviar sinal para %s." % [bus_name, expected_buses[bus_name]])
+
+
+func test_helicopter_spatial_audio_and_pitch_modulation() -> void:
+	var helo_scene: PackedScene = load("res://scenes/entities/player/player_helicopter.tscn")
+	assert_not_null(helo_scene, "A cena player_helicopter.tscn deve carregar sem erros.")
+	
+	var helo: PlayerHelicopter = helo_scene.instantiate() as PlayerHelicopter
+	add_child_autofree(helo)
+	
+	# AudioStreamPlayer3D do rotor
+	var rotor_audio: AudioStreamPlayer3D = helo.get_node_or_null("RotorAudioPlayer") as AudioStreamPlayer3D
+	assert_not_null(rotor_audio, "PlayerHelicopter deve conter no RotorAudioPlayer do tipo AudioStreamPlayer3D.")
+	assert_eq(rotor_audio.bus, &"SFX_Player", "RotorAudioPlayer deve estar direcionado ao bus SFX_Player.")
+	assert_not_null(rotor_audio.stream, "RotorAudioPlayer deve possuir stream atribuido.")
+	
+	# Modulacao de pitch baseada na velocidade (0.95 em repouso a 1.15 na vel maxima)
+	helo.velocity = Vector3.ZERO
+	helo.update_rotor_audio_pitch(0.0)
+	assert_almost_eq(rotor_audio.pitch_scale, 0.95, 0.01, "Pitch em repouso deve ser 0.95.")
+	
+	helo.update_rotor_audio_pitch(22.0)
+	assert_almost_eq(rotor_audio.pitch_scale, 1.15, 0.01, "Pitch na velocidade maxima (22 m/s) deve ser 1.15.")
+	
+	# AudioStreamPlayer do alarme de combustivel
+	var fuel_alarm: AudioStreamPlayer = helo.get_node_or_null("FuelAlarmAudioPlayer") as AudioStreamPlayer
+	assert_not_null(fuel_alarm, "PlayerHelicopter deve conter FuelAlarmAudioPlayer.")
+	assert_eq(fuel_alarm.bus, &"UI_Alarms", "FuelAlarmAudioPlayer deve estar direcionado ao bus UI_Alarms.")
+
+
+func test_combat_and_impact_spatial_audio() -> void:
+	var impact_scene: PackedScene = load("res://scenes/vfx/impact_effect.tscn")
+	assert_not_null(impact_scene, "A cena impact_effect.tscn deve carregar sem erros.")
+	
+	var impact: ImpactEffect = impact_scene.instantiate() as ImpactEffect
+	add_child_autofree(impact)
+	
+	var audio_player: AudioStreamPlayer3D = impact.get_node_or_null("ImpactAudio") as AudioStreamPlayer3D
+	assert_not_null(audio_player, "ImpactEffect deve conter AudioStreamPlayer3D para atenuacao acustica espacial.")
+	assert_eq(audio_player.bus, &"SFX_Combat", "ImpactAudio deve estar direcionado ao bus SFX_Combat.")
+	assert_lte(audio_player.max_distance, 35.0, "Distancia maxima de corte acustico 3D deve ser <= 35m.")
+
 
 
 func test_game_state_lifecycle() -> void:
