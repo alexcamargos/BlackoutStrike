@@ -192,3 +192,36 @@ func test_mission_01_midway_ui_hierarchy_and_orchestrator() -> void:
 	var director_instance: SpawnDirector = mission_node.get_node_or_null("SpawnDirector") as SpawnDirector
 	assert_not_null(director_instance, "SpawnDirector deve existir na cena da missao.")
 	assert_true(director_instance.auto_spawn_on_ready, "SpawnDirector deve estar com auto_spawn_on_ready = true na missao.")
+
+
+func test_mission_01_victory_and_failure_lifecycle() -> void:
+	var mission_scene: PackedScene = load("res://scenes/core/mission_01_midway.tscn")
+	assert_not_null(mission_scene, "A cena mission_01_midway.tscn deve existir.")
+	var mission_node: Node = mission_scene.instantiate()
+	add_child_autofree(mission_node)
+	
+	watch_signals(EventBus)
+	
+	# Testa ciclo de derrota ao cair a aeronave
+	GameState.start_new_run()
+	assert_eq(GameState.current_status, GameState.RunStatus.IN_PROGRESS, "Status deve iniciar em IN_PROGRESS.")
+	
+	mission_node._on_player_died("fuel_exhaustion")
+	assert_eq(GameState.current_status, GameState.RunStatus.FAILED, "Status do GameState deve mudar para FAILED.")
+	assert_signal_emitted(EventBus, "mission_failed", "EventBus.mission_failed deve ser emitido.")
+	
+	# Testa ciclo de vitoria ao derrotar o chefe Apex Bastion
+	GameState.start_new_run()
+	var player_helo = mission_node.get_node_or_null("ActiveEntities/PlayerHelicopter")
+	if player_helo != null and player_helo.cargo_component != null:
+		player_helo.cargo_component.current_occupants = 3
+	
+	var initial_tokens: int = MetaProgression.personnel_tokens
+	mission_node._on_boss_defeated("Apex Bastion")
+	
+	assert_eq(GameState.current_status, GameState.RunStatus.VICTORY, "Status do GameState deve mudar para VICTORY.")
+	assert_signal_emitted(EventBus, "mission_accomplished", "EventBus.mission_accomplished deve ser emitido.")
+	if player_helo != null and player_helo.cargo_component != null:
+		assert_eq(player_helo.cargo_component.current_occupants, 0, "Passageiros devem ser desembarcados na vitoria.")
+		assert_eq(MetaProgression.personnel_tokens, initial_tokens + 3, "Tokens de pessoal devem ser creditados pelos sobreviventes evacuados.")
+

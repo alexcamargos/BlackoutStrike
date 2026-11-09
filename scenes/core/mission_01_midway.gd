@@ -148,6 +148,16 @@ func _on_boss_phase_changed(boss_name: String, phase_index: int) -> void:
 ## Raises:
 ##     Nenhuma excecao levantada.
 func _on_boss_defeated(boss_name: String) -> void:
+	if player_helicopter != null and player_helicopter.cargo_component != null:
+		var remaining_civilians: int = player_helicopter.cargo_component.unload_all()
+		if remaining_civilians > 0:
+			if MetaProgression != null:
+				MetaProgression.add_personnel_tokens(remaining_civilians)
+			if GameState != null:
+				GameState.register_extracted_civilians(remaining_civilians)
+			elif EventBus != null:
+				EventBus.civilian_extracted.emit(remaining_civilians)
+	
 	if EventBus != null:
 		EventBus.radio_transmission_requested.emit(
 			"vance",
@@ -155,6 +165,9 @@ func _on_boss_defeated(boss_name: String) -> void:
 			"%s afundado! Ameaca costeira neutralizada. Missao cumprida, Mohawk III!" % boss_name,
 			5.0
 		)
+	
+	if GameState != null:
+		GameState.complete_run_victory()
 
 
 ## Callback acionado na queda da aeronave do jogador.
@@ -173,3 +186,8 @@ func _on_player_died(cause: String) -> void:
 		if cause == "fuel_exhaustion":
 			message = "Pane seca confirmada. Mohawk III colidiu no oceano. Missao abortada."
 		EventBus.radio_transmission_requested.emit("vance", "COM. VANCE", message, 4.5)
+	
+	if GameState != null:
+		GameState.fail_run(cause)
+	elif EventBus != null:
+		EventBus.mission_failed.emit(cause)
