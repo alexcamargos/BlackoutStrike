@@ -193,3 +193,34 @@ func test_shelter_reinforced_concrete_model_and_debris_instantiation() -> void:
 	assert_true(debris_count >= 4, "A destruicao do abrigo deve instanciar pecas fragmentadas de escombros (contado: %d)." % debris_count)
 
 
+func test_civilian_vulnerable_to_enemy_bullet_collision() -> void:
+	var enemy_bullet_scene: PackedScene = load("res://scenes/weapons/projectile_enemy_bullet.tscn")
+	assert_not_null(enemy_bullet_scene, "A cena projectile_enemy_bullet.tscn deve existir.")
+	var bullet: Projectile = enemy_bullet_scene.instantiate() as Projectile
+	add_child_autofree(bullet)
+	
+	# Verifica mascara de colisao: camada 1 (World_Static = 1) + 2 (Player_Air = 2) + 7 (Civilians = 64) = 67
+	assert_true((bullet.collision_mask & (1 << 6)) != 0, "Projetil inimigo deve ter a camada 7 (Civilians) em sua mascara de colisao.")
+	
+	var civ: Civilian = civilian_scene.instantiate() as Civilian
+	add_child_autofree(civ)
+	civ.global_position = Vector3.ZERO
+	
+	watch_signals(EventBus)
+	
+	# Primeiro tiro de bala inimiga (15 de dano de 30 totais de HP)
+	bullet.handle_hit(civ)
+	assert_false(civ.is_dead, "Apos 1 tiro de 15 de dano, o civil ainda deve estar vivo (30 HP base).")
+	assert_almost_eq(civ.health_component.current_health, 15.0, 0.1, "Civil deve permanecer com 15 de vida.")
+	
+	# Segundo tiro de bala inimiga (instancia novo projetil pois o anterior se desfez no impacto)
+	var bullet_2: Projectile = enemy_bullet_scene.instantiate() as Projectile
+	add_child_autofree(bullet_2)
+	bullet_2.handle_hit(civ)
+	
+	assert_true(civ.is_dead, "O civil deve ser abatido pelo fogo cruzado ao esgotar sua vida.")
+	assert_signal_emitted(EventBus, "civilian_killed", "EventBus.civilian_killed deve ser emitido quando o civil e morto por bala inimiga.")
+
+
+
+
