@@ -11,12 +11,17 @@
 class_name BossApexBastion
 extends Node3D
 
+const SFX_CANNON_SHOT: AudioStream = preload("res://assets/audio/sfx_vulcan_shot.wav")
+const SFX_MISSILE_LAUNCH: AudioStream = preload("res://assets/audio/sfx_rocket_launch.wav")
+
 signal phase_changed(phase_index: int)
 signal boss_defeated()
 
 @export var bow_turret: BossTurretModule
 @export var stern_turret: BossTurretModule
 @export var core_health: HealthComponent
+
+var boss_audio: AudioStreamPlayer3D = null
 
 @export var cannon_projectile_scene: PackedScene
 @export var naval_mine_scene: PackedScene
@@ -59,6 +64,14 @@ func _ready() -> void:
 		ciws_projectile_scene = load("res://scenes/weapons/projectile_boss_ciws.tscn") as PackedScene
 	if missile_projectile_scene == null:
 		missile_projectile_scene = load("res://scenes/weapons/projectile_enemy_sam_missile.tscn") as PackedScene
+	
+	boss_audio = get_node_or_null("BossAudioPlayer") as AudioStreamPlayer3D
+	if boss_audio == null:
+		boss_audio = AudioStreamPlayer3D.new()
+		boss_audio.name = "BossAudioPlayer"
+		boss_audio.bus = &"SFX_Combat"
+		boss_audio.max_distance = 60.0
+		add_child(boss_audio)
 
 
 func _physics_process(delta: float) -> void:
@@ -222,6 +235,12 @@ func _fire_double_cannon() -> void:
 			proj.source = self
 			var fire_pos: Vector3 = spawn_pos + right_vec * offset_mult
 			_add_projectile_to_scene(proj, fire_pos, _get_aim_direction(fire_pos))
+	
+	if boss_audio != null:
+		boss_audio.stream = SFX_CANNON_SHOT
+		boss_audio.pitch_scale = randf_range(0.75, 0.85)
+		if boss_audio.stream != null:
+			boss_audio.play()
 
 
 func _drop_naval_mine() -> void:
@@ -264,6 +283,12 @@ func _fire_ciws_fan() -> void:
 			var rad: float = deg_to_rad(deg)
 			var rotated_dir: Vector3 = forward.rotated(Vector3.UP, rad).normalized()
 			_add_projectile_to_scene(proj, origin, rotated_dir)
+	
+	if boss_audio != null:
+		boss_audio.stream = SFX_CANNON_SHOT
+		boss_audio.pitch_scale = randf_range(1.1, 1.25)
+		if boss_audio.stream != null:
+			boss_audio.play()
 
 
 func _fire_missile_salvo() -> void:
@@ -286,6 +311,12 @@ func _fire_missile_salvo() -> void:
 				missile.homing_target = target_player
 			var spread_pos: Vector3 = origin + Vector3((i - 1.5) * 0.8, 0.5, 0)
 			_add_projectile_to_scene(missile, spread_pos, Vector3.UP.slerp(Vector3.FORWARD, 0.5))
+	
+	if boss_audio != null:
+		boss_audio.stream = SFX_MISSILE_LAUNCH
+		boss_audio.pitch_scale = randf_range(0.9, 1.0)
+		if boss_audio.stream != null:
+			boss_audio.play()
 
 
 func _add_projectile_to_scene(projectile: Projectile, pos: Vector3, dir: Vector3) -> void:

@@ -10,6 +10,10 @@ class_name EnemyAIController
 extends Node
 
 const EXPLOSION_HEAVY_SCENE: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+const SFX_ENEMY_SHOT: AudioStream = preload("res://assets/audio/sfx_vulcan_shot.wav")
+
+## Player acustico 3D para feedback espacial dos disparos hostis.
+var enemy_audio: AudioStreamPlayer3D = null
 
 ## Sinal emitido quando a entidade dispara um projétil.
 signal weapon_fired(projectile: Projectile)
@@ -101,6 +105,14 @@ func _ready() -> void:
 	
 	if projectile_scene == null:
 		_load_default_projectile()
+	
+	enemy_audio = get_node_or_null("EnemyAudioPlayer") as AudioStreamPlayer3D
+	if enemy_audio == null:
+		enemy_audio = AudioStreamPlayer3D.new()
+		enemy_audio.name = "EnemyAudioPlayer"
+		enemy_audio.bus = &"SFX_Combat"
+		enemy_audio.max_distance = 45.0
+		add_child(enemy_audio)
 
 
 ## Executa a lógica de IA a cada passo de física.
@@ -284,8 +296,13 @@ func fire_weapon_at(target: Node3D) -> Projectile:
 		if projectile.is_inside_tree():
 			projectile.look_at(target_look, Vector3.UP)
 	
+	if enemy_audio != null:
+		enemy_audio.stream = SFX_ENEMY_SHOT
+		enemy_audio.pitch_scale = randf_range(1.1, 1.25)
+		if enemy_audio.stream != null:
+			enemy_audio.play()
+	
 	weapon_fired.emit(projectile)
-	return projectile
 	return projectile
 
 
