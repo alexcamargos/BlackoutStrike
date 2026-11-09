@@ -217,7 +217,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Aplicar tema visual unificado militar com recortes em $45^\circ$, barras angulares segmentadas de blindagem e combustível, indicadores de contagem de passageiros e retícula de mira com feedback de travamento de alvos. Adicionar camada de scanlines analógicas e estática nos retratos de comunicação de Nathan Cross e Julian Vane.
   - **Critério de Aceite:** Suíte `test_hud_and_radio.gd` 100% verde; interface adaptável e legível em resolução 1080p sem corte de informações.
 
-- [ ] **TASK-092: Integração de Áudio Espacial e Bus de Efeitos Acústicos**
+- [x] **TASK-092: Integração de Áudio Espacial e Bus de Efeitos Acústicos**
   - **Dependência:** TASK-010, TASK-070, TASK-080.
   - **Arquivos:** `res://default_bus_layout.tres`, nós `AudioStreamPlayer3D` no helicóptero, armas e inimigos.
   - **Lógica:** Conectar arquivos sonoros CC0 (`sfx_helo_loop.ogg`, `sfx_vulcan_shot.wav`, `sfx_rocket_launch.wav`) aos buses de áudio configurados (`SFX_Player`, `SFX_Weapons`, `SFX_Combat`, `UI_Alarms`). Aplicar modulação de pitch no rotor do helicóptero vinculada à velocidade linear ($0.95$ a $1.15$) e manter proteções de execução em modo headless para não quebrar a suíte de testes.
