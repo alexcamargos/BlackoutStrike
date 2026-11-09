@@ -38,12 +38,6 @@ var boarding_timer: float = 0.0
 ## Flag que indica se a operacao esta suprimida por inimigos no perimetro.
 var is_suppressed: bool = false
 
-## Intervalo de tempo entre varreduras ativas de supressao de perimetro (segundos).
-const SUPPRESSION_CHECK_INTERVAL: float = 0.1
-
-## Temporizador para cadenciamento da checagem de supressao.
-var suppression_check_timer: float = 0.1
-
 ## Cache do ultimo estado de supressao avaliado para amortizar alocacoes.
 var _cached_is_suppressed: bool = false
 
@@ -327,7 +321,6 @@ func _set_suppression_state(new_state: bool) -> void:
 ##     void
 func _reset_rescue_progress() -> void:
 	boarding_timer = 0.0
-	suppression_check_timer = SUPPRESSION_CHECK_INTERVAL
 	_cached_is_suppressed = false
 	_set_suppression_state(false)
 	
