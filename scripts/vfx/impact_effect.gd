@@ -16,6 +16,8 @@ enum SurfaceType {
 @onready var metal_sparks: GPUParticles3D = get_node_or_null("MetalSparksParticles") as GPUParticles3D
 @onready var dust_particles: GPUParticles3D = get_node_or_null("DustParticles") as GPUParticles3D
 @onready var flash_light: OmniLight3D = get_node_or_null("FlashLight") as OmniLight3D
+@onready var audio_player: AudioStreamPlayer3D = get_node_or_null("ImpactAudio") as AudioStreamPlayer3D
+
 
 var timer: float = 0.0
 var initial_light_energy: float = 4.0
@@ -103,6 +105,11 @@ func apply_surface(surface: SurfaceType) -> void:
 				dust_particles.emitting = false
 			if metal_sparks != null:
 				metal_sparks.emitting = false
+	
+	if audio_player != null and audio_player.stream != null:
+		audio_player.pitch_scale = randf_range(0.95, 1.05)
+		audio_player.play()
+
 
 
 ## Controla o decaimento luminoso do clarao e a remocao automatica do efeito visual.
