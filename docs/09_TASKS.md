@@ -211,7 +211,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Lógica:** Configurar a `DirectionalLight3D` com ângulo rasante quente ($55^\circ$ elevação, $-40^\circ$ azimute, cor `#FFF0D9`), sombras direcionais PSSM 4 Splits com distância máxima de corte calibrada para $180\text{ m}$. Ajustar névoa de distância volumétrica no `WorldEnvironment` iniciando a $120\text{ m}$ com coloração azul-profundo (`#122233`) para suavizar o horizonte oceânico.
   - **Critério de Aceite:** Fuselagens metálicas geram brilhos especulares intensos durante as curvas e rolagens; contraste profundo e nítido das sombras sobre as praias e mar.
 
-- [ ] **TASK-091: Estilização do HUD Militar e Efeitos Diegéticos na Caixa de Rádio**
+- [x] **TASK-091: Estilização do HUD Militar e Efeitos Diegéticos na Caixa de Rádio**
   - **Dependência:** TASK-023.
   - **Arquivos:** `res://scenes/ui/hud.tscn`, `res://scenes/ui/radio_transmission_box.tscn`, `res://assets/textures/ui/`.
   - **Lógica:** Aplicar tema visual unificado militar com recortes em $45^\circ$, barras angulares segmentadas de blindagem e combustível, indicadores de contagem de passageiros e retícula de mira com feedback de travamento de alvos. Adicionar camada de scanlines analógicas e estática nos retratos de comunicação de Nathan Cross e Julian Vane.
