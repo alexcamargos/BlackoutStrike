@@ -205,7 +205,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 9: Iluminação Tropical, Atmosfera e Interface Retrô-Moderna
 
-- [ ] **TASK-090: Calibração de Luz Solar, Sombras em Cascata e Atmosfera Oceânica**
+- [x] **TASK-090: Calibração de Luz Solar, Sombras em Cascata e Atmosfera Oceânica**
   - **Dependência:** TASK-052, TASK-060.
   - **Arquivos:** `res://scenes/core/world_environment.tres`, `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Configurar a `DirectionalLight3D` com ângulo rasante quente ($55^\circ$ elevação, $-40^\circ$ azimute, cor `#FFF0D9`), sombras direcionais PSSM 4 Splits com distância máxima de corte calibrada para $180\text{ m}$. Ajustar névoa de distância volumétrica no `WorldEnvironment` iniciando a $120\text{ m}$ com coloração azul-profundo (`#122233`) para suavizar o horizonte oceânico.
