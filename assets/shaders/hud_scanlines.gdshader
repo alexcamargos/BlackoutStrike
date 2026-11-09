@@ -1,5 +1,7 @@
 shader_type canvas_item;
+render_mode blend_mix;
 
+uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap;
 uniform float scanline_count : hint_range(10.0, 400.0) = 140.0;
 uniform float scanline_intensity : hint_range(0.0, 1.0) = 0.35;
 uniform float noise_intensity : hint_range(0.0, 1.0) = 0.18;
@@ -12,7 +14,7 @@ float random(vec2 uv) {
 }
 
 void fragment() {
-	vec4 base_color = texture(TEXTURE, UV);
+	vec4 base_color = texture(screen_texture, SCREEN_UV);
 	
 	// Scanlines horizontais
 	float scanline = sin(UV.y * scanline_count * 3.14159265);
@@ -27,10 +29,10 @@ void fragment() {
 	float dist = length(centered_uv);
 	float vignette = clamp(1.0 - dist * vignette_strength * 0.5, 0.0, 1.0);
 	
-	// Composicao diegetica
+	// Composicao diegetica sobre a imagem amostrada do retrato
 	vec3 col = base_color.rgb * scanline * vignette;
 	col += (noise - 0.5) * noise_intensity;
 	col = mix(col, col * tint_color.rgb, 0.3);
 	
-	COLOR = vec4(clamp(col, vec3(0.0), vec3(1.0)), base_color.a);
+	COLOR = vec4(clamp(col, vec3(0.0), vec3(1.0)), 1.0);
 }
