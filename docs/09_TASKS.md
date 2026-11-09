@@ -222,3 +222,97 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Arquivos:** `res://default_bus_layout.tres`, nós `AudioStreamPlayer3D` no helicóptero, armas e inimigos.
   - **Lógica:** Conectar arquivos sonoros CC0 (`sfx_helo_loop.ogg`, `sfx_vulcan_shot.wav`, `sfx_rocket_launch.wav`) aos buses de áudio configurados (`SFX_Player`, `SFX_Weapons`, `SFX_Combat`, `UI_Alarms`). Aplicar modulação de pitch no rotor do helicóptero vinculada à velocidade linear ($0.95$ a $1.15$) e manter proteções de execução em modo headless para não quebrar a suíte de testes.
   - **Critério de Aceite:** Execução em `godot --headless` sem falhas de áudio; sons de combate atenuam realisticamente no espaço 3D; `test_base_configuration.gd` passa sem erros.
+
+---
+
+## Sprint 10: Fundação Espacial, Schemas e Documentação
+
+- [ ] **TASK-100: Especificação de Limites Mundiais e Schemas de Dados (MapBoundsData)**
+  - **Dependência:** TASK-040.
+  - **Arquivos:** `res://scripts/data/map_bounds_data.gd`, `res://scripts/data/map_bounds_midway.tres`.
+  - **Lógica:** Implementar o recurso customizado `MapBoundsData` com as dimensões de mundo ($2.500 \times 2.500\text{ m}$, $X \in [-1250, 1250]$, $Z \in [-1250, 1250]$), máscara territorial do Atol Central ($X \in [-600, 600]$, $Z \in [-400, 400]$), máscara de abrigos ($X \in [-500, 500]$, $Z \in [-350, 350]$), coordenadas do USS Vanguard $(800, 1, 950)$, Boss Apex Bastion $(-900, 0, -900)$, Plataforma Norte $(200, 0, -1000)$, Recifes Leste $(900, 0, 100)$ e posto avançado FOB.
+  - **Critério de Aceite:** O recurso é carregado via `ResourceLoader.load()` preservando tipos e valores contratados.
+
+- [ ] **TASK-101: Atualização da Documentação Técnica (SPEC e DATA_SCHEMA)**
+  - **Dependência:** TASK-100.
+  - **Arquivos:** `docs/03_SPEC.md`, `docs/05_DATA_SCHEMA.md`.
+  - **Lógica:** Registrar a ampliação da escala de mapa para $2.500 \times 2.500\text{ m}$, a divisão nos 5 setores operacionais, a nova autonomia de combustível (capacidade $150.0\text{ u}$, queima passiva $0.5\text{ u/s}$, queima ativa $1.2\text{ u/s}$) e a mecânica de reabastecimento restrito a $75.0\text{ u}$ no posto avançado terrestre.
+  - **Critério de Aceite:** Documentação alinhada sem contradições com as especificações matemáticas do jogo.
+
+- [ ] **TASK-102: Atualização dos Schemas de Aeronave com Nova Autonomia**
+  - **Dependência:** TASK-100.
+  - **Arquivos:** `res://scripts/data/helicopter_specs_data.gd`, `res://scripts/data/helicopter_specs.tres`.
+  - **Lógica:** Atualizar `max_fuel` para $150.0$, `passive_burn_rate` para $0.5$ e `active_burn_rate` para $1.2$.
+  - **Critério de Aceite:** `test_data_resources.gd` passa confirmando o carregamento dos novos valores.
+
+---
+
+## Sprint 11: Cinemática, FuelComponent e Posto Terrestre FOB
+
+- [ ] **TASK-110: Recalibração de Combustível no FuelComponent**
+  - **Dependência:** TASK-102.
+  - **Arquivos:** `res://scripts/components/fuel_component.gd`, `res://tests/unit/test_fuel_component.gd`.
+  - **Lógica:** Ajustar `max_fuel` padrão para $150.0$, `current_fuel` para $150.0$, `passive_burn_rate` para $0.5$ e `active_burn_rate` para $1.2$. Implementar método `refuel_capped(amount: float, cap_limit: float)` para permitir abastecimento parcial em postos com cota limitada.
+  - **Critério de Aceite:** Testes unitários de queima passiva/ativa e reabastecimento com teto restrito passam integralmente.
+
+- [ ] **TASK-111: Posto Avançado Terrestre de Combustível (FuelDepot)**
+  - **Dependência:** TASK-110.
+  - **Arquivos:** `res://scenes/environment/fuel_depot.gd`, `res://scenes/environment/fuel_depot.tscn`.
+  - **Lógica:** `Area3D` com heliponto terrestre secundário no Atol Central. Quando a aeronave pousa ($Y \le 1.2\text{ m}$), abastece até o limite máximo de $75.0\text{ u}$ (taxa de $12.0\text{ u/s}$). Não fornece reparos nem descarrega sobreviventes.
+  - **Critério de Aceite:** O abastecimento cessa imediatamente ao atingir $75.0\text{ u}$ ou ao decolar da área.
+
+- [ ] **TASK-112: Adequação das Suítes GUT de Combustível e Heliponto**
+  - **Dependência:** TASK-111.
+  - **Arquivos:** `res://tests/unit/test_fuel_component.gd`, `res://tests/unit/test_helipad_and_supplies.gd`.
+  - **Lógica:** Atualizar asserções de estado inicial para os novos parâmetros e adicionar testes específicos para o comportamento do `FuelDepot`.
+  - **Critério de Aceite:** Ambas as suítes rodam 100% verdes sem alertas de regressão.
+
+---
+
+## Sprint 12: SpawnDirector por Setores e Otimização Espacial
+
+- [ ] **TASK-120: Refatoração do SpawnDirector com Bounding Boxes e Setores**
+  - **Dependência:** TASK-100, TASK-111.
+  - **Arquivos:** `res://scripts/procedural/spawn_director.gd`, `res://tests/unit/test_spawn_director.gd`.
+  - **Lógica:** Reestruturar os pontos candidatos e o algoritmo de sorteio para cobrir o mapa de $2.500\text{ m}$. Os 3 abrigos de civis são obrigatoriamente sorteados dentro da máscara do Atol Central ($X \in [-500, 500]$, $Z \in [-350, 350]$). Prover pontos contratuais para spawn do jogador no USS Vanguard $(800, 1, 950)$ e Boss Apex Bastion $(-900, 0, -900)$.
+  - **Critério de Aceite:** Teste unitário verifica que nenhuma entidade de abrigo é gerada fora dos limites do Atol Central.
+
+- [ ] **TASK-121: Sistema de Culling de Entidades e Projéteis a 250m**
+  - **Dependência:** TASK-120.
+  - **Arquivos:** `res://scripts/components/entity_distance_culler.gd`.
+  - **Lógica:** Mecanismo de culling para entidades distantes a mais de $250\text{ m}$ do helicóptero do jogador, desativando o processamento pesado de física (`process_mode = PROCESS_MODE_DISABLED`) e reativando-o quando no raio de aproximação.
+  - **Critério de Aceite:** Entidades distantes congelam processamento de física e reativam sem perda de integridade de estado ou referências de nós.
+
+- [ ] **TASK-122: Suíte de Testes GUT do SpawnDirector Expandido**
+  - **Dependência:** TASK-120, TASK-121.
+  - **Arquivos:** `res://tests/unit/test_spawn_director.gd`.
+  - **Lógica:** Bateria de asserções cobrindo as novas coordenadas, sorteio sem sobreposição em macroescala e preservação dos reforços reativos (*The Reactive Grid*).
+  - **Critério de Aceite:** Suíte passa 100% verde confirmando estabilidade do diretor semi-procedural.
+
+---
+
+## Sprint 13: Topografia, Oceano Infinito e Integração de Missão
+
+- [ ] **TASK-130: Oceano Infinito com Plano Seguidor de Câmera**
+  - **Dependência:** TASK-100.
+  - **Arquivos:** `res://scenes/environment/follow_camera_ocean.gd`, `res://assets/shaders/ocean_pbr.gdshader`.
+  - **Lógica:** Implementar plano de água ($150 \times 150\text{ m}$) que acompanha o deslocamento horizontal do jogador/câmera mantendo $Y = 0.0$, enquanto as normais e ondas no shader operam com coordenadas globais contínuas.
+  - **Critério de Aceite:** O oceano mantém cobertura visual contínua em qualquer quadrante de $X, Z \in [-1250, 1250]$ sem estiramento ou quebras na malha.
+
+- [ ] **TASK-131: Limites do Mundo e Reposicionamento do Relevo e Adereços**
+  - **Dependência:** TASK-130.
+  - **Arquivos:** `res://scenes/core/mission_01_midway.tscn`, `res://scenes/environment/island_terrain_midway.tscn`.
+  - **Lógica:** Adicionar barreiras físicas estáticas invisíveis em $X = \pm 1250\text{ m}$ e $Z = \pm 1250\text{ m}$. Ajustar o posicionamento do relevo da ilha e dos adereços para centralização no Atol.
+  - **Critério de Aceite:** A aeronave é impedida de ultrapassar as bordas de $\pm 1250\text{ m}$.
+
+- [ ] **TASK-132: Integração da Cena Principal Mission_01_Midway**
+  - **Dependência:** TASK-111, TASK-120, TASK-130, TASK-131.
+  - **Arquivos:** `res://scenes/core/mission_01_midway.tscn`.
+  - **Lógica:** Configurar heliponto da Força-Tarefa Vanguard em $(800, 0.5, 950)$, spawn do helicóptero em $(800, 1.0, 950)$, chefe Apex Bastion em $(-900, 0, -900)$, e instanciar o `FuelDepot` no Atol Central.
+  - **Critério de Aceite:** A cena compila e instancia todos os nós em modo headless sem erros de referência ou de inicialização.
+
+- [ ] **TASK-133: Verificação Global de Aceitação e Ausência de Regressões**
+  - **Dependências:** Todas as tarefas anteriores.
+  - **Arquivos:** Todas as suítes de teste em `res://tests/`.
+  - **Lógica:** Execução integral de todos os testes unitários e de integração GUT, cobrindo cinemática, armamentos, resgate, boons, meta-progressão e fases do chefe.
+  - **Critério de Aceite:** 100% dos testes aprovados (165+ testes) com código de saída 0.
