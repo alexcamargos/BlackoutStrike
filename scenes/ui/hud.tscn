@@ -53,6 +53,28 @@ offset_top = 24.0
 offset_right = 320.0
 offset_bottom = 100.0
 
+[node name="TopCenter" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 18.0
+offset_right = 200.0
+offset_bottom = 54.0
+grow_horizontal = 2
+
+[node name="TacticalCompass" type="PanelContainer" parent="TopCenter"]
+layout_mode = 2
+
+[node name="CompassLabel" type="Label" parent="TopCenter/TacticalCompass"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.95, 0.85, 1)
+theme_override_font_sizes/font_size = 14
+text = "▲ ATOL DE MIDWAY [NW] 950m"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBox" type="VBoxContainer" parent="TopLeft"]
 layout_mode = 2
 theme_override_constants/separation = 8

@@ -33,6 +33,8 @@ extends Control
 @onready var passenger_pips_container: HBoxContainer = $TopRight/VBox/PassengerPips
 @onready var lock_indicator: PanelContainer = $CenterScreen/VBox/LockIndicator
 @onready var reticle_rect: ColorRect = $CenterScreen/VBox/ReticleRect
+@onready var compass_panel: PanelContainer = get_node_or_null("TopCenter/TacticalCompass") as PanelContainer
+@onready var compass_label: Label = get_node_or_null("TopCenter/TacticalCompass/CompassLabel") as Label
 
 
 ## Indice da arma ativa atualmente na interface.
@@ -40,6 +42,12 @@ var active_slot_index: int = 0
 
 ## Capacidade maxima de passageiros informada dinamicamente pelo componente de carga.
 var max_passenger_capacity: int = 5
+
+## Quantidade de civis a bordo da cabine.
+var current_cargo_count: int = 0
+
+## Referencia rastreada da aeronave do jogador.
+var _tracked_player: Node3D = null
 
 
 ## Conecta o HUD aos eventos do EventBus e configura os estados visuais iniciais.
@@ -138,6 +146,7 @@ func _on_weapon_ammo_changed(slot_index: int, current: int, max_ammo: int) -> vo
 ## Returns:
 ##     void
 func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
+	current_cargo_count = current_cargo
 	max_passenger_capacity = max_cargo
 	cargo_label.text = "PASSENGERS: %d / %d" % [current_cargo, max_cargo]
 	cabin_full_alert.visible = (current_cargo >= max_cargo)
@@ -152,6 +161,7 @@ func _on_civilian_boarded(current_cargo: int, max_cargo: int) -> void:
 ## Returns:
 ##     void
 func _on_civilian_extracted(_total_rescued: int) -> void:
+	current_cargo_count = 0
 	cargo_label.text = "PASSENGERS: 0 / %d" % [max_passenger_capacity]
 	cabin_full_alert.visible = false
 	_update_passenger_pips(0, max_passenger_capacity)
@@ -229,3 +239,80 @@ func _highlight_active_slot(active_idx: int) -> void:
 			slot_panels[i].modulate = Color(1.0, 0.85, 0.2, 1.0) # Ambar ativo
 		else:
 			slot_panels[i].modulate = Color(0.6, 0.65, 0.7, 0.6) # Desativado / translucido
+
+
+func _process(_delta: float) -> void:
+	if compass_label == null:
+		return
+	
+	if _tracked_player == null or not is_instance_valid(_tracked_player):
+		var players: Array[Node] = get_tree().get_nodes_in_group("player")
+		if players.size() > 0:
+			_tracked_player = players[0] as Node3D
+	
+	if _tracked_player != null and is_instance_valid(_tracked_player):
+		_update_tactical_compass(_tracked_player.global_position)
+
+
+## Atualiza o mostrador tatico de navegacao com indicacao cardinal e distancia.
+##
+## Args:
+##     pos (Vector3): Coordenadas espaciais atuais do jogador no mundo.
+##
+## Returns:
+##     void
+func _update_tactical_compass(pos: Vector3) -> void:
+	if compass_label == null:
+		return
+	
+	var vanguard_pos: Vector3 = Vector3(800.0, 0.0, 950.0)
+	var midway_center: Vector3 = Vector3(0.0, 0.0, 0.0)
+	
+	# Se a cabine contem civis para desembarcar, prioriza a base de evacuacao USS Vanguard
+	if current_cargo_count > 0:
+		var dist_vanguard: float = Vector2(pos.x - vanguard_pos.x, pos.z - vanguard_pos.z).length()
+		var card_vanguard: String = get_cardinal_direction(pos, vanguard_pos)
+		compass_label.text = "⚓ BASE VANGUARD [%s] %dm (EVACUACAO)" % [card_vanguard, int(dist_vanguard)]
+		compass_label.modulate = Color(1.0, 0.85, 0.2, 1.0)
+		return
+	
+	# Caso contrario, calcula a rota para o Atol Central de Midway
+	var dist_midway: float = Vector2(pos.x, pos.z).length()
+	if dist_midway > 450.0:
+		var card_midway: String = get_cardinal_direction(pos, midway_center)
+		compass_label.text = "▲ ATOL DE MIDWAY [%s] %dm" % [card_midway, int(dist_midway)]
+		compass_label.modulate = Color(0.0, 0.95, 0.85, 1.0)
+	else:
+		compass_label.text = "● ATOL DE MIDWAY [SETOR TERRESTRE]"
+		compass_label.modulate = Color(0.3, 0.9, 0.4, 1.0)
+
+
+## Converte o vetor entre dois pontos no plano XZ em direcao cardinal (N, NE, E, SE, S, SW, W, NW).
+##
+## Args:
+##     from (Vector3): Posicao de origem.
+##     to (Vector3): Posicao de destino.
+##
+## Returns:
+##     String: Rosa dos ventos com a sigla cardinal.
+func get_cardinal_direction(from: Vector3, to: Vector3) -> String:
+	var dx: float = to.x - from.x
+	var dz: float = to.z - from.z
+	var angle: float = rad_to_deg(atan2(dz, dx))
+	var heading: float = fposmod(angle + 90.0, 360.0)
+	if heading >= 337.5 or heading < 22.5:
+		return "N"
+	elif heading < 67.5:
+		return "NE"
+	elif heading < 112.5:
+		return "E"
+	elif heading < 157.5:
+		return "SE"
+	elif heading < 202.5:
+		return "S"
+	elif heading < 247.5:
+		return "SW"
+	elif heading < 292.5:
+		return "W"
+	else:
+		return "NW"
