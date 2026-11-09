@@ -69,6 +69,24 @@ func _ready() -> void:
 		rotor_wash_mesh.top_level = true
 
 
+## Interrompe fontes acusticas ao desanexar da arvore de cena prevenindo vazamentos no AudioServer.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _exit_tree() -> void:
+	if rotor_audio != null:
+		if rotor_audio.playing:
+			rotor_audio.stop()
+		rotor_audio.stream = null
+	if fuel_alarm_audio != null:
+		if fuel_alarm_audio.playing:
+			fuel_alarm_audio.stop()
+		fuel_alarm_audio.stream = null
+
+
 ## Publica o estado atual de telemetria aos ouvintes do EventBus e da interface de usuario.
 ##
 ## Args:
@@ -163,8 +181,28 @@ func _physics_process(delta: float) -> void:
 	if health_component != null and health_component.is_destroyed():
 		return
 	
+	_update_aim_from_mouse()
 	_process_flight_controls(delta)
 	_process_weapon_controls(delta)
+
+
+## Atualiza o alvo de mira projetado a partir da posicao do cursor na tela caso haja camera ativa.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _update_aim_from_mouse() -> void:
+	if not is_inside_tree():
+		return
+	var viewport: Viewport = get_viewport()
+	if viewport == null:
+		return
+	var camera: Camera3D = viewport.get_camera_3d()
+	if camera != null:
+		var mouse_pos: Vector2 = viewport.get_mouse_position()
+		update_mouse_aim(camera, mouse_pos, global_position.y)
 
 
 ## Processa comandos de selecao e disparo de armamentos.
