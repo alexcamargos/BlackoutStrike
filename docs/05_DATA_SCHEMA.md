@@ -180,7 +180,8 @@ extends Resource
 | `weapon_hellfire.tres`| `WeaponData` | `base_damage` | $650.0$ | Trava no alvo via cone de $40^\circ$. |
 | `weapon_hellfire.tres`| `WeaponData` | `max_ammo` | $6$ | Foco em tanques, torretas pesadas e canhoneiro. |
 | `helicopter_specs.tres`| `HelicopterSpecsData` | `max_armor` | $1000.0$ | Blindagem integral base do R-9X. |
-| `helicopter_specs.tres`| `HelicopterSpecsData` | `max_fuel` | $100.0$ | Autonomia padrão de $\sim 90\text{ s}$ de manobra. |
+| `helicopter_specs.tres`| `HelicopterSpecsData` | `max_fuel` | $150.0$ | Autonomia: 300s passivo / 125s aceleração total. |
+| `map_bounds_midway.tres`| `MapBoundsData` | `world_size` | $2500 \times 2500$ | Limites globais de [-1250, 1250] no plano horizontal. |
 | `helicopter_specs.tres`| `HelicopterSpecsData` | `max_cargo` | $5$ | Limite base de sobreviventes por sortida. |
 | `rescue_shelter.tres` | `ShelterData` | `max_health` | $300.0$ | Libera $4$ sobreviventes ($30.0\text{ HP}$ cada) ao ser destruído. |
 | `enemy_mercenary_squad.tres` | `EnemyStatsData` | `max_health` | $45.0$ | `GROUND_PATROL` ($3.5\text{ m/s}$), dano $12.0$, suprime resgate ($\le 10\text{ m}$). |
@@ -189,3 +190,29 @@ extends Resource
 | `enemy_light_tank.tres` | `EnemyStatsData` | `max_health` | $320.0$ | `GROUND_PATROL` ($4.5\text{ m/s}$), obus $95.0$ (raio $2.0\text{ m}$), suprime resgate. |
 | `enemy_turret_sam.tres` | `EnemyStatsData` | `max_health` | $240.0$ | `STATIC_TURRET`, alcance $40\text{ m}$, míssil a cada $4.0\text{ s}$ (dano $180.0$). |
 | `data_crate.tres` | `EnemyStatsData` | `max_health` | $150.0$ | Ao zerar HP, emite `EventBus.data_crate_opened`. |
+
+---
+
+## 7. Esquema de Delimitação Espacial e Setores (`MapBoundsData.gd`)
+
+```gdscript
+# res://scripts/data/map_bounds_data.gd
+class_name MapBoundsData
+extends Resource
+
+@export_group("Dimensoes Globais do Mundo")
+@export var world_size: Vector2 = Vector2(2500.0, 2500.0)
+@export var world_bounds_min: Vector2 = Vector2(-1250.0, -1250.0)
+@export var world_bounds_max: Vector2 = Vector2(1250.0, 1250.0)
+
+@export_group("Macrozona Terrestre (Atol Central)")
+@export var atoll_rect: Rect2 = Rect2(-600.0, -400.0, 1200.0, 800.0)
+@export var shelter_spawn_rect: Rect2 = Rect2(-500.0, -350.0, 1000.0, 700.0)
+
+@export_group("Pontos Estrategicos de Spawn")
+@export var vanguard_spawn_position: Vector3 = Vector3(800.0, 1.0, 950.0)
+@export var boss_spawn_position: Vector3 = Vector3(-900.0, 0.0, -900.0)
+@export var north_platform_position: Vector3 = Vector3(200.0, 0.0, -1000.0)
+@export var sigint_reef_position: Vector3 = Vector3(900.0, 0.0, 100.0)
+@export var fob_depot_position: Vector3 = Vector3(-250.0, 0.5, 120.0)
+```

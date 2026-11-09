@@ -227,19 +227,19 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 10: Fundação Espacial, Schemas e Documentação
 
-- [ ] **TASK-100: Especificação de Limites Mundiais e Schemas de Dados (MapBoundsData)**
+- [x] **TASK-100: Especificação de Limites Mundiais e Schemas de Dados (MapBoundsData)**
   - **Dependência:** TASK-040.
   - **Arquivos:** `res://scripts/data/map_bounds_data.gd`, `res://scripts/data/map_bounds_midway.tres`.
   - **Lógica:** Implementar o recurso customizado `MapBoundsData` com as dimensões de mundo ($2.500 \times 2.500\text{ m}$, $X \in [-1250, 1250]$, $Z \in [-1250, 1250]$), máscara territorial do Atol Central ($X \in [-600, 600]$, $Z \in [-400, 400]$), máscara de abrigos ($X \in [-500, 500]$, $Z \in [-350, 350]$), coordenadas do USS Vanguard $(800, 1, 950)$, Boss Apex Bastion $(-900, 0, -900)$, Plataforma Norte $(200, 0, -1000)$, Recifes Leste $(900, 0, 100)$ e posto avançado FOB.
   - **Critério de Aceite:** O recurso é carregado via `ResourceLoader.load()` preservando tipos e valores contratados.
 
-- [ ] **TASK-101: Atualização da Documentação Técnica (SPEC e DATA_SCHEMA)**
+- [x] **TASK-101: Atualização da Documentação Técnica (SPEC e DATA_SCHEMA)**
   - **Dependência:** TASK-100.
   - **Arquivos:** `docs/03_SPEC.md`, `docs/05_DATA_SCHEMA.md`.
   - **Lógica:** Registrar a ampliação da escala de mapa para $2.500 \times 2.500\text{ m}$, a divisão nos 5 setores operacionais, a nova autonomia de combustível (capacidade $150.0\text{ u}$, queima passiva $0.5\text{ u/s}$, queima ativa $1.2\text{ u/s}$) e a mecânica de reabastecimento restrito a $75.0\text{ u}$ no posto avançado terrestre.
   - **Critério de Aceite:** Documentação alinhada sem contradições com as especificações matemáticas do jogo.
 
-- [ ] **TASK-102: Atualização dos Schemas de Aeronave com Nova Autonomia**
+- [x] **TASK-102: Atualização dos Schemas de Aeronave com Nova Autonomia**
   - **Dependência:** TASK-100.
   - **Arquivos:** `res://scripts/data/helicopter_specs_data.gd`, `res://scripts/data/helicopter_specs.tres`.
   - **Lógica:** Atualizar `max_fuel` para $150.0$, `passive_burn_rate` para $0.5$ e `active_burn_rate` para $1.2$.

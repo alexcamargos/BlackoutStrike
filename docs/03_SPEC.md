@@ -27,11 +27,13 @@ Construir uma fatia vertical jogável para Windows baseada na primeira missão (
 
 ### 2.2. Gerenciamento de Sobrevivência
 - **Blindagem (Armor):** $1.000$ pontos de vida base. Dano zerado resulta em detonação e falha da incursão.
-- **Combustível (Fuel):** Capacidade máxima de $100.0$ unidades.
-  - Queima Passiva: $0.7\,unid/s$.
-  - Queima em Aceleração Total: $1.6\,unid/s$.
+- **Combustível (Fuel):** Capacidade máxima de $150.0$ unidades.
+  - Queima Passiva (Pairando): $0.5\,unid/s$ (autonomia total: 300 segundos).
+  - Queima em Aceleração Total: $1.2\,unid/s$ (autonomia total: 125 segundos).
   - Em $0.0$ unidades: Os motores cortam, a aeronave entra em autorrotação incontrolável e colide no solo/água em 3 segundos.
-- **Reabastecimento e Reparo:** Pousar no Heliponto da Base Aliada regenera $40\,HP/s$ e $15\,Fuel/s$.
+- **Reabastecimento e Reparo:**
+  - **Porta-Aviões USS Vanguard (Heliponto Base Aliada):** Regenera $40\,HP/s$, $15\,Fuel/s$ até $150.0\text{ u}$ e descarrega todos os sobreviventes a bordo.
+  - **Posto Avançado Terrestre (FOB / `FuelDepot`):** Heliponto secundário no Atol Central ($X: -250.0, Z: 120.0$) que reabastece a $12\,Fuel/s$ até a cota limite de $75.0$ unidades (50% do tanque), sem efetuar reparos nem descarregar civis.
 
 ### 2.3. Sistema de Armamento
 - **Slot 1: Canhão Rotativo M134 (Arma Primária)**
@@ -104,8 +106,15 @@ Todos os inimigos compartilham uma arquitetura modular baseada em `EnemyBase` + 
 | **4. Blindado Leve (`LightTank_IFV`)** | `3` (`Enemies_Ground`) | $320.0$ | $4.5\text{ m/s}$ | Patrulha estradas e acessos aos abrigos; dispara obuses explosivos de $30\text{ mm}$ a cada $3.0\text{ s}$ (alcance $36\text{ m}$, dano $95.0$, explosão de $2.0\text{ m}$ letal a civis). **Suprime o anel de resgate** ($\le 10.0\text{ m}$). | Deve ser eliminado **antes** da abertura do abrigo com **Foguetes Hydra (Slot 2)** ou **Hellfire (Slot 3)**. |
 | **5. Bateria Antiaérea (`TurretSAM`)** | `3` (`Enemies_Ground`) | $240.0$ | $0.0\text{ m/s}$ | Sentinela estática em colinas; dispara míssil teleguiado a cada $4.0\text{ s}$ (alcance $40\text{ m}$, velocidade $28\text{ m/s}$, curva $2.5\text{ rad/s}$, dano $180.0$, $14.0\text{ HP}$). | Negação de área de longo alcance; alvo prioritário para **Foguetes Hydra** e **Mísseis Hellfire**. |
 
-### 5.2. Dinâmica Híbrida do `SpawnDirector.gd` (Alocação Inicial + *Reactive Grid*)
-A geografia do terreno ($350 \times 350\text{ m}$) é fixa, mas os nós operacionais combinam sorteio inicial com resposta dinâmica da IA *ApexNet*:
+### 5.2. Dinâmica Híbrida do `SpawnDirector.gd` e Topografia Global ($2.500 \times 2.500\text{ m}$)
+O mapa global abrange $2.500 \times 2.500\text{ m}$ ($X \in [-1250, +1250]$, $Z \in [-1250, +1250]$), dividido em 5 setores operacionais:
+1. **Setor Sudeste (Força-Tarefa Vanguard):** Heliponto do porta-aviões USS Vanguard em $(800, 1.0, 950)$ onde o jogador surge e realiza reparos/desembarque de civis.
+2. **Setor Central (O Atol de Midway):** Área de terra de $\sim 1.200 \times 800\text{ m}$ ($X \in [-600, 600], Z \in [-400, 400]$). Contém os 3 abrigos de civis restritos à máscara $X \in [-500, 500], Z \in [-350, 350]$, baterias SAM, bunkers e o posto avançado de combustível (FOB).
+3. **Setor Noroeste (Águas Profundas):** Posição da nau-capitania canhoneira *Apex Bastion* em $(-900, 0, -900)$ e campos de minas flutuantes.
+4. **Setor Norte (Plataforma Marítima):** Plataforma de dados marítima em $(200, 0, -1000)$ guarnecida por lanchas de patrulha.
+5. **Setor Leste (Recifes e Ilhotas):** Posto de escuta SIGINT em $(900, 0, 100)$ e recifes costeiros.
+
+A geografia do terreno é delimitada e os nós operacionais combinam sorteio inicial com resposta dinâmica da IA *ApexNet*:
 1. **Alocação no Início da Incursão:**
    - **3 Abrigos de Reféns (`RescueShelter`):** Sorteados entre 6 coordenadas possíveis ($300.0\text{ HP}$, 4 civis cada).
    - **3 Esquadrões de Infantaria (`MercenarySquad`):** Posicionados guarnecendo diretamente os 3 abrigos sorteados.
