@@ -67,6 +67,9 @@ func _ready() -> void:
 			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
 		if cargo_component != null:
 			EventBus.civilian_boarded.emit(cargo_component.current_occupants, cargo_component.max_capacity)
+	
+	if rotor_wash_mesh != null:
+		rotor_wash_mesh.top_level = true
 
 
 ## Aplica os aprimoramentos permanentes salvos no MetaProgression a aeronave.
@@ -338,6 +341,9 @@ func update_rotor_wash(altitude: float) -> float:
 	
 	if rotor_wash_mesh != null:
 		rotor_wash_mesh.visible = intensity > 0.001
+		if rotor_wash_mesh.visible:
+			rotor_wash_mesh.global_position = Vector3(global_position.x, 0.05, global_position.z)
+			rotor_wash_mesh.global_rotation = Vector3.ZERO
 		var mat: ShaderMaterial = rotor_wash_mesh.get_active_material(0) as ShaderMaterial
 		if mat != null:
 			mat.set_shader_parameter("intensity", intensity)
