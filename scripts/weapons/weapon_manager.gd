@@ -5,8 +5,12 @@
 class_name WeaponManager
 extends Node
 
+const SFX_VULCAN: AudioStream = preload("res://assets/audio/sfx_vulcan_shot.wav")
+const SFX_ROCKET: AudioStream = preload("res://assets/audio/sfx_rocket_launch.wav")
+
 ## Emitido quando o jogador alterna o armamento ativo.
 signal weapon_switched(slot_index: int, weapon_data: WeaponData)
+
 
 ## Emitido quando o estoque de municao de qualquer slot sofre alteracao.
 signal ammo_updated(slot_index: int, current: int, max_ammo: int)
@@ -37,6 +41,9 @@ var structure_damage_bonus: float = 0.0
 ## Habilita a transpassagem de um alvo pelo disparo inicial de canhao.
 var pierce_first_target: bool = false
 
+## Emissor acustico 3D para feedback sonoro de disparo balistico.
+var weapon_audio: AudioStreamPlayer3D = null
+
 
 ## Inicializa o inventario de municao e notifica a interface sobre os dados iniciais.
 ##
@@ -46,7 +53,16 @@ var pierce_first_target: bool = false
 ## Returns:
 ##     void
 func _ready() -> void:
+	weapon_audio = get_node_or_null("WeaponAudioPlayer") as AudioStreamPlayer3D
+	if weapon_audio == null:
+		weapon_audio = AudioStreamPlayer3D.new()
+		weapon_audio.name = "WeaponAudioPlayer"
+		weapon_audio.bus = &"SFX_Weapons"
+		weapon_audio.max_distance = 50.0
+		add_child(weapon_audio)
+	
 	if weapon_slots.is_empty():
+
 		_load_default_slots()
 	
 	_initialize_ammo()
@@ -149,7 +165,20 @@ func try_fire(muzzle_transform: Transform3D, target_node: Node3D = null) -> bool
 				if weapon.spread_angle_deg > 0.0:
 					_apply_spread(spawned_proj, weapon.spread_angle_deg)
 	
+	if weapon_audio != null:
+		if current_slot_index == 0:
+			weapon_audio.stream = SFX_VULCAN
+			weapon_audio.pitch_scale = randf_range(0.95, 1.05)
+			weapon_audio.volume_db = 0.0
+		else:
+			weapon_audio.stream = SFX_ROCKET
+			weapon_audio.pitch_scale = 1.0
+			weapon_audio.volume_db = -3.0
+		if weapon_audio.stream != null:
+			weapon_audio.play()
+	
 	shot_fired.emit(current_slot_index, spawned_proj)
+
 	return true
 
 
