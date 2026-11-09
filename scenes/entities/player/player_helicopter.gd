@@ -62,7 +62,21 @@ func _ready() -> void:
 		health_component.entity_destroyed.connect(_on_entity_destroyed)
 		health_component.health_changed.connect(_on_health_changed)
 	
-	# Inicializa notificacoes de telemetria no EventBus global se acessivel
+	# Publica telemetria inicial de forma diferida para assegurar que o HUD ja esteja conectado
+	call_deferred("publish_telemetry")
+	
+	if rotor_wash_mesh != null:
+		rotor_wash_mesh.top_level = true
+
+
+## Publica o estado atual de telemetria aos ouvintes do EventBus e da interface de usuario.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func publish_telemetry() -> void:
 	if EventBus != null:
 		if fuel_component != null:
 			EventBus.player_fuel_changed.emit(fuel_component.current_fuel, fuel_component.max_fuel)
@@ -70,9 +84,6 @@ func _ready() -> void:
 			EventBus.player_health_changed.emit(health_component.current_health, health_component.max_health)
 		if cargo_component != null:
 			EventBus.civilian_boarded.emit(cargo_component.current_occupants, cargo_component.max_capacity)
-	
-	if rotor_wash_mesh != null:
-		rotor_wash_mesh.top_level = true
 
 
 ## Aplica os aprimoramentos permanentes salvos no MetaProgression a aeronave.
