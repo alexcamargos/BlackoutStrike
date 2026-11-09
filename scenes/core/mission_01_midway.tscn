@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://mission_01_midway_scene_01"]
+[gd_scene load_steps=24 format=3 uid="uid://mission_01_midway_scene_01"]
 
 [ext_resource type="Environment" uid="uid://world_environment_midway_01" path="res://scenes/core/world_environment.tres" id="1_env"]
 [ext_resource type="Shader" path="res://assets/shaders/ocean_pbr.gdshader" id="2_water_shader"]
@@ -15,6 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://ocean_wave_normal_2_res" path="res://assets/textures/water/ocean_wave_normal_2.tres" id="13_norm2"]
 [ext_resource type="PackedScene" uid="uid://island_terrain_midway_scene_01" path="res://scenes/environment/island_terrain_midway.tscn" id="14_terrain"]
 [ext_resource type="PackedScene" uid="uid://island_props_scene_01" path="res://scenes/environment/island_props.tscn" id="15_props"]
+[ext_resource type="Script" path="res://scenes/environment/follow_camera_ocean.gd" id="16_ocean_follow"]
+[ext_resource type="PackedScene" uid="uid://fuel_depot_scene_01" path="res://scenes/environment/fuel_depot.tscn" id="17_fob"]
+[ext_resource type="PackedScene" uid="uid://world_boundaries_scene_01" path="res://scenes/environment/world_boundaries.tscn" id="18_boundaries"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -33,9 +36,9 @@ shader_parameter/metallic = 0.2
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
 material = SubResource("ShaderMaterial_ocean")
-size = Vector2(800, 800)
-subdivide_width = 32
-subdivide_depth = 32
+size = Vector2(300, 300)
+subdivide_width = 24
+subdivide_depth = 24
 
 [node name="Mission_01_Midway" type="Node3D"]
 script = ExtResource("11_mission")
@@ -55,9 +58,12 @@ directional_shadow_split_3 = 0.55
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 180.0
 
+[node name="WorldBoundaries" parent="." instance=ExtResource("18_boundaries")]
 
-[node name="OceanWaterMesh" type="MeshInstance3D" parent="."]
+[node name="OceanWaterMesh" type="MeshInstance3D" parent="." node_paths=PackedStringArray("target_node")]
 mesh = SubResource("PlaneMesh_ocean")
+script = ExtResource("16_ocean_follow")
+target_node = NodePath("../ActiveEntities/PlayerHelicopter")
 
 [node name="IslandTerrain" parent="." instance=ExtResource("14_terrain")]
 
@@ -73,77 +79,80 @@ crates_container = NodePath("../ActiveEntities/Enemies")
 [node name="ShelterSpawnPoints" type="Node3D" parent="SpawnDirector"]
 
 [node name="Point1" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -70, 0.5, -50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -380, 0.5, -180)
 
 [node name="Point2" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0.5, 45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -80, 0.5, -220)
 
 [node name="Point3" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0.5, -60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120, 0.5, -250)
 
 [node name="Point4" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65, 0.5, 30)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 380, 0.5, -120)
 
 [node name="Point5" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.5, -85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -200, 0.5, 220)
 
 [node name="Point6" type="Marker3D" parent="SpawnDirector/ShelterSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.5, 75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 350, 0.5, 200)
 
 [node name="SAMSpawnPoints" type="Node3D" parent="SpawnDirector"]
 
 [node name="Point1" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 0.5, -90)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -450, 0.5, -280)
 
 [node name="Point2" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95, 0.5, 60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -420, 0.5, 260)
 
 [node name="Point3" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 0.5, -110)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 180, 0.5, -960)
 
 [node name="Point4" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 110)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 880, 0.5, 80)
 
 [node name="Point5" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80, 0.5, -100)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -320)
 
 [node name="Point6" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105, 0.5, -20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0.5, 300)
 
 [node name="Point7" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90, 0.5, 80)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 450, 0.5, -100)
 
 [node name="Point8" type="Marker3D" parent="SpawnDirector/SAMSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 0.5, -50)
 
 [node name="DataCrateSpawnPoints" type="Node3D" parent="SpawnDirector"]
 
 [node name="Point1" type="Marker3D" parent="SpawnDirector/DataCrateSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -85, 0.5, -25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0.5, -1000)
 
 [node name="Point2" type="Marker3D" parent="SpawnDirector/DataCrateSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.5, 95)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.5, -280)
 
 [node name="Point3" type="Marker3D" parent="SpawnDirector/DataCrateSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0.5, -90)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 0.5, 100)
 
 [node name="Point4" type="Marker3D" parent="SpawnDirector/DataCrateSpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 85, 0.5, 45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -220, 0.5, 250)
 
 [node name="Helipads" type="Node3D" parent="."]
 
 [node name="AllyBaseHelipad" parent="Helipads" instance=ExtResource("4_helipad")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -115)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 0.5, 950)
+
+[node name="FuelDepotFOB" parent="Helipads" instance=ExtResource("17_fob")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -250, 0.5, 120)
 
 [node name="ActiveEntities" type="Node3D" parent="."]
 
 [node name="PlayerHelicopter" parent="ActiveEntities" instance=ExtResource("5_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, -115)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 1, 950)
 
 [node name="Enemies" type="Node3D" parent="ActiveEntities"]
 
 [node name="BossApexBastion" parent="ActiveEntities/Enemies" instance=ExtResource("6_boss")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 120)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -900, 0, -900)
 
 [node name="Civilians" type="Node3D" parent="ActiveEntities"]
 
