@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "description": "Catalogo de fontes externas de modelos 3D CC0 para Blackout Strike",
+  "assets": [
+    {
+      "id": "kaykit_characters",
+      "name": "KayKit Character Pack: Adventures (Civis e Cientistas)",
+      "provider": "github",
+      "repo": "KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0",
+      "branch": "main",
+      "target_dir": "assets/models/characters",
+      "installed_version": "672074b73b",
+      "installed_format": "glb",
+      "last_checked": "2026-11-09T12:31:21Z"
+    },
+    {
+      "id": "kenney_vehicles",
+      "name": "Kenney Car Kit (Blindados e Veiculos Logisticos)",
+      "provider": "kenney",
+      "slug": "assets/car-kit",
+      "hex_id": "6173736574732f6361722d6b6974",
+      "target_dir": "assets/models/vehicles",
+      "installed_version": "81f9d77bc7",
+      "installed_format": "glb",
+      "last_checked": "2026-11-09T12:31:26Z"
+    },
+    {
+      "id": "kenney_military",
+      "name": "Kenney Space Kit (Torretas SAM, Radares e Defesas)",
+      "provider": "kenney",
+      "slug": "assets/space-kit",
+      "hex_id": "6173736574732f73706163652d6b6974",
+      "target_dir": "assets/models/military",
+      "installed_version": "36a64be063",
+      "installed_format": "glb",
+      "last_checked": "2026-11-09T12:31:41Z"
+    },
+    {
+      "id": "kenney_watercraft",
+      "name": "Kenney Watercraft Kit (Lanchas Patrulha e Chefe Naval)",
+      "provider": "kenney",
+      "slug": "assets/watercraft-kit",
+      "hex_id": "6173736574732f776174657263726166742d6b6974",
+      "target_dir": "assets/models/boss",
+      "installed_version": "0a7953e9b7",
+      "installed_format": "glb",
+      "last_checked": "2026-11-09T12:31:47Z"
+    }
+  ]
+}
