@@ -172,6 +172,39 @@ func test_hud_deferred_telemetry_synchronization() -> void:
 	assert_true(hud.cargo_label.text.contains("8"), "HUD deve sincronizar o teto de passageiros para 8.")
 
 
+func test_hud_tactical_compass_navigation() -> void:
+	assert_not_null(hud.compass_label, "O HUD deve possuir o rotulo de bussola tatica CompassLabel.")
+	
+	# 1. Verificacao da rosa dos ventos / rumo cardinal
+	var dir_nw: String = hud.get_cardinal_direction(Vector3(800.0, 0.0, 950.0), Vector3(0.0, 0.0, 0.0))
+	assert_eq(dir_nw, "NW", "Rumo do USS Vanguard para o Atol de Midway deve ser NW.")
+	
+	var dir_se: String = hud.get_cardinal_direction(Vector3(0.0, 0.0, 0.0), Vector3(800.0, 0.0, 950.0))
+	assert_eq(dir_se, "SE", "Rumo do Atol de Midway para o USS Vanguard deve ser SE.")
+	
+	var dir_n: String = hud.get_cardinal_direction(Vector3(0.0, 0.0, 100.0), Vector3(0.0, 0.0, -100.0))
+	assert_eq(dir_n, "N", "Voo para Z negativo deve ser Norte (N).")
+	
+	var dir_e: String = hud.get_cardinal_direction(Vector3(-100.0, 0.0, 0.0), Vector3(100.0, 0.0, 0.0))
+	assert_eq(dir_e, "E", "Voo para X positivo deve ser Leste (E).")
+	
+	# 2. Testa atualizacao de bussola quando distante do Atol
+	hud.current_cargo_count = 0
+	hud._update_tactical_compass(Vector3(800.0, 1.0, 950.0))
+	assert_true(hud.compass_label.text.contains("MIDWAY"), "Deve apontar para o Atol de Midway quando afastado.")
+	assert_true(hud.compass_label.text.contains("NW"), "Deve indicar orientacao NW.")
+	
+	# 3. Testa identificacao ao sobrevoar o Atol Central
+	hud._update_tactical_compass(Vector3(50.0, 1.0, 20.0))
+	assert_true(hud.compass_label.text.contains("SETOR TERRESTRE"), "Deve identificar setor terrestre ao sobrevoar o Atol.")
+	
+	# 4. Testa priorizacao de evacuacao ao embarcar sobreviventes
+	EventBus.civilian_boarded.emit(2, 5)
+	hud._update_tactical_compass(Vector3(50.0, 1.0, 20.0))
+	assert_true(hud.compass_label.text.contains("VANGUARD"), "Com civis a bordo, bussola deve priorizar retorno a base Vanguard.")
+	assert_true(hud.compass_label.text.contains("SE"), "Deve indicar rumo SE para a base Vanguard.")
+
+
 
 const Mission01MidwayScript = preload("res://scenes/core/mission_01_midway.gd")
 

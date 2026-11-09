@@ -37,7 +37,11 @@ func test_mission_01_midway_macro_layout_integration() -> void:
 	var bounds: Node3D = mission_node.get_node_or_null("WorldBoundaries") as Node3D
 	assert_not_null(bounds, "WorldBoundaries deve estar instanciado na Missao 1.")
 	
-	# 2. Heliponto do USS Vanguard (Setor Sudeste)
+	# 2. Porta-avioes USS Vanguard e Heliponto de apoio (Setor Sudeste)
+	var vanguard_carrier: USSVanguard = mission_node.get_node_or_null("USS_Vanguard") as USSVanguard
+	assert_not_null(vanguard_carrier, "USS_Vanguard deve estar instanciado na cena da Missao 1.")
+	assert_eq(vanguard_carrier.position, Vector3(800.0, 0.0, 950.0), "USS Vanguard deve estar posicionado em (800, 0, 950).")
+	
 	var vanguard_helipad: AllyBaseHelipad = mission_node.get_node_or_null("Helipads/AllyBaseHelipad") as AllyBaseHelipad
 	assert_not_null(vanguard_helipad, "AllyBaseHelipad do USS Vanguard deve existir.")
 	assert_eq(vanguard_helipad.position, Vector3(800.0, 0.5, 950.0), "Heliponto Vanguard deve estar em (800, 0.5, 950).")
