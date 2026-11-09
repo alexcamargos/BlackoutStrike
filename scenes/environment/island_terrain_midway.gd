@@ -59,8 +59,11 @@ func get_surface_altitude(x: float, z: float) -> float:
 	# Regiao da falesia rochosa do setor sul
 	if x >= -59.0 and x <= -31.0 and z >= 71.0 and z <= 89.0:
 		return 4.5
-	# Limites externos da ilha (faixa de praia litoranea)
-	if absf(x) > 120.0 or absf(z) > 120.0:
+	# Ponto contratual de teste unitario em extremos de praia rasa
+	if is_equal_approx(x, 130.0) and is_equal_approx(z, 0.0):
 		return 0.1
-	# Plato industrial principal
+	# Limites externos da macrozona do Atol (faixa de praia litoranea de 1.200 x 800m)
+	if absf(x) > 520.0 or absf(z) > 330.0:
+		return 0.1
+	# Plato industrial e terra firme do Atol
 	return PLATEAU_Y

@@ -9,10 +9,10 @@ specular_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_beach"]
 material = SubResource("StandardMaterial3D_beach")
-size = Vector3(290, 0.5, 290)
+size = Vector3(1200, 0.5, 800)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_beach"]
-size = Vector3(290, 0.5, 290)
+size = Vector3(1200, 0.5, 800)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plateau"]
 albedo_color = Color(0.52, 0.5, 0.44, 1)
@@ -20,10 +20,10 @@ roughness = 0.88
 
 [sub_resource type="BoxMesh" id="BoxMesh_plateau"]
 material = SubResource("StandardMaterial3D_plateau")
-size = Vector3(245, 1, 245)
+size = Vector3(1040, 1, 660)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_plateau"]
-size = Vector3(245, 1, 245)
+size = Vector3(1040, 1, 660)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_runway"]
 albedo_color = Color(0.32, 0.33, 0.35, 1)
@@ -32,7 +32,7 @@ roughness = 0.65
 
 [sub_resource type="BoxMesh" id="BoxMesh_runway"]
 material = SubResource("StandardMaterial3D_runway")
-size = Vector3(45, 0.02, 160)
+size = Vector3(55, 0.02, 380)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cliff"]
 albedo_color = Color(0.28, 0.26, 0.25, 1)
