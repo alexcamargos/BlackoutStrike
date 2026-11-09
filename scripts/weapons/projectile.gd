@@ -5,6 +5,9 @@
 class_name Projectile
 extends Area3D
 
+const WATER_SPLASH_SCENE: PackedScene = preload("res://scenes/vfx/water_splash.tscn")
+const EXPLOSION_HEAVY_SCENE: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+
 ## Sinal emitido no instante em que o projetil colide com um obstaculo ou alvo valido.
 signal impacted(hit_position: Vector3, collider: Node)
 
@@ -91,11 +94,36 @@ func simulate_step(delta: float) -> void:
 		queue_free()
 		return
 	
+	var previous_pos: Vector3 = global_position
 	if is_homing and homing_target != null and is_instance_valid(homing_target):
 		_process_homing(delta)
 	else:
 		var forward_vector: Vector3 = -global_transform.basis.z.normalized()
 		global_position += forward_vector * speed * delta
+	
+	# Interceptacao automatica de impacto com a superficie do mar aberto (ao cruzar de Y > 0 para Y <= 0)
+	if previous_pos.y > 0.0 and global_position.y <= 0.0:
+		var travel_y: float = global_position.y - previous_pos.y
+		var t: float = (0.0 - previous_pos.y) / travel_y if absf(travel_y) > 0.0001 else 0.0
+		var water_hit_pos: Vector3 = previous_pos.lerp(global_position, clampf(t, 0.0, 1.0))
+		water_hit_pos.y = 0.0
+		_handle_water_surface_impact(water_hit_pos)
+
+
+## Processa a colisao balistica direta com a superficie da agua.
+##
+## Args:
+##     hit_pos (Vector3): Coordenadas globais do ponto de contato na lamina d'agua.
+##
+## Returns:
+##     void
+func _handle_water_surface_impact(hit_pos: Vector3) -> void:
+	if has_impacted:
+		return
+	has_impacted = true
+	_spawn_impact_effect(hit_pos, null)
+	impacted.emit(hit_pos, null)
+	_cleanup_projectile()
 
 
 ## Ajusta a orientacao do vetor de trajetoria na direcao do alvo teleguiado.
@@ -173,7 +201,34 @@ func handle_hit(target: Node) -> void:
 	if pierce_remaining > 0:
 		pierce_remaining -= 1
 	else:
-		has_impacted = true
+		_cleanup_projectile()
+
+
+## Realiza o encerramento do ciclo de vida do projetil preservando esteiras de fumaca ativas.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _cleanup_projectile() -> void:
+	has_impacted = true
+	var trail: GPUParticles3D = get_node_or_null("TrailParticles") as GPUParticles3D
+	if trail == null:
+		trail = get_node_or_null("SmokeTrailParticles") as GPUParticles3D
+	
+	if trail != null and trail.emitting and is_inside_tree():
+		var mesh_node: Node3D = get_node_or_null("MeshInstance3D") as Node3D
+		if mesh_node != null:
+			mesh_node.visible = false
+		var col_node: CollisionShape3D = get_node_or_null("CollisionShape3D") as CollisionShape3D
+		if col_node != null:
+			col_node.set_deferred("disabled", true)
+		trail.emitting = false
+		set_physics_process(false)
+		var wait_time: float = maxf(trail.lifetime, 0.1)
+		get_tree().create_timer(wait_time).timeout.connect(queue_free)
+	else:
 		queue_free()
 
 
@@ -271,27 +326,40 @@ func _find_health_component(node: Node) -> HealthComponent:
 ##     void
 func _spawn_impact_effect(spawn_pos: Vector3, hit_target: Node = null) -> void:
 	var current_tree: SceneTree = get_tree()
-	if current_tree == null or current_tree.current_scene == null:
+	if current_tree == null:
+		return
+	var spawn_root: Node = current_tree.current_scene
+	if spawn_root == null:
+		var parent_node: Node = get_parent()
+		if parent_node != null and parent_node.is_inside_tree():
+			spawn_root = parent_node
+	if spawn_root == null:
 		return
 	
 	# Impactos na cota do oceano utilizam o efeito especializado de water splash
 	if spawn_pos.y <= 0.3:
-		var splash_scene: PackedScene = load("res://scenes/vfx/water_splash.tscn") as PackedScene
-		if splash_scene != null:
-			var splash_inst: Node3D = splash_scene.instantiate() as Node3D
-			if splash_inst != null:
-				current_tree.current_scene.add_child(splash_inst)
-				splash_inst.global_position = spawn_pos
-				return
+		var splash_inst: Node3D = WATER_SPLASH_SCENE.instantiate() as Node3D
+		if splash_inst != null:
+			spawn_root.add_child(splash_inst)
+			splash_inst.global_position = spawn_pos
+			return
+	
+	# Projeteis pesados com raio de explosao instanciam ExplosionHeavy
+	if explosion_radius > 0.0:
+		var explosion_inst: Node3D = EXPLOSION_HEAVY_SCENE.instantiate() as Node3D
+		if explosion_inst != null:
+			spawn_root.add_child(explosion_inst)
+			explosion_inst.global_position = spawn_pos
+			return
 	
 	if impact_effect_scene == null:
 		return
 	var effect_instance: Node3D = impact_effect_scene.instantiate() as Node3D
 	if effect_instance != null:
-		current_tree.current_scene.add_child(effect_instance)
-		effect_instance.global_position = spawn_pos
 		if effect_instance.has_method("setup_for_target"):
 			effect_instance.call("setup_for_target", hit_target, spawn_pos)
+		spawn_root.add_child(effect_instance)
+		effect_instance.global_position = spawn_pos
 
 
 ## Callback disparado quando um corpo fisico entra na area do projetil.
