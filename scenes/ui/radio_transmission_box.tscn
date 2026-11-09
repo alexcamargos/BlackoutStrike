@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://radio_box_ui_01"]
+[gd_scene load_steps=5 format=3 uid="uid://radio_box_ui_01"]
 
 [ext_resource type="Script" path="res://scenes/ui/radio_transmission_box.gd" id="1_radio"]
+[ext_resource type="Shader" path="res://assets/shaders/hud_scanlines.gdshader" id="2_scanlines_shader"]
+[ext_resource type="Texture2D" uid="uid://portrait_commander_vance_01" path="res://assets/textures/ui/portrait_vance.tres" id="3_default_portrait"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_scanlines"]
+shader = ExtResource("2_scanlines_shader")
+shader_parameter/scanline_count = 80.0
+shader_parameter/scanline_intensity = 0.4
+shader_parameter/noise_intensity = 0.2
+shader_parameter/flicker_speed = 18.0
+shader_parameter/vignette_strength = 0.7
+shader_parameter/tint_color = Color(0.2, 0.9, 0.8, 1)
 
 [node name="RadioTransmissionBox" type="Control"]
 layout_mode = 3
@@ -9,10 +20,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -150.0
-offset_right = 320.0
-offset_bottom = -30.0
+offset_left = -340.0
+offset_top = -155.0
+offset_right = 340.0
+offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("1_radio")
@@ -32,24 +43,53 @@ theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="VBox" type="VBoxContainer" parent="PanelContainer/Margin"]
+[node name="HBox" type="HBoxContainer" parent="PanelContainer/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PortraitContainer" type="Control" parent="PanelContainer/Margin/HBox"]
+custom_minimum_size = Vector2(86, 86)
+layout_mode = 2
+
+[node name="Portrait" type="TextureRect" parent="PanelContainer/Margin/HBox/PortraitContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_default_portrait")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScanlinesOverlay" type="ColorRect" parent="PanelContainer/Margin/HBox/PortraitContainer"]
+material = SubResource("ShaderMaterial_scanlines")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="PanelContainer/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="Header" type="HBoxContainer" parent="PanelContainer/Margin/VBox"]
+[node name="Header" type="HBoxContainer" parent="PanelContainer/Margin/HBox/VBox"]
 layout_mode = 2
 
-[node name="RadioIcon" type="Label" parent="PanelContainer/Margin/VBox/Header"]
+[node name="RadioIcon" type="Label" parent="PanelContainer/Margin/HBox/VBox/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 0.8, 1)
 text = "[COMM-LINK]"
 
-[node name="CallsignLabel" type="Label" parent="PanelContainer/Margin/VBox/Header"]
+[node name="CallsignLabel" type="Label" parent="PanelContainer/Margin/HBox/VBox/Header"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
 text = "COMMANDER VANCE"
 
-[node name="MessageLabel" type="Label" parent="PanelContainer/Margin/VBox"]
+[node name="MessageLabel" type="Label" parent="PanelContainer/Margin/HBox/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 text = "Transmissao em andamento..."
