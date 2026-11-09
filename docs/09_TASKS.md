@@ -271,19 +271,19 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 12: SpawnDirector por Setores e Otimização Espacial
 
-- [ ] **TASK-120: Refatoração do SpawnDirector com Bounding Boxes e Setores**
+- [x] **TASK-120: Refatoração do SpawnDirector com Bounding Boxes e Setores**
   - **Dependência:** TASK-100, TASK-111.
   - **Arquivos:** `res://scripts/procedural/spawn_director.gd`, `res://tests/unit/test_spawn_director.gd`.
   - **Lógica:** Reestruturar os pontos candidatos e o algoritmo de sorteio para cobrir o mapa de $2.500\text{ m}$. Os 3 abrigos de civis são obrigatoriamente sorteados dentro da máscara do Atol Central ($X \in [-500, 500]$, $Z \in [-350, 350]$). Prover pontos contratuais para spawn do jogador no USS Vanguard $(800, 1, 950)$ e Boss Apex Bastion $(-900, 0, -900)$.
   - **Critério de Aceite:** Teste unitário verifica que nenhuma entidade de abrigo é gerada fora dos limites do Atol Central.
 
-- [ ] **TASK-121: Sistema de Culling de Entidades e Projéteis a 250m**
+- [x] **TASK-121: Sistema de Culling de Entidades e Projéteis a 250m**
   - **Dependência:** TASK-120.
   - **Arquivos:** `res://scripts/components/entity_distance_culler.gd`.
   - **Lógica:** Mecanismo de culling para entidades distantes a mais de $250\text{ m}$ do helicóptero do jogador, desativando o processamento pesado de física (`process_mode = PROCESS_MODE_DISABLED`) e reativando-o quando no raio de aproximação.
   - **Critério de Aceite:** Entidades distantes congelam processamento de física e reativam sem perda de integridade de estado ou referências de nós.
 
-- [ ] **TASK-122: Suíte de Testes GUT do SpawnDirector Expandido**
+- [x] **TASK-122: Suíte de Testes GUT do SpawnDirector Expandido**
   - **Dependência:** TASK-120, TASK-121.
   - **Arquivos:** `res://tests/unit/test_spawn_director.gd`.
   - **Lógica:** Bateria de asserções cobrindo as novas coordenadas, sorteio sem sobreposição em macroescala e preservação dos reforços reativos (*The Reactive Grid*).

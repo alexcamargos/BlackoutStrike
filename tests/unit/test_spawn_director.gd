@@ -84,3 +84,47 @@ func test_auto_spawn_on_ready_flag() -> void:
 		if child is RescueShelter or child.name.begins_with("RescueShelter"):
 			shelters_found += 1
 	assert_eq(shelters_found, 3, "Auto spawn deve instanciar 3 abrigos automaticamente em _ready().")
+
+
+func test_shelters_within_central_atoll_mask() -> void:
+	var layout: Dictionary = director.spawn_initial_layout()
+	for shelter: Node3D in layout["shelters"]:
+		assert_between(shelter.position.x, -500.0, 500.0, "Abrigo deve estar contido em X [-500, 500].")
+		assert_between(shelter.position.z, -350.0, 350.0, "Abrigo deve estar contido em Z [-350, 350].")
+
+
+func test_strategic_spawn_points_match_contract() -> void:
+	var player_spawn: Vector3 = director.get_player_spawn_point()
+	assert_eq(player_spawn, Vector3(800.0, 1.0, 950.0), "Spawn do jogador deve ser no porta-avioes USS Vanguard.")
+	
+	var boss_spawn: Vector3 = director.get_boss_spawn_point()
+	assert_eq(boss_spawn, Vector3(-900.0, 0.0, -900.0), "Spawn do chefe deve ser em aguas profundas NW.")
+
+
+func test_entity_distance_culler_logic() -> void:
+	var target: Node3D = Node3D.new()
+	add_child_autofree(target)
+	target.global_position = Vector3(1000.0, 0.0, 1000.0) # Longe do centro
+	
+	var culler: EntityDistanceCuller = EntityDistanceCuller.new()
+	culler.culling_distance = 250.0
+	target.add_child(culler)
+	
+	var fake_player: Node3D = Node3D.new()
+	fake_player.name = "PlayerHelicopter"
+	fake_player.add_to_group("player")
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(0.0, 0.0, 0.0)
+	
+	# Jogador a 1414m (> 250m): culler deve desativar o no alvo
+	culler.update_culling_state()
+	assert_true(culler.is_culled, "Entidade a mais de 250m deve ser culled.")
+	assert_eq(target.process_mode, Node.PROCESS_MODE_DISABLED, "Process mode deve ser DISABLED quando longe.")
+	assert_false(target.visible, "Visibilidade deve ser oculta quando longe.")
+	
+	# Aproxima o jogador para 100m do alvo (< 250m)
+	fake_player.global_position = Vector3(900.0, 0.0, 1000.0)
+	culler.update_culling_state()
+	assert_false(culler.is_culled, "Entidade dentro de 250m deve ser reativada.")
+	assert_eq(target.process_mode, Node.PROCESS_MODE_INHERIT, "Process mode deve ser INHERIT ao aproximar.")
+	assert_true(target.visible, "Visibilidade deve ser restaurada.")
