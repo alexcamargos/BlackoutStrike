@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://fuel_depot_scene_01" path="res://scenes/environment/fuel_depot.tscn" id="17_fob"]
 [ext_resource type="PackedScene" uid="uid://world_boundaries_scene_01" path="res://scenes/environment/world_boundaries.tscn" id="18_boundaries"]
 [ext_resource type="PackedScene" uid="uid://uss_vanguard_scene_01" path="res://scenes/environment/uss_vanguard.tscn" id="19_vanguard"]
+[ext_resource type="PackedScene" uid="uid://sea_channel_buoy_scene_01" path="res://scenes/environment/sea_channel_buoy.tscn" id="20_buoy"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -71,7 +72,24 @@ target_node = NodePath("../ActiveEntities/PlayerHelicopter")
 [node name="IslandProps" parent="." instance=ExtResource("15_props")]
 
 [node name="USS_Vanguard" parent="." instance=ExtResource("19_vanguard")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 0, 950)
+transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 0, 950)
+
+[node name="SeaChannelMarkers" type="Node3D" parent="."]
+
+[node name="Buoy1" parent="SeaChannelMarkers" instance=ExtResource("20_buoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 730, 0, 870)
+
+[node name="Buoy2" parent="SeaChannelMarkers" instance=ExtResource("20_buoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 640, 0, 760)
+
+[node name="Buoy3" parent="SeaChannelMarkers" instance=ExtResource("20_buoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 550, 0, 650)
+
+[node name="Buoy4" parent="SeaChannelMarkers" instance=ExtResource("20_buoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 460, 0, 540)
+
+[node name="Buoy5" parent="SeaChannelMarkers" instance=ExtResource("20_buoy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 370, 0, 430)
 
 [node name="SpawnDirector" type="Node3D" parent="." node_paths=PackedStringArray("enemies_container", "shelters_container", "crates_container")]
 script = ExtResource("3_director")
@@ -151,7 +169,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -250, 0.5, 120)
 [node name="ActiveEntities" type="Node3D" parent="."]
 
 [node name="PlayerHelicopter" parent="ActiveEntities" instance=ExtResource("5_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 800, 1, 950)
+transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 1, 950)
 
 [node name="Enemies" type="Node3D" parent="ActiveEntities"]
 

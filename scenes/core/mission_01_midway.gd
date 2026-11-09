@@ -38,7 +38,7 @@ func _ready() -> void:
 		EventBus.radio_transmission_requested.emit(
 			"vasquez",
 			"OVERWATCH VANGUARD (DRA. VASQUEZ)",
-			"Mohawk-1 na decolagem do USS Vanguard. Rumo Noroeste (NW) a 950m para o Atol de Midway. Resgate os especialistas e liquide o Apex Bastion.",
+			"Mohawk-1 liberado para decolagem! Siga a Noroeste [W + A] pelo canal de boias luminosas ate o Atol de Midway. Nao se afaste para o mar!",
 			6.0
 		)
 	
