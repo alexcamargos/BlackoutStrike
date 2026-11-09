@@ -46,7 +46,10 @@ func find_best_target(origin: Vector3, forward: Vector3, cone_deg: float, range_
 	var best_distance: float = range_dist + 1.0
 	
 	for candidate in candidates:
-		if candidate == null or not is_instance_valid(candidate):
+		if candidate == null or not is_instance_valid(candidate) or candidate.is_queued_for_deletion():
+			continue
+		
+		if _is_candidate_destroyed(candidate):
 			continue
 		
 		var to_target: Vector3 = candidate.global_position - origin
@@ -66,6 +69,38 @@ func find_best_target(origin: Vector3, forward: Vector3, cone_deg: float, range_
 	return best_candidate
 
 
+## Verifica se uma entidade candidata foi destruida ou desativada.
+##
+## Args:
+##     candidate (Node3D): Entidade candidata a alvo.
+##
+## Returns:
+##     bool: True se o candidato ja estiver destruido ou morto.
+func _is_candidate_destroyed(candidate: Node3D) -> bool:
+	if "is_dead" in candidate and bool(candidate.get("is_dead")):
+		return true
+	if candidate.has_meta("is_dead") and bool(candidate.get_meta("is_dead")):
+		return true
+	if candidate.has_method("is_destroyed") and bool(candidate.call("is_destroyed")):
+		return true
+	
+	var ai_comp: Node = candidate.get_node_or_null("EnemyAIController")
+	if ai_comp != null and "is_dead" in ai_comp and bool(ai_comp.get("is_dead")):
+		return true
+	
+	var health_comp: HealthComponent = candidate.get_node_or_null("HealthComponent") as HealthComponent
+	if health_comp == null:
+		for child in candidate.get_children():
+			if child is HealthComponent:
+				health_comp = child as HealthComponent
+				break
+	
+	if health_comp != null and (health_comp.is_destroyed() or health_comp.current_health <= 0.0):
+		return true
+	
+	return false
+
+
 ## Executa a varredura automatica utilizando entidades cadastradas no grupo 'enemies'.
 ##
 ## Args:
@@ -80,8 +115,9 @@ func scan_from_node(scanner_node: Node3D, tree: SceneTree, delta: float = 0.0, f
 	if scanner_node == null or tree == null:
 		return null
 	
-	if current_target != null and not is_instance_valid(current_target):
-		clear_target()
+	if current_target != null:
+		if not is_instance_valid(current_target) or _is_candidate_destroyed(current_target):
+			clear_target()
 	
 	if delta > 0.0:
 		_scan_timer += delta

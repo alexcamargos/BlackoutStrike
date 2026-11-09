@@ -103,3 +103,39 @@ func test_hellfire_scene_instantiates_correctly() -> void:
 	assert_true(instance.is_homing, "Hellfire deve possuir is_homing = true.")
 	assert_eq(instance.explosion_radius, 2.5, "Raio de explosao do Hellfire deve ser 2.5m.")
 	add_child_autofree(instance)
+
+
+func test_destroyed_targets_are_ignored_by_target_scanner() -> void:
+	var forward: Vector3 = Vector3(0, 0, -1)
+	var origin: Vector3 = Vector3.ZERO
+	
+	# Inimigo marcado como morto
+	var dead_enemy: Node3D = Node3D.new()
+	add_child_autofree(dead_enemy)
+	dead_enemy.global_position = Vector3(1, 0, -10)
+	dead_enemy.set_meta("is_dead", true)
+	dead_enemy.add_to_group("enemies")
+	
+	# Inimigo com HealthComponent zerado
+	var destroyed_enemy: Node3D = Node3D.new()
+	add_child_autofree(destroyed_enemy)
+	destroyed_enemy.global_position = Vector3(2, 0, -12)
+	var health_comp: HealthComponent = HealthComponent.new()
+	health_comp.name = "HealthComponent"
+	health_comp.max_health = 100.0
+	health_comp.current_health = 0.0
+	destroyed_enemy.add_child(health_comp)
+	destroyed_enemy.add_to_group("enemies")
+	
+	# Inimigo vivo mais distante no cone
+	var alive_enemy: Node3D = Node3D.new()
+	add_child_autofree(alive_enemy)
+	alive_enemy.global_position = Vector3(3, 0, -25)
+	var alive_health: HealthComponent = HealthComponent.new()
+	alive_health.max_health = 100.0
+	alive_health.current_health = 100.0
+	alive_enemy.add_child(alive_health)
+	alive_enemy.add_to_group("enemies")
+	
+	var chosen: Node3D = target_scanner.find_best_target(origin, forward, 40.0, 50.0, [dead_enemy, destroyed_enemy, alive_enemy])
+	assert_eq(chosen, alive_enemy, "O scanner deve ignorar alvos mortos/destruidos e selecionar o proximo vivo no cone.")
