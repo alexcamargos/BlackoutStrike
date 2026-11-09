@@ -318,8 +318,34 @@ func _on_core_destroyed() -> void:
 	if is_dead:
 		return
 	is_dead = true
+	_spawn_destruction_explosion(global_position if is_inside_tree() else position)
 	boss_defeated.emit()
 	if EventBus != null:
 		EventBus.boss_defeated.emit("Apex Bastion")
 		EventBus.mission_accomplished.emit()
 	queue_free()
+
+
+## Instancia efeito de explosao pesada na destruicao do chefe naval.
+##
+## Args:
+##     pos (Vector3): Coordenadas da detonacao.
+##
+## Returns:
+##     void
+func _spawn_destruction_explosion(pos: Vector3) -> void:
+	var tree: SceneTree = get_tree()
+	var spawn_parent: Node = null
+	if tree != null and tree.current_scene != null:
+		spawn_parent = tree.current_scene
+	elif get_parent() != null and get_parent().is_inside_tree():
+		spawn_parent = get_parent()
+	
+	if spawn_parent == null:
+		return
+	
+	var explosion_scene: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+	var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
+	if explosion_inst != null:
+		spawn_parent.add_child(explosion_inst)
+		explosion_inst.global_position = pos

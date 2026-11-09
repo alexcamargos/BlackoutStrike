@@ -69,7 +69,33 @@ func _on_entity_destroyed() -> void:
 	is_dead = true
 	set_physics_process(false)
 	_apply_damaged_material()
+	_spawn_destruction_explosion(global_position if is_inside_tree() else position)
 	turret_destroyed.emit()
+
+
+## Instancia efeito de explosao pesada na avaria da torreta.
+##
+## Args:
+##     pos (Vector3): Coordenadas da detonacao.
+##
+## Returns:
+##     void
+func _spawn_destruction_explosion(pos: Vector3) -> void:
+	var tree: SceneTree = get_tree()
+	var spawn_parent: Node = null
+	if tree != null and tree.current_scene != null:
+		spawn_parent = tree.current_scene
+	elif get_parent() != null and get_parent().is_inside_tree():
+		spawn_parent = get_parent()
+	
+	if spawn_parent == null:
+		return
+	
+	var explosion_scene: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+	var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
+	if explosion_inst != null:
+		spawn_parent.add_child(explosion_inst)
+		explosion_inst.global_position = pos
 
 
 ## Aplica o material carbonizado/avariado a todas as malhas pertencentes ao módulo da torreta.
