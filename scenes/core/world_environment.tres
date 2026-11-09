@@ -23,3 +23,17 @@ glow_strength = 1.05
 glow_bloom = 0.15
 glow_blend_mode = 0
 glow_hdr_threshold = 1.15
+fog_enabled = true
+fog_light_color = Color(0.0705882, 0.133333, 0.2, 1)
+fog_depth_begin = 120.0
+fog_depth_end = 320.0
+fog_density = 0.006
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.0705882, 0.133333, 0.2, 1)
+volumetric_fog_emission = Color(0.0705882, 0.133333, 0.2, 1)
+volumetric_fog_emission_energy = 0.15
+volumetric_fog_length = 180.0
+volumetric_fog_anisotropy = 0.2
+volumetric_fog_sky_affect = 1.0
+
