@@ -293,25 +293,25 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 ## Sprint 13: Topografia, Oceano Infinito e Integração de Missão
 
-- [ ] **TASK-130: Oceano Infinito com Plano Seguidor de Câmera**
+- [x] **TASK-130: Oceano Infinito com Plano Seguidor de Câmera**
   - **Dependência:** TASK-100.
   - **Arquivos:** `res://scenes/environment/follow_camera_ocean.gd`, `res://assets/shaders/ocean_pbr.gdshader`.
   - **Lógica:** Implementar plano de água ($150 \times 150\text{ m}$) que acompanha o deslocamento horizontal do jogador/câmera mantendo $Y = 0.0$, enquanto as normais e ondas no shader operam com coordenadas globais contínuas.
   - **Critério de Aceite:** O oceano mantém cobertura visual contínua em qualquer quadrante de $X, Z \in [-1250, 1250]$ sem estiramento ou quebras na malha.
 
-- [ ] **TASK-131: Limites do Mundo e Reposicionamento do Relevo e Adereços**
+- [x] **TASK-131: Limites do Mundo e Reposicionamento do Relevo e Adereços**
   - **Dependência:** TASK-130.
   - **Arquivos:** `res://scenes/core/mission_01_midway.tscn`, `res://scenes/environment/island_terrain_midway.tscn`.
   - **Lógica:** Adicionar barreiras físicas estáticas invisíveis em $X = \pm 1250\text{ m}$ e $Z = \pm 1250\text{ m}$. Ajustar o posicionamento do relevo da ilha e dos adereços para centralização no Atol.
   - **Critério de Aceite:** A aeronave é impedida de ultrapassar as bordas de $\pm 1250\text{ m}$.
 
-- [ ] **TASK-132: Integração da Cena Principal Mission_01_Midway**
+- [x] **TASK-132: Integração da Cena Principal Mission_01_Midway**
   - **Dependência:** TASK-111, TASK-120, TASK-130, TASK-131.
   - **Arquivos:** `res://scenes/core/mission_01_midway.tscn`.
   - **Lógica:** Configurar heliponto da Força-Tarefa Vanguard em $(800, 0.5, 950)$, spawn do helicóptero em $(800, 1.0, 950)$, chefe Apex Bastion em $(-900, 0, -900)$, e instanciar o `FuelDepot` no Atol Central.
   - **Critério de Aceite:** A cena compila e instancia todos os nós em modo headless sem erros de referência ou de inicialização.
 
-- [ ] **TASK-133: Verificação Global de Aceitação e Ausência de Regressões**
+- [x] **TASK-133: Verificação Global de Aceitação e Ausência de Regressões**
   - **Dependências:** Todas as tarefas anteriores.
   - **Arquivos:** Todas as suítes de teste em `res://tests/`.
   - **Lógica:** Execução integral de todos os testes unitários e de integração GUT, cobrindo cinemática, armamentos, resgate, boons, meta-progressão e fases do chefe.
