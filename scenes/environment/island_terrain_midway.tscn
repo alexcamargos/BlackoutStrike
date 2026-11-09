@@ -66,6 +66,27 @@ size = Vector3(28, 4, 18)
 [sub_resource type="BoxShape3D" id="BoxShape3D_cliff_s"]
 size = Vector3(28, 4, 18)
 
+[sub_resource type="BoxMesh" id="BoxMesh_islet_se1"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(120, 0.6, 120)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_islet_se1"]
+size = Vector3(120, 0.6, 120)
+
+[sub_resource type="BoxMesh" id="BoxMesh_islet_se2"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(140, 0.6, 140)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_islet_se2"]
+size = Vector3(140, 0.6, 140)
+
+[sub_resource type="BoxMesh" id="BoxMesh_islet_east"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(110, 0.6, 110)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_islet_east"]
+size = Vector3(110, 0.6, 110)
+
 [node name="IslandTerrainMidway" type="StaticBody3D" node_paths=PackedStringArray("plateau_mesh", "beach_mesh", "cliffs_container") groups=["world_static"]]
 collision_layer = 1
 collision_mask = 0
@@ -125,3 +146,27 @@ mesh = SubResource("BoxMesh_cliff_s")
 [node name="CliffSouthCol" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 2.5, 80)
 shape = SubResource("BoxShape3D_cliff_s")
+
+[node name="IsletSoutheast1Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 680, 0.05, 680)
+mesh = SubResource("BoxMesh_islet_se1")
+
+[node name="IsletSoutheast1Col" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 680, 0.05, 680)
+shape = SubResource("BoxShape3D_islet_se1")
+
+[node name="IsletSoutheast2Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 560, 0.05, 520)
+mesh = SubResource("BoxMesh_islet_se2")
+
+[node name="IsletSoutheast2Col" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 560, 0.05, 520)
+shape = SubResource("BoxShape3D_islet_se2")
+
+[node name="IsletEastMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 850, 0.05, 180)
+mesh = SubResource("BoxMesh_islet_east")
+
+[node name="IsletEastCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 850, 0.05, 180)
+shape = SubResource("BoxShape3D_islet_east")
