@@ -25,6 +25,9 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var hydra_pod_left: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodLeft
 @onready var hydra_pod_right: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodRight
 @onready var hellfire_hardpoint: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HellfireHardpoint
+@onready var rotor_audio: AudioStreamPlayer3D = get_node_or_null("RotorAudioPlayer") as AudioStreamPlayer3D
+@onready var fuel_alarm_audio: AudioStreamPlayer = get_node_or_null("FuelAlarmAudioPlayer") as AudioStreamPlayer
+
 
 ## Flags e rastreadores de estado da aeronave.
 var is_autorotating: bool = false
@@ -318,6 +321,27 @@ func _process_flight_controls(delta: float) -> void:
 	
 	# Atualiza intensidade visual do rotor wash dinamicamente conforme cota de altitude (Y <= 1.8m maxima visibilidade)
 	update_rotor_wash(global_position.y)
+	
+	# Modulacao de pitch do rotor acustico vinculada a velocidade linear
+	update_rotor_audio_pitch(velocity.length())
+
+
+## Atualiza a modulacao de pitch do rotor baseada na velocidade linear.
+##
+## Args:
+##     speed (float): Velocidade linear da aeronave (m/s).
+##
+## Returns:
+##     void
+func update_rotor_audio_pitch(speed: float) -> void:
+	if rotor_audio == null:
+		return
+	var max_spd: float = flight_controller.max_speed if flight_controller != null else 22.0
+	var speed_ratio: float = clampf(speed / maxf(1.0, max_spd), 0.0, 1.0)
+	rotor_audio.pitch_scale = lerpf(0.95, 1.15, speed_ratio)
+	if not rotor_audio.playing and rotor_audio.stream != null:
+		rotor_audio.play()
+
 
 
 ## Atualiza a intensidade visual do rotor wash com base na cota de altitude informada.
@@ -392,6 +416,10 @@ func _on_fuel_depleted() -> void:
 	if not is_autorotating and (health_component == null or not health_component.is_destroyed()):
 		is_autorotating = true
 		autorotation_timer = 0.0
+		if rotor_audio != null:
+			rotor_audio.pitch_scale = 0.65
+		if fuel_alarm_audio != null and fuel_alarm_audio.playing:
+			fuel_alarm_audio.stop()
 		if EventBus != null:
 			EventBus.player_fuel_depleted.emit()
 
@@ -407,6 +435,16 @@ func _on_fuel_depleted() -> void:
 func _on_fuel_changed(current: float, max_fuel: float) -> void:
 	if EventBus != null:
 		EventBus.player_fuel_changed.emit(current, max_fuel)
+	
+	if fuel_alarm_audio != null and fuel_alarm_audio.stream != null:
+		var ratio: float = current / maxf(1.0, max_fuel)
+		if ratio <= 0.2 and current > 0.0:
+			if not fuel_alarm_audio.playing:
+				fuel_alarm_audio.play()
+		else:
+			if fuel_alarm_audio.playing:
+				fuel_alarm_audio.stop()
+
 
 
 ## Callback acionado pela variacao de pontos de vida.

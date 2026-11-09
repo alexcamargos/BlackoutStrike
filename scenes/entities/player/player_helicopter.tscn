@@ -13,6 +13,10 @@
 [ext_resource type="Script" path="res://scripts/components/rescue_sensor_area.gd" id="11_rescue"]
 [ext_resource type="Script" path="res://scripts/components/boon_receiver_component.gd" id="12_boon"]
 [ext_resource type="Shader" path="res://assets/shaders/rotor_wash.gdshader" id="13_wash_shader"]
+[ext_resource type="AudioStream" uid="uid://dl66tnrofw5kx" path="res://assets/audio/sfx_helo_loop.wav" id="14_audio_helo"]
+[ext_resource type="AudioStream" uid="uid://cefay513ctxac" path="res://assets/audio/sfx_alarm_fuel.wav" id="15_audio_alarm"]
+
+
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rotor_wash"]
 render_priority = 0
@@ -258,3 +262,15 @@ script = ExtResource("12_boon")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 top_level = true
 mesh = SubResource("PlaneMesh_rotor_wash")
+
+[node name="RotorAudioPlayer" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("14_audio_helo")
+bus = &"SFX_Player"
+unit_size = 10.0
+max_distance = 60.0
+
+[node name="FuelAlarmAudioPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("15_audio_alarm")
+bus = &"UI_Alarms"
+volume_db = -4.0
+
