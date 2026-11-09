@@ -5,6 +5,8 @@
 class_name RescueSensorArea
 extends Area3D
 
+const SFX_RESCUE_PING: AudioStream = preload("res://assets/audio/sfx_rescue_ping.wav")
+
 ## Sinal emitido quando a contagem de tempo de embarque e alterada.
 signal boarding_progress_changed(progress: float)
 
@@ -41,6 +43,9 @@ var is_suppressed: bool = false
 ## Cache do ultimo estado de supressao avaliado para amortizar alocacoes.
 var _cached_is_suppressed: bool = false
 
+## Player de audio para o chime de resgate harmônico.
+var rescue_audio: AudioStreamPlayer = null
+
 ## Lista interna de civis atualmente na area de cobertura do sensor.
 var _detected_civilians: Array[Civilian] = []
 
@@ -64,6 +69,14 @@ func _ready() -> void:
 		var parent_node: Node = get_parent()
 		if parent_node != null:
 			cargo_component = parent_node.get_node_or_null("CargoComponent") as CargoComponent
+	
+	rescue_audio = get_node_or_null("RescueAudioPlayer") as AudioStreamPlayer
+	if rescue_audio == null:
+		rescue_audio = AudioStreamPlayer.new()
+		rescue_audio.name = "RescueAudioPlayer"
+		rescue_audio.stream = SFX_RESCUE_PING
+		rescue_audio.bus = &"UI_Chimes"
+		add_child(rescue_audio)
 	
 	_setup_rescue_ring_mesh()
 
@@ -251,8 +264,12 @@ func _execute_boarding() -> void:
 		var boarded: bool = cargo_component.try_board_passenger()
 		if boarded:
 			current_target_civilian.rescue()
+			if rescue_audio != null and rescue_audio.stream != null:
+				rescue_audio.play()
 	else:
 		current_target_civilian.rescue()
+		if rescue_audio != null and rescue_audio.stream != null:
+			rescue_audio.play()
 	
 	current_target_civilian = null
 	boarding_timer = 0.0
