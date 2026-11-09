@@ -22,46 +22,53 @@ signal reactive_wave_dispatched(origin: Vector3, units: Array[Node3D])
 @export var shelters_container: Node3D
 @export var crates_container: Node3D
 
-## Coordenadas candidatas pre-marcadas na geografia fixa do atol (350x350m).
+## Referencia opcional ao recurso de delimitacao e setores do mapa.
+@export var map_bounds: MapBoundsData
+
+## Coordenadas candidatas de abrigos de civis restritas a mascara do Atol Central ([-500, 500] x [-350, 350]).
 @export var candidate_shelter_points: Array[Vector3] = [
-	Vector3(-70.0, 0.0, -50.0),
-	Vector3(-40.0, 0.0, 45.0),
-	Vector3(50.0, 0.0, -60.0),
-	Vector3(65.0, 0.0, 30.0),
-	Vector3(-15.0, 0.0, -85.0),
-	Vector3(20.0, 0.0, 75.0),
+	Vector3(-380.0, 0.0, -180.0),
+	Vector3(-80.0, 0.0, -220.0),
+	Vector3(120.0, 0.0, -250.0),
+	Vector3(380.0, 0.0, -120.0),
+	Vector3(-200.0, 0.0, 220.0),
+	Vector3(350.0, 0.0, 200.0),
 ]
 
+## Coordenadas candidatas de baterias antiaereas SAM cobrindo Atol e postos avancados.
 @export var candidate_sam_points: Array[Vector3] = [
-	Vector3(-110.0, 5.0, -90.0),
-	Vector3(-95.0, 4.0, 60.0),
-	Vector3(-30.0, 6.0, -110.0),
-	Vector3(0.0, 7.0, 110.0),
-	Vector3(80.0, 5.0, -100.0),
-	Vector3(105.0, 4.0, -20.0),
-	Vector3(90.0, 6.0, 80.0),
-	Vector3(-60.0, 5.0, 0.0),
+	Vector3(-450.0, 5.0, -280.0),
+	Vector3(-420.0, 4.0, 260.0),
+	Vector3(180.0, 3.0, -960.0),
+	Vector3(880.0, 2.0, 80.0),
+	Vector3(0.0, 5.0, -320.0),
+	Vector3(100.0, 6.0, 300.0),
+	Vector3(450.0, 4.0, -100.0),
+	Vector3(-150.0, 4.0, -50.0),
 ]
 
+## Coordenadas candidatas de caixas de dados da Aetheris entre Atol, Plataforma Norte e SIGINT.
 @export var candidate_data_crate_points: Array[Vector3] = [
-	Vector3(-85.0, 0.0, -25.0),
-	Vector3(-20.0, 0.0, 95.0),
-	Vector3(45.0, 0.0, -90.0),
-	Vector3(85.0, 0.0, 45.0),
+	Vector3(200.0, 0.5, -1000.0),
+	Vector3(-60.0, 0.5, -280.0),
+	Vector3(900.0, 0.5, 100.0),
+	Vector3(-220.0, 0.5, 250.0),
 ]
 
+## Coordenadas candidatas de blindados leves IFV nos aneis viarios do Atol.
 @export var candidate_light_tank_points: Array[Vector3] = [
-	Vector3(-50.0, 0.0, -20.0),
-	Vector3(30.0, 0.0, -40.0),
-	Vector3(-25.0, 0.0, 50.0),
-	Vector3(40.0, 0.0, 55.0),
+	Vector3(200.0, 0.0, -150.0),
+	Vector3(-180.0, 0.0, 160.0),
+	Vector3(-320.0, 0.0, 50.0),
+	Vector3(260.0, 0.0, 150.0),
 ]
 
+## Coordenadas candidatas de lanchas de patrulha nos canais maritimos e oceano aberto.
 @export var candidate_patrol_boat_points: Array[Vector3] = [
-	Vector3(-130.0, -0.5, 0.0),
-	Vector3(130.0, -0.5, -40.0),
-	Vector3(0.0, -0.5, -135.0),
-	Vector3(20.0, -0.5, 135.0),
+	Vector3(240.0, -0.5, -920.0),
+	Vector3(850.0, -0.5, 180.0),
+	Vector3(50.0, -0.5, -30.0),
+	Vector3(-300.0, -0.5, 380.0),
 ]
 
 ## Distancia radial de surgimento dos drones em ondas reativas (em metros).
@@ -85,6 +92,9 @@ var player_ref: Node3D = null
 ## Raises:
 ##     Nenhuma excecao levantada.
 func _ready() -> void:
+	if map_bounds == null and ResourceLoader.exists("res://scripts/data/map_bounds_midway.tres"):
+		map_bounds = ResourceLoader.load("res://scripts/data/map_bounds_midway.tres") as MapBoundsData
+	
 	_load_default_scenes()
 	_collect_marker_spawn_points()
 	
@@ -96,6 +106,32 @@ func _ready() -> void:
 	
 	if auto_spawn_on_ready:
 		spawn_initial_layout()
+
+
+## Obtem as coordenadas contratuais de decolagem do jogador no USS Vanguard.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     Vector3: Posicao espacial 3D de spawn.
+func get_player_spawn_point() -> Vector3:
+	if map_bounds != null:
+		return map_bounds.vanguard_spawn_position
+	return Vector3(800.0, 1.0, 950.0)
+
+
+## Obtem as coordenadas contratuais de ancoragem da fragata Apex Bastion.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     Vector3: Posicao espacial 3D de spawn do chefe.
+func get_boss_spawn_point() -> Vector3:
+	if map_bounds != null:
+		return map_bounds.boss_spawn_position
+	return Vector3(-900.0, 0.0, -900.0)
 
 
 ## Distribui semi-proceduralmente o layout inicial da missao sem sobreposicoes.
