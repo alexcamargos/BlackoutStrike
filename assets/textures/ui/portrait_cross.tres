@@ -1,0 +1,14 @@
+[gd_resource type="GradientTexture2D" load_steps=2 format=3 uid="uid://portrait_nathan_cross_01"]
+
+[sub_resource type="Gradient" id="Gradient_cross"]
+offsets = PackedFloat32Array(0, 0.45, 0.75, 1)
+colors = PackedColorArray(0.08, 0.16, 0.28, 1, 0.18, 0.32, 0.48, 1, 0, 0.75, 0.9, 1, 0.05, 0.08, 0.15, 1)
+
+[resource]
+resource_name = "portrait_nathan_cross"
+gradient = SubResource("Gradient_cross")
+width = 96
+height = 96
+fill = 2
+fill_from = Vector2(0.5, 0.4)
+fill_to = Vector2(0.9, 0.9)
