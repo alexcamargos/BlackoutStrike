@@ -202,3 +202,41 @@ func test_mission_midway_contains_island_props() -> void:
 	assert_true(props_node.get_script() == IslandPropsScript, "IslandProps na missao deve usar o script island_props.gd.")
 
 
+func test_mission_midway_lighting_and_atmosphere_calibration() -> void:
+	var env_res: Environment = load("res://scenes/core/world_environment.tres") as Environment
+	assert_not_null(env_res, "O recurso world_environment.tres deve existir e ser valido.")
+	
+	# Validacao de nevoa atmosferica oceanica (TASK-090)
+	assert_true(env_res.fog_enabled, "fog_enabled deve estar ativado no WorldEnvironment.")
+	assert_almost_eq(env_res.fog_depth_begin, 120.0, 0.01, "fog_depth_begin deve iniciar a 120m.")
+	assert_almost_eq(env_res.fog_light_color.r, 0.070588, 0.02, "fog_light_color R deve corresponder ao azul-profundo #122233.")
+	assert_almost_eq(env_res.fog_light_color.g, 0.133333, 0.02, "fog_light_color G deve corresponder ao azul-profundo #122233.")
+	assert_almost_eq(env_res.fog_light_color.b, 0.200000, 0.02, "fog_light_color B deve corresponder ao azul-profundo #122233.")
+	assert_true(env_res.volumetric_fog_enabled, "volumetric_fog_enabled deve estar ativado.")
+	assert_almost_eq(env_res.volumetric_fog_albedo.r, 0.070588, 0.02, "volumetric_fog_albedo R deve ser #122233.")
+	assert_almost_eq(env_res.volumetric_fog_albedo.g, 0.133333, 0.02, "volumetric_fog_albedo G deve ser #122233.")
+	assert_almost_eq(env_res.volumetric_fog_albedo.b, 0.200000, 0.02, "volumetric_fog_albedo B deve ser #122233.")
+	
+	# Validacao da luz solar direcional e sombras em cascata (TASK-090)
+	var scene: PackedScene = load("res://scenes/core/mission_01_midway.tscn") as PackedScene
+	var mission_node: Node3D = scene.instantiate() as Node3D
+	add_child_autofree(mission_node)
+	
+	var sun: DirectionalLight3D = mission_node.get_node_or_null("DirectionalLight3D") as DirectionalLight3D
+	assert_not_null(sun, "DirectionalLight3D deve existir na cena.")
+	assert_true(sun.shadow_enabled, "Sombras devem estar ativadas na DirectionalLight3D.")
+	assert_eq(sun.directional_shadow_mode, DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS, "Modo de sombras deve ser PSSM 4 Splits (modo 2).")
+	assert_almost_eq(sun.directional_shadow_max_distance, 180.0, 0.1, "directional_shadow_max_distance deve ser calibrada para 180.0m.")
+	
+	# Cor solar quente #FFF0D9
+	assert_almost_eq(sun.light_color.r, 1.0, 0.02, "light_color R deve ser 1.0.")
+	assert_almost_eq(sun.light_color.g, 0.941176, 0.02, "light_color G deve ser ~0.941 (#FFF0D9).")
+	assert_almost_eq(sun.light_color.b, 0.850980, 0.02, "light_color B deve ser ~0.851 (#FFF0D9).")
+	
+	# Angulo rasante: ~55 graus elevacao (pitch -55 deg), ~-40 graus azimute
+	var rot_deg: Vector3 = sun.rotation_degrees
+	assert_almost_eq(rot_deg.x, -55.0, 1.0, "Elevacao do sol deve ser calibrada a 55 graus (pitch -55 deg).")
+	assert_almost_eq(rot_deg.y, -40.0, 1.0, "Azimute do sol deve ser calibrado a -40 graus.")
+
+
+
