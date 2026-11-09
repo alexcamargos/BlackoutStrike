@@ -80,7 +80,39 @@ func detonate(target: Node = null) -> void:
 		if hc != null:
 			hc.take_damage(damage, self)
 	
+	_spawn_detonation_vfx(global_position if is_inside_tree() else position)
 	queue_free()
+
+
+## Instancia efeitos de detonacao pesada e borrifo aquatico.
+##
+## Args:
+##     pos (Vector3): Coordenadas da explosao.
+##
+## Returns:
+##     void
+func _spawn_detonation_vfx(pos: Vector3) -> void:
+	var tree: SceneTree = get_tree()
+	var spawn_parent: Node = null
+	if tree != null and tree.current_scene != null:
+		spawn_parent = tree.current_scene
+	elif get_parent() != null and get_parent().is_inside_tree():
+		spawn_parent = get_parent()
+	
+	if spawn_parent == null:
+		return
+	
+	var explosion_scene: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+	var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
+	if explosion_inst != null:
+		spawn_parent.add_child(explosion_inst)
+		explosion_inst.global_position = pos
+	
+	var splash_scene: PackedScene = preload("res://scenes/vfx/water_splash.tscn")
+	var splash_inst: Node3D = splash_scene.instantiate() as Node3D
+	if splash_inst != null:
+		spawn_parent.add_child(splash_inst)
+		splash_inst.global_position = Vector3(pos.x, 0.0, pos.z)
 
 
 ## Callback de colisão direta de corpo.

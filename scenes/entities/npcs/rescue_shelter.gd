@@ -80,9 +80,35 @@ func _on_entity_destroyed() -> void:
 	if EventBus != null:
 		EventBus.shelter_destroyed.emit(global_position, survivor_count)
 	
+	_spawn_destruction_explosion(global_position)
 	_spawn_survivors(survivor_count, scatter_radius)
 	_spawn_debris()
 	queue_free()
+
+
+## Instancia efeito de explosao pesada no colapso da estrutura de abrigo.
+##
+## Args:
+##     pos (Vector3): Coordenadas da detonacao.
+##
+## Returns:
+##     void
+func _spawn_destruction_explosion(pos: Vector3) -> void:
+	var tree: SceneTree = get_tree()
+	var spawn_parent: Node = null
+	if tree != null and tree.current_scene != null:
+		spawn_parent = tree.current_scene
+	elif get_parent() != null and get_parent().is_inside_tree():
+		spawn_parent = get_parent()
+	
+	if spawn_parent == null:
+		return
+	
+	var explosion_scene: PackedScene = preload("res://scenes/vfx/explosion_heavy.tscn")
+	var explosion_inst: Node3D = explosion_scene.instantiate() as Node3D
+	if explosion_inst != null:
+		spawn_parent.add_child(explosion_inst)
+		explosion_inst.global_position = pos
 
 
 ## Gera pecas fragmentadas de escombros de concreto ao redor da fundacao do abrigo.
