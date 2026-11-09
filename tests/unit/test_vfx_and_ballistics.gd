@@ -82,6 +82,11 @@ func test_impact_effect_surface_discrimination() -> void:
 	assert_true(metal_sparks.one_shot, "Faiscas devem ser configuradas com one_shot = true.")
 	assert_true(dust_particles.one_shot, "Poeira deve ser configurada com one_shot = true.")
 	
+	var metal_mat: StandardMaterial3D = metal_sparks.draw_pass_1.material as StandardMaterial3D
+	assert_not_null(metal_mat, "Particulas de faiscas devem possuir StandardMaterial3D.")
+	assert_true(metal_mat.emission_enabled, "Faiscas devem possuir emissao HDR ativada.")
+	assert_gte(metal_mat.emission_energy_multiplier, 2.5, "Energia da emissao das faiscas deve ser >= 2.5 para acionar Bloom.")
+	
 	# Testa discriminacao para superficie metalica
 	var metal_target: Node3D = Node3D.new()
 	metal_target.add_to_group("metal")
@@ -130,6 +135,11 @@ func test_heavy_explosion_two_stages_and_gravity_debris() -> void:
 	
 	assert_true(fireball_particles.one_shot, "FireballParticles deve ser one_shot = true.")
 	assert_true(debris_particles.one_shot, "DebrisParticles deve ser one_shot = true.")
+	
+	var fireball_mat: StandardMaterial3D = fireball_particles.draw_pass_1.material as StandardMaterial3D
+	assert_not_null(fireball_mat, "Bola de fogo deve possuir StandardMaterial3D.")
+	assert_true(fireball_mat.emission_enabled, "Bola de fogo deve possuir emissao HDR ativada.")
+	assert_gte(fireball_mat.emission_energy_multiplier, 2.5, "Energia da emissao da bola de fogo deve ser >= 2.5 para acionar Bloom.")
 	
 	var debris_mat: ParticleProcessMaterial = debris_particles.process_material as ParticleProcessMaterial
 	assert_not_null(debris_mat, "DebrisParticles deve ter ParticleProcessMaterial configurado.")
@@ -196,3 +206,48 @@ func test_rescue_ring_shader_and_immediate_enemy_suppression_response() -> void:
 	sensor.step(0.016)
 	assert_true(sensor.is_suppressed, "Sensor deve acusar supressao imediata na presenca de inimigo.")
 	assert_true(ring_mat.get_shader_parameter("is_suppressed"), "Shader parameter is_suppressed deve refletir supressao imediatamente.")
+
+
+func test_projectile_ocean_surface_interception_and_splash() -> void:
+	var scene: PackedScene = load("res://scenes/weapons/projectile_vulcan.tscn")
+	var proj: Projectile = scene.instantiate() as Projectile
+	add_child_autofree(proj)
+	
+	proj.global_position = Vector3(0, 2.0, 0)
+	# Orienta o projetil para baixo em direcao a agua (-basis.z = Vector3.DOWN)
+	proj.transform.basis = Basis.looking_at(Vector3.DOWN, Vector3.FORWARD)
+	
+	var impact_state: Dictionary = {
+		"impacted": false,
+		"pos": Vector3.ZERO
+	}
+	proj.impacted.connect(func(hit_pos: Vector3, _col: Variant) -> void:
+		impact_state["impacted"] = true
+		impact_state["pos"] = hit_pos
+	)
+	
+	# Simula passo que cruza o plano Y = 0.0
+	proj.simulate_step(0.05)
+	assert_true(impact_state["impacted"], "Projetil disparado contra o mar deve interceptar a superficie da agua.")
+	assert_almost_eq(impact_state["pos"].y, 0.0, 0.01, "Impacto com o mar deve ocorrer na cota exata da lamina d'agua (Y = 0.0m).")
+
+
+func test_projectile_trail_particles_persistence_on_impact() -> void:
+	var scene: PackedScene = load("res://scenes/weapons/projectile_hydra.tscn")
+	var proj: Projectile = scene.instantiate() as Projectile
+	add_child_autofree(proj)
+	
+	var trail: GPUParticles3D = proj.get_node_or_null("TrailParticles") as GPUParticles3D
+	assert_not_null(trail, "Foguete Hydra deve possuir TrailParticles.")
+	trail.emitting = true
+	
+	var target: Node3D = Node3D.new()
+	add_child_autofree(target)
+	
+	proj.handle_hit(target)
+	assert_true(proj.has_impacted, "Projetil deve registrar impacto.")
+	assert_false(trail.emitting, "Emissao da esteira deve ser interrompida no impacto.")
+	
+	var mesh: Node3D = proj.get_node_or_null("MeshInstance3D") as Node3D
+	if mesh != null:
+		assert_false(mesh.visible, "Malha do projetil deve ser ocultada imediatamente apos colidir.")
