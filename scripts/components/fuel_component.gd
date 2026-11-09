@@ -11,16 +11,16 @@ signal fuel_changed(current: float, max_fuel: float)
 signal fuel_depleted()
 
 ## Capacidade maxima de combustivel suportada pelo tanque.
-@export var max_fuel: float = 100.0
+@export var max_fuel: float = 150.0
 
 ## Nivel atual de combustivel disponivel.
-@export var current_fuel: float = 100.0
+@export var current_fuel: float = 150.0
 
 ## Taxa de consumo passivo por segundo durante voo estavel ou pairado (u/s).
-@export var passive_burn_rate: float = 0.7
+@export var passive_burn_rate: float = 0.5
 
 ## Taxa de consumo ativo por segundo durante manobras de aceleracao (u/s).
-@export var active_burn_rate: float = 1.6
+@export var active_burn_rate: float = 1.2
 
 
 ## Executa o consumo passivo de combustivel ao longo do intervalo de tempo.
@@ -61,6 +61,26 @@ func refuel(amount: float) -> void:
 		return
 	var previous_fuel: float = current_fuel
 	current_fuel = minf(max_fuel, current_fuel + amount)
+	if not is_equal_approx(previous_fuel, current_fuel):
+		fuel_changed.emit(current_fuel, max_fuel)
+
+
+## Reabastece o tanque ate um teto restrito especifico (ex: FOB terrestre).
+##
+## Args:
+##     amount (float): Volume de combustivel a ser adicionado.
+##     cap_limit (float): Teto maximo permitido para este reabastecimento.
+##
+## Returns:
+##     void
+func refuel_capped(amount: float, cap_limit: float) -> void:
+	if amount <= 0.0 or cap_limit <= 0.0:
+		return
+	var target_cap: float = minf(max_fuel, cap_limit)
+	if current_fuel >= target_cap:
+		return
+	var previous_fuel: float = current_fuel
+	current_fuel = minf(target_cap, current_fuel + amount)
 	if not is_equal_approx(previous_fuel, current_fuel):
 		fuel_changed.emit(current_fuel, max_fuel)
 
