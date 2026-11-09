@@ -5,9 +5,9 @@
 [resource]
 script = ExtResource("1_script")
 max_armor = 1000.0
-max_fuel = 100.0
-passive_burn_rate = 0.7
-active_burn_rate = 1.6
+max_fuel = 150.0
+passive_burn_rate = 0.5
+active_burn_rate = 1.2
 autorotation_grace_seconds = 3.0
 max_cargo = 5
 rescue_boarding_time = 2.0

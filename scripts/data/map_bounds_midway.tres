@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MapBoundsData" load_steps=2 format=3 uid="uid://map_bounds_midway_res_01"]
+
+[ext_resource type="Script" path="res://scripts/data/map_bounds_data.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+world_size = Vector2(2500, 2500)
+world_bounds_min = Vector2(-1250, -1250)
+world_bounds_max = Vector2(1250, 1250)
+atoll_rect = Rect2(-600, -400, 1200, 800)
+shelter_spawn_rect = Rect2(-500, -350, 1000, 700)
+vanguard_spawn_position = Vector3(800, 1, 950)
+boss_spawn_position = Vector3(-900, 0, -900)
+north_platform_position = Vector3(200, 0, -1000)
+sigint_reef_position = Vector3(900, 0, 100)
+fob_depot_position = Vector3(-250, 0.5, 120)

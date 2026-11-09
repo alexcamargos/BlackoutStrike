@@ -67,10 +67,27 @@ func test_helicopter_specs_load_correctly() -> void:
 	assert_true(res is HelicopterSpecsData, "Deve ser instancia de HelicopterSpecsData.")
 	var specs: HelicopterSpecsData = res as HelicopterSpecsData
 	assert_eq(specs.max_armor, 1000.0, "Armor maxima deve ser 1000.")
-	assert_eq(specs.max_fuel, 100.0, "Combustivel maximo deve ser 100.")
+	assert_eq(specs.max_fuel, 150.0, "Combustivel maximo deve ser 150.")
+	assert_almost_eq(specs.passive_burn_rate, 0.5, 0.001, "Queima passiva deve ser 0.5 u/s.")
+	assert_almost_eq(specs.active_burn_rate, 1.2, 0.001, "Queima ativa deve ser 1.2 u/s.")
 	assert_eq(specs.max_cargo, 5, "Carga maxima deve ser 5.")
 	assert_gt(specs.acceleration, 0.0, "Aceleracao deve ser positiva.")
 	assert_gt(specs.max_speed, 0.0, "Velocidade maxima deve ser positiva.")
+
+func test_map_bounds_load_correctly() -> void:
+	var path: String = "res://scripts/data/map_bounds_midway.tres"
+	var res: Resource = ResourceLoader.load(path)
+	assert_not_null(res, "Limites de mapa devem carregar.")
+	assert_true(res is MapBoundsData, "Deve ser instancia de MapBoundsData.")
+	var bounds: MapBoundsData = res as MapBoundsData
+	assert_eq(bounds.world_size, Vector2(2500.0, 2500.0), "Dimensoes mundiais devem ser 2500x2500.")
+	assert_eq(bounds.world_bounds_min, Vector2(-1250.0, -1250.0), "Limite minimo deve ser -1250x-1250.")
+	assert_eq(bounds.world_bounds_max, Vector2(1250.0, 1250.0), "Limite maximo deve ser +1250x+1250.")
+	assert_eq(bounds.vanguard_spawn_position, Vector3(800.0, 1.0, 950.0), "Spawn Vanguard deve ser (800, 1, 950).")
+	assert_eq(bounds.boss_spawn_position, Vector3(-900.0, 0.0, -900.0), "Spawn Boss deve ser (-900, 0, -900).")
+	assert_true(bounds.is_inside_world(Vector3(0.0, 0.0, 0.0)), "Centro deve estar dentro do mundo.")
+	assert_true(bounds.is_inside_shelter_area(Vector3(0.0, 0.0, 0.0)), "Centro deve estar na area de abrigos.")
+	assert_false(bounds.is_inside_world(Vector3(1300.0, 0.0, 0.0)), "Ponto fora do limite nao deve estar no mundo.")
 
 func test_shelter_specs_load_correctly() -> void:
 	var path: String = "res://scripts/data/rescue_shelter.tres"

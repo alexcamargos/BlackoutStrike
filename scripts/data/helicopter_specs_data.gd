@@ -6,9 +6,9 @@ extends Resource
 
 @export_group("Sobrevivencia e Cabine")
 @export var max_armor: float = 1000.0
-@export var max_fuel: float = 100.0
-@export var passive_burn_rate: float = 0.7
-@export var active_burn_rate: float = 1.6
+@export var max_fuel: float = 150.0
+@export var passive_burn_rate: float = 0.5
+@export var active_burn_rate: float = 1.2
 @export var autorotation_grace_seconds: float = 3.0
 @export var max_cargo: int = 5
 @export var rescue_boarding_time: float = 2.0
