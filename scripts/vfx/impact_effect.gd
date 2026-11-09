@@ -20,6 +20,7 @@ enum SurfaceType {
 var timer: float = 0.0
 var initial_light_energy: float = 4.0
 var active_surface: SurfaceType = SurfaceType.METAL
+var _has_explicit_surface: bool = false
 
 
 ## Inicializa o efeito visual ativando o sistema de particulas adequado.
@@ -32,7 +33,10 @@ var active_surface: SurfaceType = SurfaceType.METAL
 func _ready() -> void:
 	if flash_light != null:
 		initial_light_energy = flash_light.light_energy
-	apply_surface(active_surface)
+	if _has_explicit_surface:
+		apply_surface(active_surface)
+	else:
+		apply_surface(active_surface)
 
 
 ## Configura a superficie do impacto com base no alvo atingido e na cota espacial.
@@ -68,6 +72,7 @@ func setup_for_target(target: Node, hit_pos: Vector3) -> void:
 ##     void
 func setup_surface(surface: SurfaceType) -> void:
 	active_surface = surface
+	_has_explicit_surface = true
 	if is_node_ready():
 		apply_surface(surface)
 
