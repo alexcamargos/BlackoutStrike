@@ -158,14 +158,29 @@ func test_enemy_archetypes_modular_pbr_and_emissive_palette() -> void:
 		var stack: Array[Node] = [instance]
 		while not stack.is_empty():
 			var curr: Node = stack.pop_back()
-			if curr is MeshInstance3D and curr.mesh != null and curr.mesh.material is StandardMaterial3D:
-				meshes_to_check.append(curr)
+			if curr is MeshInstance3D and curr.mesh != null:
+				var m_mat: Material = null
+				if "material" in curr.mesh and curr.mesh.get("material") != null:
+					m_mat = curr.mesh.get("material")
+				elif curr.get_active_material(0) != null:
+					m_mat = curr.get_active_material(0)
+				elif curr.mesh.get_surface_count() > 0:
+					m_mat = curr.mesh.surface_get_material(0)
+				if m_mat is StandardMaterial3D:
+					meshes_to_check.append(curr)
 			for child in curr.get_children():
 				stack.append(child)
 		
 		for mi in meshes_to_check:
-			var mat: StandardMaterial3D = mi.mesh.material as StandardMaterial3D
+			var mat: StandardMaterial3D = null
+			if "material" in mi.mesh and mi.mesh.get("material") != null:
+				mat = mi.mesh.get("material") as StandardMaterial3D
+			elif mi.get_active_material(0) != null:
+				mat = mi.get_active_material(0) as StandardMaterial3D
+			elif mi.mesh.get_surface_count() > 0:
+				mat = mi.mesh.surface_get_material(0) as StandardMaterial3D
 			if mat != null:
+
 				# Checa antracite #1F2226
 				if absf(mat.albedo_color.r - 0.122) < 0.03 and absf(mat.albedo_color.b - 0.149) < 0.03:
 					found_antracite = true
