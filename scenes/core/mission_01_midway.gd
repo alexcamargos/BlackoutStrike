@@ -33,13 +33,13 @@ func _ready() -> void:
 	
 	_connect_event_bus_signals()
 	
-	# Transmissao inicial de radio militar
+	# Transmissao inicial de radio militar na decolagem do USS Vanguard
 	if EventBus != null:
 		EventBus.radio_transmission_requested.emit(
 			"vasquez",
 			"OVERWATCH VANGUARD (DRA. VASQUEZ)",
-			"Infiltracao iniciada no Atol de Midway. Resgate os especialistas e neutralize o Apex Bastion.",
-			5.0
+			"Mohawk-1 na decolagem do USS Vanguard. Rumo Noroeste (NW) a 950m para o Atol de Midway. Resgate os especialistas e liquide o Apex Bastion.",
+			6.0
 		)
 	
 	mission_ready.emit()
