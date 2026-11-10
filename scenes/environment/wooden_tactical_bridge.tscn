@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://wooden_tactical_bridge_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/environment/wooden_tactical_bridge.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://wood_planks_albedo_res_01" path="res://assets/textures/terrain/wood_planks_albedo.tres" id="2_albedo"]
+[ext_resource type="Texture2D" uid="uid://wood_planks_normal_res_01" path="res://assets/textures/terrain/wood_planks_normal.tres" id="3_normal"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.85, 0.75, 0.65, 1)
+albedo_texture = ExtResource("2_albedo")
+roughness = 0.85
+normal_enabled = true
+normal_scale = 1.6
+normal_texture = ExtResource("3_normal")
+uv1_scale = Vector3(8, 24, 1)
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_deck"]
+material = SubResource("StandardMaterial3D_wood")
+size = Vector3(12, 0.4, 80)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
+size = Vector3(12, 0.4, 80)
+
+[sub_resource type="BoxMesh" id="BoxMesh_railing"]
+material = SubResource("StandardMaterial3D_wood")
+size = Vector3(0.5, 0.8, 80)
+
+[node name="WoodenTacticalBridge" type="StaticBody3D" groups=["world_static"]]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_script")
+
+[node name="BridgeDeckMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+mesh = SubResource("BoxMesh_deck")
+
+[node name="BridgeDeckCol" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+shape = SubResource("BoxShape3D_deck")
+
+[node name="LeftRailing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7, 1.1, 0)
+mesh = SubResource("BoxMesh_railing")
+
+[node name="RightRailing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7, 1.1, 0)
+mesh = SubResource("BoxMesh_railing")
