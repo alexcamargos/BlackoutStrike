@@ -22,17 +22,17 @@ size = Vector3(280.0, 0.04, 8.0)
 [node name="TacticalRoadNetwork" type="Node3D"]
 
 [node name="RoadSouthInlet" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 420, 0.52, 350)
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 420, 0.87, 350)
 mesh = SubResource("BoxMesh_road_main")
 
 [node name="RoadCentralPerimeter" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.52, 120)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.87, 120)
 mesh = SubResource("BoxMesh_road_lateral")
 
 [node name="RoadFOBBranch" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -220, 0.52, -20)
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -220, 0.87, -20)
 mesh = SubResource("BoxMesh_road_main")
 
 [node name="RoadShelterNorthBranch" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.52, -180)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.87, -180)
 mesh = SubResource("BoxMesh_road_lateral")
