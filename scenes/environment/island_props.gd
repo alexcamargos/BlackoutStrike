@@ -348,7 +348,43 @@ func _setup_palms() -> void:
 		Vector3(70.0, 0.3, 105.0),
 		Vector3(-70.0, 0.3, 105.0),
 		Vector3(-100.0, 0.4, -5.0),
-		Vector3(100.0, 0.4, -5.0)
+		Vector3(100.0, 0.4, -5.0),
+		# Bosques tropicais nos ilheus de aproximacao do Sudeste (rota do USS Vanguard)
+		Vector3(660.0, 0.3, 660.0),
+		Vector3(695.0, 0.3, 670.0),
+		Vector3(675.0, 0.3, 705.0),
+		Vector3(665.0, 0.3, 690.0),
+		Vector3(540.0, 0.3, 510.0),
+		Vector3(575.0, 0.3, 535.0),
+		Vector3(555.0, 0.3, 550.0),
+		Vector3(580.0, 0.3, 505.0),
+		# Costa Sudeste de desembarque (choke points e estuario)
+		Vector3(480.0, 0.3, 420.0),
+		Vector3(505.0, 0.3, 410.0),
+		Vector3(460.0, 0.3, 445.0),
+		Vector3(520.0, 0.3, 450.0),
+		Vector3(430.0, 0.3, 390.0),
+		Vector3(410.0, 0.3, 420.0),
+		Vector3(380.0, 0.3, 430.0),
+		# Ilheu Leste
+		Vector3(830.0, 0.3, 165.0),
+		Vector3(865.0, 0.3, 195.0),
+		Vector3(845.0, 0.3, 175.0),
+		Vector3(870.0, 0.3, 160.0),
+		# Faixa litoranea Sul e Leste
+		Vector3(300.0, 0.3, 310.0),
+		Vector3(260.0, 0.3, 315.0),
+		Vector3(220.0, 0.3, 305.0),
+		Vector3(160.0, 0.3, 310.0),
+		Vector3(-140.0, 0.3, 310.0),
+		Vector3(-280.0, 0.3, 290.0),
+		Vector3(-340.0, 0.3, 280.0),
+		Vector3(510.0, 0.3, 220.0),
+		Vector3(515.0, 0.3, 140.0),
+		Vector3(505.0, 0.3, 30.0),
+		Vector3(520.0, 0.3, -80.0),
+		Vector3(510.0, 0.3, -190.0),
+		Vector3(500.0, 0.3, -280.0)
 	]
 	
 	_palm_positions.append_array(base_coords)
