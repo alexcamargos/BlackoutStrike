@@ -266,3 +266,39 @@ func test_mission_01_victory_and_failure_lifecycle() -> void:
 		assert_eq(player_helo.cargo_component.current_occupants, 0, "Passageiros devem ser desembarcados na vitoria.")
 		assert_eq(MetaProgression.personnel_tokens, initial_tokens + 3, "Tokens de pessoal devem ser creditados pelos sobreviventes evacuados.")
 
+
+func test_hud_tactical_radar_widget_initialization() -> void:
+	assert_not_null(hud.radar_widget, "HUD deve conter a instancia do radar_widget.")
+	assert_not_null(hud.radar_widget.material, "radar_widget deve possuir um ShaderMaterial.")
+	var radar_mat: ShaderMaterial = hud.radar_widget.material as ShaderMaterial
+	assert_not_null(radar_mat, "Material do radar deve ser ShaderMaterial.")
+	assert_almost_eq(radar_mat.get_shader_parameter("sweep_speed"), 1.8, 0.01, "Velocidade de varredura radar deve ser 1.8.")
+
+
+func test_hud_attitude_horizon_widget_initialization() -> void:
+	assert_not_null(hud.attitude_widget, "HUD deve conter a instancia do attitude_widget.")
+	assert_not_null(hud.attitude_widget.material, "attitude_widget deve possuir um ShaderMaterial.")
+	var attitude_mat: ShaderMaterial = hud.attitude_widget.material as ShaderMaterial
+	assert_not_null(attitude_mat, "Material do horizonte deve ser ShaderMaterial.")
+
+
+const HUDCanopyFramingScript = preload("res://scenes/ui/hud_canopy_framing.gd")
+
+func test_hud_heading_tape_and_canopy_framing() -> void:
+	assert_not_null(hud.heading_tape_rect, "HUD deve possuir heading_tape_rect.")
+	assert_not_null(hud.heading_tape_rect.material, "heading_tape_rect deve possuir um ShaderMaterial.")
+	var canopy_node: Node = hud.get_node_or_null("CanopyFraming")
+	assert_not_null(canopy_node, "HUD deve possuir o nó de moldura tática CanopyFraming.")
+	assert_true(canopy_node.get_script() == HUDCanopyFramingScript, "O nó de moldura deve possuir o script HUDCanopyFraming.")
+
+
+func test_hud_weapon_bay_ammo_bars_synchronization() -> void:
+	assert_eq(hud.ammo_bars.size(), 3, "HUD deve rastrear as 3 barras segmentadas de municao.")
+	EventBus.weapon_ammo_changed.emit(0, 600, 1200)
+	assert_almost_eq(hud.ammo_bars[0].value, 600.0, 0.01, "A barra de municao do slot 0 deve refletir 600.")
+	var bar_mat: ShaderMaterial = hud.ammo_bars[0].material as ShaderMaterial
+	assert_not_null(bar_mat, "A barra de municao deve possuir ShaderMaterial.")
+	var fill_ratio: float = bar_mat.get_shader_parameter("fill_ratio")
+	assert_almost_eq(fill_ratio, 0.5, 0.01, "O shader da barra de municao deve refletir fill_ratio de 50%.")
+
+
