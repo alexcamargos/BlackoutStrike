@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 36" width="96" height="36">
+  <!-- Missile body -->
+  <path d="M12 18 L24 13 L70 13 L82 18 L70 23 L24 23 Z" fill="#00E5D8" stroke="#00E5D8" stroke-width="1.5"/>
+  <!-- Front tip radome -->
+  <path d="M12 18 L24 13 L24 23 Z" fill="#FFFFFF"/>
+  <!-- Forward guidance fins -->
+  <path d="M30 13 L24 6 L32 13 Z" fill="#00E5D8"/>
+  <path d="M30 23 L24 30 L32 23 Z" fill="#00E5D8"/>
+  <!-- Aft stabilization fins -->
+  <path d="M68 13 L74 5 L78 13 Z" fill="#00E5D8"/>
+  <path d="M68 23 L74 31 L78 23 Z" fill="#00E5D8"/>
+  <!-- Rocket nozzle flame line -->
+  <line x1="82" y1="18" x2="90" y2="18" stroke="#FFD35A" stroke-width="2"/>
+</svg>

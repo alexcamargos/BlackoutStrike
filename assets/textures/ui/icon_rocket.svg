@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <path d="M8 12 L32 12 L40 24 L32 36 L8 36 Z" fill="#0A1826" stroke="#00E5D8" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Rocket tubes -->
+  <circle cx="16" cy="20" r="3" fill="#00E5D8"/>
+  <circle cx="24" cy="20" r="3" fill="#00E5D8"/>
+  <circle cx="16" cy="28" r="3" fill="#00E5D8"/>
+  <circle cx="24" cy="28" r="3" fill="#00E5D8"/>
+  <circle cx="32" cy="24" r="3" fill="#00E5D8"/>
+</svg>
