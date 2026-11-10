@@ -1,13 +1,13 @@
-[gd_scene load_steps=14 format=3 uid="uid://enemy_mercenary_squad_scene_01"]
+[gd_scene load_steps=12 format=3 uid="uid://enemy_mercenary_squad_scene_01"]
 
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
 [ext_resource type="Resource" uid="uid://enemy_mercenary_squad_01" path="res://scripts/data/enemy_mercenary_squad.tres" id="3_stats"]
 [ext_resource type="PackedScene" path="res://assets/models/military/modern_soldier.glb" id="4_mercenary_model"]
-
+[ext_resource type="PackedScene" path="res://assets/models/military/weapon_rifle.glb" id="5_rifle_model"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hitbox"]
-radius = 0.6
+radius = 0.5
 height = 1.8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_antracite"]
@@ -15,10 +15,9 @@ albedo_color = Color(0.121569, 0.133333, 0.14902, 1)
 metallic = 0.75
 roughness = 0.35
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_metal"]
-albedo_color = Color(0.08, 0.09, 0.11, 1)
-metallic = 0.85
-roughness = 0.2
+[sub_resource type="BoxMesh" id="BoxMesh_torso"]
+material = SubResource("StandardMaterial3D_antracite")
+size = Vector3(0.45, 0.55, 0.3)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emissive_red"]
 albedo_color = Color(0.85098, 0.219608, 0.117647, 1)
@@ -26,31 +25,9 @@ emission_enabled = true
 emission = Color(0.85098, 0.219608, 0.117647, 1)
 emission_energy_multiplier = 3.5
 
-[sub_resource type="BoxMesh" id="BoxMesh_torso"]
-material = SubResource("StandardMaterial3D_antracite")
-size = Vector3(0.45, 0.55, 0.3)
-
-[sub_resource type="BoxMesh" id="BoxMesh_helmet"]
-material = SubResource("StandardMaterial3D_dark_metal")
-size = Vector3(0.3, 0.3, 0.32)
-
 [sub_resource type="BoxMesh" id="BoxMesh_visor"]
 material = SubResource("StandardMaterial3D_emissive_red")
 size = Vector3(0.22, 0.08, 0.1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_flanker_torso"]
-material = SubResource("StandardMaterial3D_antracite")
-size = Vector3(0.4, 0.5, 0.28)
-
-[sub_resource type="BoxMesh" id="BoxMesh_rifle"]
-material = SubResource("StandardMaterial3D_dark_metal")
-size = Vector3(0.1, 0.14, 0.65)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_laser"]
-material = SubResource("StandardMaterial3D_emissive_red")
-top_radius = 0.02
-bottom_radius = 0.02
-height = 0.2
 
 [node name="MercenarySquad" type="CharacterBody3D" groups=["enemies", "ground_enemies"]]
 collision_layer = 4
@@ -62,35 +39,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_hitbox")
 
 [node name="ModelContainer" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 
 [node name="MercenaryModel" parent="ModelContainer" instance=ExtResource("4_mercenary_model")]
-transform = Transform3D(-0.011, 0, 0, 0, 0.011, 0, 0, 0, -0.011, 0, -0.45, 0)
+transform = Transform3D(-0.011, 0, 0, 0, 0, 0.011, 0, 0.011, 0, 0, 0, 0)
 
-[node name="SquadLeaderTorso" type="MeshInstance3D" parent="ModelContainer"]
-transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.2, -0.1)
+[node name="TacticalVest" type="MeshInstance3D" parent="ModelContainer"]
+visible = false
 mesh = SubResource("BoxMesh_torso")
 
-[node name="LeaderHelmet" type="MeshInstance3D" parent="ModelContainer/SquadLeaderTorso"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
-mesh = SubResource("BoxMesh_helmet")
-
-[node name="LeaderVisor" type="MeshInstance3D" parent="ModelContainer/SquadLeaderTorso/LeaderHelmet"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
+[node name="OpticSensor" type="MeshInstance3D" parent="ModelContainer"]
+visible = false
 mesh = SubResource("BoxMesh_visor")
 
 [node name="Turret" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.75, -0.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.9, -0.1)
 
-[node name="RifleMesh" type="MeshInstance3D" parent="Turret"]
-mesh = SubResource("BoxMesh_rifle")
-
-[node name="LaserSight" type="MeshInstance3D" parent="Turret/RifleMesh"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.06, 0.08, -0.2)
-mesh = SubResource("CylinderMesh_laser")
+[node name="RifleModel" parent="Turret" instance=ExtResource("5_rifle_model")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, -0.15, -0.1)
 
 [node name="Muzzle" type="Marker3D" parent="Turret"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.6)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("1_health")
