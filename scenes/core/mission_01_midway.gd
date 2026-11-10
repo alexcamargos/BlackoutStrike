@@ -13,6 +13,9 @@ signal mission_ready()
 @onready var player_helicopter: PlayerHelicopter = $ActiveEntities/PlayerHelicopter
 @onready var boss: BossApexBastion = get_node_or_null("ActiveEntities/Enemies/BossApexBastion") as BossApexBastion
 
+var _verification_frame_count: int = 0
+var _is_verification_capture: bool = false
+
 
 ## Inicializa a incursao, vincula referencias taticas e transmite ordens de combate.
 ##
@@ -25,6 +28,10 @@ signal mission_ready()
 ## Raises:
 ##     Nenhuma excecao levantada.
 func _ready() -> void:
+	for arg: String in OS.get_cmdline_args():
+		if arg == "--capture-verification":
+			_is_verification_capture = true
+			break
 	if GameState != null:
 		GameState.start_new_run()
 	
@@ -43,6 +50,28 @@ func _ready() -> void:
 		)
 	
 	mission_ready.emit()
+
+
+func _process(_delta: float) -> void:
+	if _is_verification_capture:
+		_verification_frame_count += 1
+		if _verification_frame_count == 14:
+			if EventBus != null:
+				EventBus.player_health_changed.emit(750.0, 1000.0)
+				EventBus.player_fuel_changed.emit(72.0, 100.0)
+				EventBus.weapon_selected.emit(2, "Mísseis AGM-114 Hellfire")
+				EventBus.weapon_ammo_changed.emit(2, 6, 6)
+				EventBus.civilian_boarded.emit(3, 5)
+				var enemies: Array[Node] = get_tree().get_nodes_in_group("enemies")
+				if enemies.size() > 0:
+					EventBus.target_locked.emit(enemies[0] as Node3D)
+		elif _verification_frame_count >= 28:
+			var img: Image = get_viewport().get_texture().get_image()
+			if img != null:
+				img.save_png("res://scratch/current_gameplay.png")
+				img.save_png("res://scratch/new_hud_verification.png")
+				print("Visual Verification Capture salvo com sucesso.")
+			get_tree().quit(0)
 
 
 ## Conecta aos sinais globais do EventBus para emitir radio chatter reativo.
