@@ -20,6 +20,11 @@
 [ext_resource type="PackedScene" uid="uid://world_boundaries_scene_01" path="res://scenes/environment/world_boundaries.tscn" id="18_boundaries"]
 [ext_resource type="PackedScene" uid="uid://uss_vanguard_scene_01" path="res://scenes/environment/uss_vanguard.tscn" id="19_vanguard"]
 [ext_resource type="PackedScene" uid="uid://sea_channel_buoy_scene_01" path="res://scenes/environment/sea_channel_buoy.tscn" id="20_buoy"]
+[ext_resource type="PackedScene" uid="uid://enemy_patrol_boat_scene_01" path="res://scenes/entities/enemies/patrol_boat.tscn" id="21_patrol_boat"]
+[ext_resource type="PackedScene" uid="uid://floating_naval_mine_01" path="res://scenes/entities/enemies/floating_naval_mine.tscn" id="22_naval_mine"]
+[ext_resource type="PackedScene" uid="uid://enemy_turret_sam_scene_01" path="res://scenes/entities/enemies/turret_sam.tscn" id="23_sam"]
+[ext_resource type="PackedScene" uid="uid://enemy_mercenary_squad_scene_01" path="res://scenes/entities/enemies/mercenary_squad.tscn" id="24_merc"]
+[ext_resource type="PackedScene" uid="uid://supply_pickup_01" path="res://scenes/roguelite/supply_pickup.tscn" id="25_supply"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -175,6 +180,44 @@ transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 1, 
 
 [node name="BossApexBastion" parent="ActiveEntities/Enemies" instance=ExtResource("6_boss")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -900, 0, -900)
+
+[node name="PatrolBoat_Channel1" parent="ActiveEntities/Enemies" instance=ExtResource("21_patrol_boat")]
+transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, 650, 0, 750)
+
+[node name="PatrolBoat_Channel2" parent="ActiveEntities/Enemies" instance=ExtResource("21_patrol_boat")]
+transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 480, 0, 560)
+
+[node name="NavalMine1" parent="ActiveEntities/Enemies" instance=ExtResource("22_naval_mine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 0, 820)
+
+[node name="NavalMine2" parent="ActiveEntities/Enemies" instance=ExtResource("22_naval_mine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 620, 0, 710)
+
+[node name="NavalMine3" parent="ActiveEntities/Enemies" instance=ExtResource("22_naval_mine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 520, 0, 610)
+
+[node name="NavalMine4" parent="ActiveEntities/Enemies" instance=ExtResource("22_naval_mine")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 430, 0, 500)
+
+[node name="TurretSAM_Beachhead" parent="ActiveEntities/Enemies" instance=ExtResource("23_sam")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 440, 0.5, 400)
+
+[node name="MercenarySquad_Beachhead" parent="ActiveEntities/Enemies" instance=ExtResource("24_merc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 450, 0.5, 420)
+
+[node name="Supplies" type="Node3D" parent="."]
+
+[node name="FuelDrum_Islet1" parent="Supplies" instance=ExtResource("25_supply")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 680, 0.6, 680)
+pickup_type = 1
+
+[node name="FuelDrum_Islet2" parent="Supplies" instance=ExtResource("25_supply")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 560, 0.6, 520)
+pickup_type = 1
+
+[node name="AmmoCrate_Beachhead" parent="Supplies" instance=ExtResource("25_supply")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 470, 0.6, 430)
+pickup_type = 0
 
 [node name="Civilians" type="Node3D" parent="ActiveEntities"]
 
