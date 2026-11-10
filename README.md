@@ -24,3 +24,6 @@ O repositório organiza suas especificações em `docs/` seguindo uma sequência
 | **07** | [`docs/07_ASSETS.md`](docs/07_ASSETS.md) | **Ativos, Áudio & Ambiente** | Manifesto de pacotes CC0, limites PBR, buses de áudio, `WorldEnvironment` e política de *placeholders*. |
 | **08** | [`docs/08_TESTS.md`](docs/08_TESTS.md) | **Validação TDD (GUT)** | Comando de execução headless, suítes de testes unitários/integração e matriz de cobertura obrigatória. |
 | **09** | [`docs/09_TASKS.md`](docs/09_TASKS.md) | **Backlog de Execução** | Fila sequencial de tarefas atômicas divididas em 5 Sprints com dependências e critérios verificáveis. |
+| **10** | [`docs/10_VISUAL_CONTRACT.md`](docs/10_VISUAL_CONTRACT.md) | **Contrato Visual** | Baselines aprovados, assets obrigatórios, materiais, ambiente de captura e critérios objetivos de aceitação visual. |
+| **11** | [`docs/11_VISUAL_STYLE_GUIDE.md`](docs/11_VISUAL_STYLE_GUIDE.md) | **Guia de Estilo** | Âncora visual aprovada, tokens de design, regras de composição e checklist de arte para implementação. |
+| **12** | [`docs/12_WORLD_MAP_REFERENCE.md`](docs/12_WORLD_MAP_REFERENCE.md) | **Referência de Mapa** | Geografia macro aprovada e mapeamento visual dos setores canônicos de Midway. |
