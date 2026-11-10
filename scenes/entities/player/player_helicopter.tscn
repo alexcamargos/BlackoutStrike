@@ -15,7 +15,7 @@
 [ext_resource type="Shader" path="res://assets/shaders/rotor_wash.gdshader" id="13_wash_shader"]
 [ext_resource type="AudioStream" uid="uid://dl66tnrofw5kx" path="res://assets/audio/sfx_helo_loop.wav" id="14_audio_helo"]
 [ext_resource type="AudioStream" uid="uid://cefay513ctxac" path="res://assets/audio/sfx_alarm_fuel.wav" id="15_audio_alarm"]
-[ext_resource type="PackedScene" uid="uid://bmdf6ax4leim3" path="res://assets/models/military/craft_speederD.glb" id="16_speeder_model"]
+[ext_resource type="PackedScene" path="res://assets/models/military/r9x_mohawk_helicopter.glb" id="16_mohawk_model"]
 
 
 
@@ -140,56 +140,16 @@ shape = SubResource("BoxShape3D_fuselage")
 
 [node name="HelicopterMeshContainer" type="Node3D" parent="."]
 
+[node name="R9X_Mohawk_MilitaryModel" parent="HelicopterMeshContainer" instance=ExtResource("16_mohawk_model")]
+transform = Transform3D(-0.22, 0, 0, 0, 0.22, 0, 0, 0, -0.22, 0, -0.45, 0.2)
+
 [node name="FuselageMesh" type="MeshInstance3D" parent="HelicopterMeshContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
 mesh = SubResource("BoxMesh_fuselage")
 
-[node name="SpeederFuselageModel" parent="HelicopterMeshContainer/FuselageMesh" instance=ExtResource("16_speeder_model")]
-transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, -0.15, -0.2)
-
 [node name="Canopy" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
 transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, 0, 0.28, -1.0)
 mesh = SubResource("BoxMesh_canopy")
-
-[node name="TurboshaftHousing" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0.05)
-mesh = SubResource("BoxMesh_turboshaft")
-
-[node name="TailBoom" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 2.1)
-mesh = SubResource("BoxMesh_tail_boom")
-
-[node name="VerticalFin" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 0.951057, 0.309017, 0, -0.309017, 0.951057, 0, 0.55, 3.2)
-mesh = SubResource("BoxMesh_vertical_fin")
-
-[node name="HorizontalStabilizer" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 3.0)
-mesh = SubResource("BoxMesh_horizontal_stab")
-
-[node name="StubWings" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.4)
-mesh = SubResource("BoxMesh_stub_wings")
-
-[node name="HydraPodLeftMesh" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -1.15, -0.15, -0.4)
-mesh = SubResource("CylinderMesh_hydra_pod")
-
-[node name="HydraPodRightMesh" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 1.15, -0.15, -0.4)
-mesh = SubResource("CylinderMesh_hydra_pod")
-
-[node name="VulcanTurretFairing" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.32, -1.95)
-mesh = SubResource("CylinderMesh_vulcan_chin")
-
-[node name="SkidLeft" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, -0.55, -0.1)
-mesh = SubResource("BoxMesh_skid")
-
-[node name="SkidRight" type="MeshInstance3D" parent="HelicopterMeshContainer/FuselageMesh"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, -0.55, -0.1)
-mesh = SubResource("BoxMesh_skid")
 
 [node name="MainRotor" type="Node3D" parent="HelicopterMeshContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, 0.25)
