@@ -1,11 +1,24 @@
-[gd_scene load_steps=15 format=3 uid="uid://island_terrain_midway_scene_01"]
+[gd_scene load_steps=24 format=3 uid="uid://island_terrain_midway_scene_01"]
 
 [ext_resource type="Script" path="res://scenes/environment/island_terrain_midway.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://sand_albedo_noise_res_01" path="res://assets/textures/terrain/sand_albedo_noise.tres" id="2_sand_albedo"]
+[ext_resource type="Texture2D" uid="uid://sand_normal_texture_res_01" path="res://assets/textures/terrain/sand_normal.tres" id="3_sand_norm"]
+[ext_resource type="Texture2D" uid="uid://grass_dirt_albedo_res_01" path="res://assets/textures/terrain/grass_dirt_albedo.tres" id="4_grass_albedo"]
+[ext_resource type="Texture2D" uid="uid://grass_dirt_normal_res_01" path="res://assets/textures/terrain/grass_dirt_normal.tres" id="5_grass_norm"]
+[ext_resource type="Texture2D" uid="uid://rock_cliff_albedo_res_01" path="res://assets/textures/terrain/rock_cliff_albedo.tres" id="6_rock_albedo"]
+[ext_resource type="Texture2D" uid="uid://rock_cliff_normal_res_01" path="res://assets/textures/terrain/rock_cliff_normal.tres" id="7_rock_norm"]
+[ext_resource type="PackedScene" uid="uid://wooden_tactical_bridge_scene_01" path="res://scenes/environment/wooden_tactical_bridge.tscn" id="8_bridge"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beach"]
-albedo_color = Color(0.82, 0.76, 0.56, 1)
-roughness = 0.85
+albedo_color = Color(0.85, 0.78, 0.58, 1)
+albedo_texture = ExtResource("2_sand_albedo")
+roughness = 0.8
 specular_mode = 2
+normal_enabled = true
+normal_scale = 1.8
+normal_texture = ExtResource("3_sand_norm")
+uv1_scale = Vector3(120, 80, 1)
+uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_beach"]
 material = SubResource("StandardMaterial3D_beach")
@@ -15,8 +28,14 @@ size = Vector3(1200, 0.5, 800)
 size = Vector3(1200, 0.5, 800)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plateau"]
-albedo_color = Color(0.52, 0.5, 0.44, 1)
-roughness = 0.88
+albedo_color = Color(0.48, 0.50, 0.40, 1)
+albedo_texture = ExtResource("4_grass_albedo")
+roughness = 0.82
+normal_enabled = true
+normal_scale = 1.5
+normal_texture = ExtResource("5_grass_norm")
+uv1_scale = Vector3(80, 50, 1)
+uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_plateau"]
 material = SubResource("StandardMaterial3D_plateau")
@@ -26,17 +45,25 @@ size = Vector3(1040, 1, 660)
 size = Vector3(1040, 1, 660)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_runway"]
-albedo_color = Color(0.32, 0.33, 0.35, 1)
-metallic = 0.1
-roughness = 0.65
+albedo_color = Color(0.25, 0.26, 0.28, 1)
+metallic = 0.15
+roughness = 0.6
+uv1_scale = Vector3(6, 40, 1)
+uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_runway"]
 material = SubResource("StandardMaterial3D_runway")
 size = Vector3(55, 0.02, 380)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cliff"]
-albedo_color = Color(0.28, 0.26, 0.25, 1)
-roughness = 0.95
+albedo_color = Color(0.35, 0.32, 0.30, 1)
+albedo_texture = ExtResource("6_rock_albedo")
+roughness = 0.92
+normal_enabled = true
+normal_scale = 2.5
+normal_texture = ExtResource("7_rock_norm")
+uv1_scale = Vector3(4, 4, 4)
+uv1_triplanar = true
 
 [sub_resource type="BoxMesh" id="BoxMesh_cliff_ne"]
 material = SubResource("StandardMaterial3D_cliff")
@@ -87,6 +114,14 @@ size = Vector3(110, 0.6, 110)
 [sub_resource type="BoxShape3D" id="BoxShape3D_islet_east"]
 size = Vector3(110, 0.6, 110)
 
+[sub_resource type="BoxMesh" id="BoxMesh_coastal_slope"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(1280, 0.8, 40)
+
+[sub_resource type="BoxMesh" id="BoxMesh_coastal_slope_lateral"]
+material = SubResource("StandardMaterial3D_beach")
+size = Vector3(40, 0.8, 880)
+
 [node name="IslandTerrainMidway" type="StaticBody3D" node_paths=PackedStringArray("plateau_mesh", "beach_mesh", "cliffs_container") groups=["world_static"]]
 collision_layer = 1
 collision_mask = 0
@@ -102,6 +137,22 @@ mesh = SubResource("BoxMesh_beach")
 [node name="BeachCol" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 shape = SubResource("BoxShape3D_beach")
+
+[node name="CoastalSlopeSouth" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9848, -0.1736, 0, 0.1736, 0.9848, 0, -0.2, 410)
+mesh = SubResource("BoxMesh_coastal_slope")
+
+[node name="CoastalSlopeNorth" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9848, 0.1736, 0, -0.1736, 0.9848, 0, -0.2, -410)
+mesh = SubResource("BoxMesh_coastal_slope")
+
+[node name="CoastalSlopeEast" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9848, -0.1736, 0, 0.1736, 0.9848, 0, 0, 0, 1, 610, -0.2, 0)
+mesh = SubResource("BoxMesh_coastal_slope_lateral")
+
+[node name="CoastalSlopeWest" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.9848, 0.1736, 0, -0.1736, 0.9848, 0, 0, 0, 1, -610, -0.2, 0)
+mesh = SubResource("BoxMesh_coastal_slope_lateral")
 
 [node name="PlateauMesh" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_plateau")
@@ -170,3 +221,11 @@ mesh = SubResource("BoxMesh_islet_east")
 [node name="IsletEastCol" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 850, 0.05, 180)
 shape = SubResource("BoxShape3D_islet_east")
+
+[node name="TacticalBridges" type="Node3D" parent="."]
+
+[node name="BridgeSoutheastConnector" parent="TacticalBridges" instance=ExtResource("8_bridge")]
+transform = Transform3D(0.7071, 0, 0.7071, 0, 1, 0, -0.7071, 0, 0.7071, 620, 0, 600)
+
+[node name="BridgeMainlandInlet" parent="TacticalBridges" instance=ExtResource("8_bridge")]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 500, 0, 440)
