@@ -126,126 +126,148 @@ func _build_palm_mesh() -> Mesh:
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
 	var trunk_mat: StandardMaterial3D = StandardMaterial3D.new()
-	trunk_mat.albedo_color = Color(0.44, 0.30, 0.18, 1.0)
-	trunk_mat.roughness = 0.9
+	trunk_mat.albedo_color = Color(0.38, 0.28, 0.18, 1.0)
+	trunk_mat.roughness = 0.85
 	st.set_material(trunk_mat)
 	
-	# Tronco piramidal/cilindrico estilizado
-	var radius_base: float = 0.22
-	var radius_top: float = 0.14
-	var height: float = 3.6
-	var segments: int = 6
+	var height: float = 4.2
+	var rings: int = 10
+	var ring_segments: int = 8
+	var curve_dir: Vector2 = Vector2(0.3, 0.1).normalized()
 	
-	for i in range(segments):
-		var a1: float = (float(i) / float(segments)) * TAU
-		var a2: float = (float(i + 1) / float(segments)) * TAU
+	for r in range(rings):
+		var t1: float = float(r) / float(rings)
+		var t2: float = float(r + 1) / float(rings)
+		var y1: float = t1 * height
+		var y2: float = t2 * height
+		var r1: float = lerpf(0.32, 0.16, t1)
+		var r2: float = lerpf(0.32, 0.16, t2)
+		var off1: Vector2 = curve_dir * (sin(t1 * PI * 0.6) * 0.5)
+		var off2: Vector2 = curve_dir * (sin(t2 * PI * 0.6) * 0.5)
 		
-		var b1: Vector3 = Vector3(cos(a1) * radius_base, 0.0, sin(a1) * radius_base)
-		var b2: Vector3 = Vector3(cos(a2) * radius_base, 0.0, sin(a2) * radius_base)
-		var t1: Vector3 = Vector3(cos(a1) * radius_top, height, sin(a1) * radius_top)
-		var t2: Vector3 = Vector3(cos(a2) * radius_top, height, sin(a2) * radius_top)
-		
-		st.set_normal((b1 + t1).normalized())
-		st.add_vertex(b1)
-		st.set_normal((t1).normalized())
-		st.add_vertex(t1)
-		st.set_normal((b2 + t2).normalized())
-		st.add_vertex(b2)
-		
-		st.set_normal((b2 + t2).normalized())
-		st.add_vertex(b2)
-		st.set_normal((t1).normalized())
-		st.add_vertex(t1)
-		st.set_normal((t2).normalized())
-		st.add_vertex(t2)
+		for s in range(ring_segments):
+			var a1: float = (float(s) / float(ring_segments)) * TAU
+			var a2: float = (float(s + 1) / float(ring_segments)) * TAU
+			
+			var v1: Vector3 = Vector3(off1.x + cos(a1) * r1, y1, off1.y + sin(a1) * r1)
+			var v2: Vector3 = Vector3(off1.x + cos(a2) * r1, y1, off1.y + sin(a2) * r1)
+			var v3: Vector3 = Vector3(off2.x + cos(a2) * r2, y2, off2.y + sin(a2) * r2)
+			var v4: Vector3 = Vector3(off2.x + cos(a1) * r2, y2, off2.y + sin(a1) * r2)
+			
+			var norm: Vector3 = (Vector3(cos(a1), 0.1, sin(a1))).normalized()
+			st.set_normal(norm)
+			st.add_vertex(v1)
+			st.add_vertex(v2)
+			st.add_vertex(v3)
+			
+			st.add_vertex(v1)
+			st.add_vertex(v3)
+			st.add_vertex(v4)
 	
 	var mesh: ArrayMesh = st.commit()
 	
-	# Superficie 2: Folhas de palmeira em leque
+	# Superficie 2: Folhas de palmeira em leque com caimento natural em camadas
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var leaf_mat: StandardMaterial3D = StandardMaterial3D.new()
-	leaf_mat.albedo_color = Color(0.18, 0.54, 0.22, 1.0)
-	leaf_mat.roughness = 0.75
+	leaf_mat.albedo_color = Color(0.14, 0.45, 0.18, 1.0)
+	leaf_mat.roughness = 0.65
+	leaf_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	st.set_material(leaf_mat)
 	
-	var leaf_count: int = 8
-	var leaf_length: float = 2.1
-	var leaf_droop: float = -0.7
-	var center_top: Vector3 = Vector3(0.0, height, 0.0)
+	var frond_count: int = 14
+	var crown_top: Vector3 = Vector3(curve_dir.x * (sin(PI * 0.6) * 0.5), height, curve_dir.y * (sin(PI * 0.6) * 0.5))
 	
-	for i in range(leaf_count):
-		var angle: float = (float(i) / float(leaf_count)) * TAU
-		var side_angle: float = angle + (PI / float(leaf_count))
-		var tip: Vector3 = center_top + Vector3(cos(angle) * leaf_length, leaf_droop, sin(angle) * leaf_length)
-		var side: Vector3 = center_top + Vector3(cos(side_angle) * 0.45, -0.15, sin(side_angle) * 0.45)
+	for f in range(frond_count):
+		var base_angle: float = (float(f) / float(frond_count)) * TAU
+		var layer: float = float(f % 2)
+		var length: float = 2.8 + layer * 0.5
+		var droop: float = -1.1 - layer * 0.4
+		var arch_height: float = 0.5 + layer * 0.3
 		
-		st.set_normal(Vector3.UP)
-		st.add_vertex(center_top)
-		st.add_vertex(side)
-		st.add_vertex(tip)
+		var steps: int = 4
+		var prev_pt: Vector3 = crown_top
+		var prev_w: float = 0.15
 		
-		# Face oposta para visualizacao bilateral
-		st.set_normal(Vector3.DOWN)
-		st.add_vertex(center_top)
-		st.add_vertex(tip)
-		st.add_vertex(side)
+		for step in range(1, steps + 1):
+			var st_t: float = float(step) / float(steps)
+			var cur_dist: float = st_t * length
+			var cur_y: float = crown_top.y + sin(st_t * PI) * arch_height + st_t * droop
+			var dir_xz: Vector2 = Vector2(cos(base_angle), sin(base_angle))
+			var cur_pt: Vector3 = Vector3(crown_top.x + dir_xz.x * cur_dist, cur_y, crown_top.z + dir_xz.y * cur_dist)
+			var cur_w: float = lerpf(0.55, 0.05, st_t)
+			
+			var side_vec: Vector3 = Vector3(-dir_xz.y, 0.0, dir_xz.x)
+			var p1: Vector3 = prev_pt - side_vec * prev_w
+			var p2: Vector3 = prev_pt + side_vec * prev_w
+			var p3: Vector3 = cur_pt + side_vec * cur_w
+			var p4: Vector3 = cur_pt - side_vec * cur_w
+			
+			st.set_normal(Vector3.UP)
+			st.add_vertex(p1)
+			st.add_vertex(p2)
+			st.add_vertex(p3)
+			
+			st.add_vertex(p1)
+			st.add_vertex(p3)
+			st.add_vertex(p4)
+			
+			prev_pt = cur_pt
+			prev_w = cur_w
 	
 	mesh = st.commit(mesh)
 	return mesh
 
 
-## Constrói a malha de um conteiner logistico da Aetheris.
+## Constrói a malha de um conteiner logistico da Aetheris a partir de ativo 3D PBR.
 ##
 ## Args:
 ##     Nenhum.
 ##
 ## Returns:
-##     Mesh: BoxMesh com pintura industrial e material PBR.
+##     Mesh: Malha colunar de conteiner com acabamento industrial.
 ##
 ## Raises:
 ##     Nenhuma excecao levantada.
 func _build_container_mesh() -> Mesh:
+	var scene: PackedScene = load("res://assets/models/boss/cargo-container-a.glb") as PackedScene
+	if scene != null:
+		var inst: Node = scene.instantiate()
+		var mi: MeshInstance3D = inst.find_child("cargo-container-a", true, false) as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			var m: Mesh = mi.mesh
+			inst.free()
+			return m
+		inst.free()
+	
 	var box: BoxMesh = BoxMesh.new()
 	box.size = Vector3(3.2, 1.4, 1.4)
-	
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.20, 0.35, 0.46, 1.0)
-	mat.metallic = 0.45
-	mat.roughness = 0.55
-	box.material = mat
 	return box
 
 
-## Constrói a malha de um guindaste portuario com braco horizontal e cabine.
+## Constrói a malha de torre industrial/guindaste portuario com plataforma metalica PBR.
 ##
 ## Args:
 ##     Nenhum.
 ##
 ## Returns:
-##     Mesh: ArrayMesh com pintura industrial amarela/alaranjada.
+##     Mesh: Malha detalhada de torre e gantry portuario.
 ##
 ## Raises:
 ##     Nenhuma excecao levantada.
 func _build_crane_mesh() -> Mesh:
-	var st: SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var scene: PackedScene = load("res://assets/models/military/platform_high.glb") as PackedScene
+	if scene != null:
+		var inst: Node = scene.instantiate()
+		var mi: MeshInstance3D = inst.find_child("platform_high", true, false) as MeshInstance3D
+		if mi != null and mi.mesh != null:
+			var m: Mesh = mi.mesh
+			inst.free()
+			return m
+		inst.free()
 	
-	var mat: StandardMaterial3D = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.92, 0.58, 0.12, 1.0)
-	mat.metallic = 0.35
-	mat.roughness = 0.5
-	st.set_material(mat)
-	
-	# Torre vertical (altura 9.0m, secao 2.0 x 2.0m)
-	_add_box_to_surface(st, Vector3(0.0, 4.5, 0.0), Vector3(2.0, 9.0, 2.0))
-	# Braco horizontal de icamento (comprimento 9.0m, secao 1.2 x 1.2m, no topo)
-	_add_box_to_surface(st, Vector3(3.5, 9.5, 0.0), Vector3(9.0, 1.2, 1.2))
-	# Contrapeso traseiro
-	_add_box_to_surface(st, Vector3(-2.0, 9.5, 0.0), Vector3(2.4, 1.8, 1.6))
-	# Cabine de controle
-	_add_box_to_surface(st, Vector3(1.2, 8.2, 0.9), Vector3(1.4, 1.4, 1.2))
-	
-	return st.commit()
+	var box: BoxMesh = BoxMesh.new()
+	box.size = Vector3(2.5, 6.0, 2.5)
+	return box
 
 
 ## Adiciona vertices de um cubo a um SurfaceTool.
@@ -452,10 +474,16 @@ func _setup_containers() -> void:
 	
 	for i in range(_container_positions.size()):
 		var pos: Vector3 = _container_positions[i]
-		var basis: Basis = Basis.IDENTITY
+		var basis: Basis = Basis.IDENTITY.scaled(Vector3(1.6, 1.6, 1.6))
 		mm.set_instance_transform(i, Transform3D(basis, pos))
 	
 	containers_instance.multimesh = mm
+	
+	var container_mat: StandardMaterial3D = StandardMaterial3D.new()
+	container_mat.albedo_color = Color(0.18, 0.32, 0.42, 1.0)
+	container_mat.metallic = 0.5
+	container_mat.roughness = 0.6
+	containers_instance.material_override = container_mat
 
 
 ## Configura e popula o MultiMesh de guindastes portuarios nos ancoradouros.
@@ -490,7 +518,13 @@ func _setup_cranes() -> void:
 		var spec: Dictionary = crane_specs[i]
 		var pos: Vector3 = spec["pos"]
 		var yaw: float = spec["yaw"]
-		var basis: Basis = Basis(Vector3.UP, yaw)
+		var basis: Basis = Basis(Vector3.UP, yaw).scaled(Vector3(4.0, 4.0, 4.0))
 		mm.set_instance_transform(i, Transform3D(basis, pos))
 	
 	cranes_instance.multimesh = mm
+	
+	var steel_mat: StandardMaterial3D = StandardMaterial3D.new()
+	steel_mat.albedo_color = Color(0.22, 0.25, 0.28, 1.0)
+	steel_mat.metallic = 0.75
+	steel_mat.roughness = 0.45
+	cranes_instance.material_override = steel_mat
