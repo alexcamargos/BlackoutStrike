@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://tactical_road_network_scene_01"]
+
+[ext_resource type="Texture2D" uid="uid://grass_dirt_normal_res_01" path="res://assets/textures/terrain/grass_dirt_normal.tres" id="1_dirt_norm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_road"]
+albedo_color = Color(0.32, 0.28, 0.22, 1)
+roughness = 0.92
+normal_enabled = true
+normal_scale = 1.4
+normal_texture = ExtResource("1_dirt_norm")
+uv1_scale = Vector3(4, 20, 1)
+uv1_triplanar = true
+
+[sub_resource type="BoxMesh" id="BoxMesh_road_main"]
+material = SubResource("StandardMaterial3D_road")
+size = Vector3(8.0, 0.04, 260.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_road_lateral"]
+material = SubResource("StandardMaterial3D_road")
+size = Vector3(280.0, 0.04, 8.0)
+
+[node name="TacticalRoadNetwork" type="Node3D"]
+
+[node name="RoadSouthInlet" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 420, 0.52, 350)
+mesh = SubResource("BoxMesh_road_main")
+
+[node name="RoadCentralPerimeter" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, 0.52, 120)
+mesh = SubResource("BoxMesh_road_lateral")
+
+[node name="RoadFOBBranch" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, -220, 0.52, -20)
+mesh = SubResource("BoxMesh_road_main")
+
+[node name="RoadShelterNorthBranch" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.52, -180)
+mesh = SubResource("BoxMesh_road_lateral")

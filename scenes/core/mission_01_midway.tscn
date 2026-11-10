@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://enemy_turret_sam_scene_01" path="res://scenes/entities/enemies/turret_sam.tscn" id="23_sam"]
 [ext_resource type="PackedScene" uid="uid://enemy_mercenary_squad_scene_01" path="res://scenes/entities/enemies/mercenary_squad.tscn" id="24_merc"]
 [ext_resource type="PackedScene" uid="uid://supply_pickup_01" path="res://scenes/roguelite/supply_pickup.tscn" id="25_supply"]
+[ext_resource type="PackedScene" uid="uid://tactical_road_network_scene_01" path="res://scenes/environment/tactical_road_network.tscn" id="26_roads"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -75,6 +76,8 @@ script = ExtResource("16_ocean_follow")
 target_node = NodePath("../ActiveEntities/PlayerHelicopter")
 
 [node name="IslandTerrain" parent="." instance=ExtResource("14_terrain")]
+
+[node name="TacticalRoadNetwork" parent="." instance=ExtResource("26_roads")]
 
 [node name="IslandProps" parent="." instance=ExtResource("15_props")]
 
