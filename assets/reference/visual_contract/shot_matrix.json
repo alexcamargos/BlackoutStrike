@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "style_anchor": "ART-REF-001",
+  "required_shots": [
+    { "id": "VC-01", "focus": "player-carrier-scale", "must_show": ["R-9X", "USS Vanguard", "open ocean"] },
+    { "id": "VC-02", "focus": "low-ocean-flight", "must_show": ["R-9X", "rotor wash", "shallow-to-deep water gradient"] },
+    { "id": "VC-03", "focus": "coastal-combat", "must_show": ["R-9X", "coastal props", "yellow and red tracer hierarchy"] },
+    { "id": "VC-04", "focus": "suppressed-rescue", "must_show": ["civilian", "red holographic rescue ring", "nearby ground threat"] },
+    { "id": "VC-05", "focus": "boss-phase-two", "must_show": ["Apex Bastion", "CIWS", "command-core emissive"] },
+    { "id": "VC-06", "focus": "hud-legibility", "must_show": ["health", "fuel", "passengers", "compass", "target lock"] },
+    { "id": "VC-07", "focus": "island-depth", "must_show": ["beach", "cliffs", "industrial midground", "tropical foliage"] },
+    { "id": "VC-08", "focus": "water-impact", "must_show": ["explosion layers", "vertical splash", "finite debris"] }
+  ]
+}

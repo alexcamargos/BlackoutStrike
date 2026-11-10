@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "style_anchor": "ART-REF-001",
+  "colors": {
+    "vanguard_steel": "#2A3847",
+    "vanguard_highlight": "#66869A",
+    "canopy_dark": "#101923",
+    "hostile_charcoal": "#1F2226",
+    "hostile_alert": "#D9381E",
+    "allied_tracer": "#FFD35A",
+    "positive_glow": "#32D6FF",
+    "ocean_shallow": "#14A6B8",
+    "ocean_deep": "#031438",
+    "foam_white": "#F2FAFF",
+    "sand_warm": "#D9C48A",
+    "rock_dark": "#49515A",
+    "foliage_tropical": "#35683C",
+    "industrial_red": "#B94332",
+    "fog_blue": "#122233",
+    "fuel_warning": "#FFB52E"
+  },
+  "camera": {
+    "tilt_degrees": 68.0,
+    "fov_degrees": 36.0,
+    "player_screen_coverage_min": 0.07,
+    "player_screen_coverage_max": 0.13
+  },
+  "materials": {
+    "r9x": { "metallic": 0.8, "roughness": 0.25 },
+    "aetheris": { "metallic": 0.7, "roughness": 0.32 },
+    "ocean": { "metallic": 0.2, "roughness": 0.12 },
+    "emission_energy": {
+      "allied_tracer_min": 4.0,
+      "hostile_tracer_min": 3.0,
+      "interactive_ring": 2.5
+    }
+  },
+  "lighting": {
+    "sun_color": "#FFF0D9",
+    "sun_elevation_degrees": 55.0,
+    "sun_azimuth_degrees": -40.0,
+    "shadow_distance_m": 180.0,
+    "fog_start_m": 120.0,
+    "tonemap_exposure": 1.05,
+    "glow_intensity": 0.85,
+    "glow_strength": 1.05,
+    "glow_hdr_threshold": 1.15
+  },
+  "vfx": {
+    "rotor_wash_max_altitude_m": 1.8,
+    "combat_occlusion_max_seconds": 0.25,
+    "forbid_full_hull_emission": true
+  }
+}
