@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="1_health"]
 [ext_resource type="Script" path="res://scripts/components/enemy_ai_controller.gd" id="2_ai"]
 [ext_resource type="Resource" uid="uid://enemy_mercenary_squad_01" path="res://scripts/data/enemy_mercenary_squad.tres" id="3_stats"]
-[ext_resource type="PackedScene" uid="uid://deeeayjgwc8qh" path="res://assets/models/characters/Rogue.glb" id="4_mercenary_model"]
+[ext_resource type="PackedScene" path="res://assets/models/military/modern_soldier.glb" id="4_mercenary_model"]
 
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_hitbox"]
@@ -65,10 +65,10 @@ shape = SubResource("CapsuleShape3D_hitbox")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
 
 [node name="MercenaryModel" parent="ModelContainer" instance=ExtResource("4_mercenary_model")]
-transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, -0.45, 0)
+transform = Transform3D(-0.011, 0, 0, 0, 0.011, 0, 0, 0, -0.011, 0, -0.45, 0)
 
 [node name="SquadLeaderTorso" type="MeshInstance3D" parent="ModelContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -0.2)
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.2, -0.1)
 mesh = SubResource("BoxMesh_torso")
 
 [node name="LeaderHelmet" type="MeshInstance3D" parent="ModelContainer/SquadLeaderTorso"]
@@ -78,14 +78,6 @@ mesh = SubResource("BoxMesh_helmet")
 [node name="LeaderVisor" type="MeshInstance3D" parent="ModelContainer/SquadLeaderTorso/LeaderHelmet"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16)
 mesh = SubResource("BoxMesh_visor")
-
-[node name="FlankerLeft" type="MeshInstance3D" parent="ModelContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0.2, 0.35)
-mesh = SubResource("BoxMesh_flanker_torso")
-
-[node name="FlankerRight" type="MeshInstance3D" parent="ModelContainer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.2, 0.35)
-mesh = SubResource("BoxMesh_flanker_torso")
 
 [node name="Turret" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.75, -0.25)
