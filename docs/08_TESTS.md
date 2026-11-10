@@ -10,6 +10,15 @@ godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
 ```
 Nenhum código de feature deve ser considerado concluído caso os testes apresentem falhas (*exit code != 0*).
 
+### Execução de aceitação visual (GPU Vulkan)
+
+O GUT headless não certifica aparência. A aceitação visual requer executor Windows
+com GPU Vulkan, fixture e captura determinística para cada VC-01 a VC-08 de
+`10_VISUAL_CONTRACT.md`. O pipeline deve validar o manifesto, rejeitar primitivas
+visíveis em `scenes/`, comparar imagem com SSIM >= 0,97 fora das máscaras permitidas
+e medir a rota de 120 s do perfil de desempenho. Enquanto o manifesto estiver
+`BLOCKED_BY_REFERENCE_APPROVAL`, a etapa visual deve reportar bloqueio, e não êxito.
+
 ---
 
 ## 2. Casos de Teste Essenciais para o MVP
