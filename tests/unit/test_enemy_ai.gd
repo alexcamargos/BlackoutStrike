@@ -225,3 +225,38 @@ func test_enemy_turret_aiming_and_projectile_coincidence() -> void:
 		var dot_prod: float = proj_forward.dot(expected_dir)
 		assert_true(dot_prod > 0.95, "O vetor de disparo do projétil deve coincidir com a orientação angular do alvo (dot: " + str(dot_prod) + ").")
 
+
+func test_enemy_ai_orient_towards_with_unnormalized_basis() -> void:
+	var boat_res: PackedScene = load("res://scenes/entities/enemies/patrol_boat.tscn")
+	var boat: Node3D = boat_res.instantiate() as Node3D
+	add_child_autofree(boat)
+	
+	# Simula base com arredondamento float (0.7071) idêntica à do erro reportado
+	boat.global_transform.basis = Basis(
+		Vector3(0.7071, 0.0, 0.7071),
+		Vector3(0.0, 1.0, 0.0),
+		Vector3(-0.7071, 0.0, 0.7071)
+	)
+	
+	var ai: EnemyAIController = boat.get_node_or_null("EnemyAIController") as EnemyAIController
+	assert_not_null(ai, "PatrolBoat deve possuir EnemyAIController.")
+	
+	var target: Node3D = Node3D.new()
+	add_child_autofree(target)
+	target.global_position = Vector3(100.0, 0.0, 200.0)
+	
+	# Executa múltiplas iterações simulando física contínua
+	for i in range(10):
+		ai._orient_towards(target.global_position, 0.016)
+	
+	# A base do barco deve ser ortonormal e conversível para Quaternion sem erros
+	var boat_quat: Quaternion = Quaternion(boat.global_transform.basis)
+	assert_true(boat.global_transform.basis.is_conformal(), "A base resultante deve ser conforme.")
+	assert_almost_eq(boat.global_transform.basis.determinant(), 1.0, 0.001, "O determinante deve ser 1.0.")
+	
+	# A base da torreta desacoplada também deve ser ortonormal e conversível
+	var turret: Node3D = boat.get_node_or_null("Turret") as Node3D
+	if turret != null:
+		var turret_quat: Quaternion = Quaternion(turret.global_transform.basis)
+		assert_almost_eq(turret.global_transform.basis.determinant(), 1.0, 0.001, "Determinante da torreta deve ser 1.0.")
+
