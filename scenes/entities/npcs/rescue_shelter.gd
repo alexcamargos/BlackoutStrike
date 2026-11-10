@@ -41,6 +41,35 @@ func _ready() -> void:
 		health_component.max_health = shelter_data.max_health
 		health_component.current_health = shelter_data.max_health
 		health_component.entity_destroyed.connect(_on_entity_destroyed)
+	
+	_apply_military_styling()
+
+
+## Aplica materiais militares realistas (camuflagem oliva e aco escurecido) nas malhas do hangar.
+func _apply_military_styling() -> void:
+	var hull_mat: StandardMaterial3D = StandardMaterial3D.new()
+	hull_mat.albedo_color = Color(0.24, 0.28, 0.23, 1.0)
+	hull_mat.metallic = 0.45
+	hull_mat.roughness = 0.6
+	
+	var steel_mat: StandardMaterial3D = StandardMaterial3D.new()
+	steel_mat.albedo_color = Color(0.14, 0.16, 0.18, 1.0)
+	steel_mat.metallic = 0.8
+	steel_mat.roughness = 0.35
+	
+	var trim_mat: StandardMaterial3D = StandardMaterial3D.new()
+	trim_mat.albedo_color = Color(0.78, 0.58, 0.16, 1.0)
+	trim_mat.metallic = 0.3
+	trim_mat.roughness = 0.5
+	
+	var hangar: Node = find_child("HangarModel", true, false)
+	if hangar != null:
+		for mi: Node in hangar.find_children("*", "MeshInstance3D", true, false):
+			var mesh_inst: MeshInstance3D = mi as MeshInstance3D
+			if mesh_inst != null:
+				mesh_inst.set_surface_override_material(0, hull_mat)
+				mesh_inst.set_surface_override_material(1, steel_mat)
+				mesh_inst.set_surface_override_material(2, trim_mat)
 
 
 ## Aplica dano a estrutura delegando a operacao ao HealthComponent.
