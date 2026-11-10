@@ -44,9 +44,9 @@ shader_parameter/metallic = 0.2
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
 material = SubResource("ShaderMaterial_ocean")
-size = Vector2(300, 300)
-subdivide_width = 24
-subdivide_depth = 24
+size = Vector2(4000, 4000)
+subdivide_width = 80
+subdivide_depth = 80
 
 [node name="Mission_01_Midway" type="Node3D"]
 script = ExtResource("11_mission")
