@@ -1,41 +1,64 @@
-## Interface de Usuario (HUD) tatica no estilo retro-moderno militar.
+## Interface de Usuario (HUD) tatica militar de alta fidelidade (estilo VC-06).
 ##
-## Exibe barras angulares segmentadas de blindagem e combustivel, selecao e contagem de municao
-## dos tres slots de armas, indicadores de contagem de passageiros (pips), alerta de cabine lotada
-## e reticula tatica com feedback de travamento de alvos.
+## Implementa os 7 modulos contratados da interface de combate:
+## 1. Top-Left: Barras angulares segmentadas de blindagem e combustivel com insignias vetoriais.
+## 2. Top-Center: Fita de azimute e bussola militar com entalhe trapezoidal.
+## 3. Top-Right: Manifesto de sobreviventes com pips e alerta diegetico CABIN FULL.
+## 4. Bottom-Left: Radar tatico de superficie com varredura circular e plotagem de contatos.
+## 5. Bottom-Center: Horizonte artificial e atitude de voo com silhueta vetorial do R-9X.
+## 6. Bottom-Right: Baia de armamento empilhada com slots ativos e medidores segmentados.
+## 7. CenterScreen: Reticula circular tatica com travas de alvo e marcador em losango.
+##
 ## Conecta-se exclusivamente atraves dos sinais do EventBus.
 class_name HUD
 extends Control
 
+# --- Modulo 1: Blindagem e Combustivel (Top-Left) ---
 @onready var health_bar: ProgressBar = $TopLeft/VBox/HealthBar
 @onready var fuel_bar: ProgressBar = $TopLeft/VBox/FuelBar
 @onready var health_label: Label = $TopLeft/VBox/HealthBar/HealthLabel
 @onready var fuel_label: Label = $TopLeft/VBox/FuelBar/FuelLabel
 
+# --- Modulo 6: Baia de Armamento (Bottom-Right) ---
 @onready var slot_panels: Array[PanelContainer] = [
-	$BottomLeft/WeaponSlots/Slot0,
-	$BottomLeft/WeaponSlots/Slot1,
-	$BottomLeft/WeaponSlots/Slot2
+	get_node("BottomRight/WeaponSlots/Slot0") as PanelContainer,
+	get_node("BottomRight/WeaponSlots/Slot1") as PanelContainer,
+	get_node("BottomRight/WeaponSlots/Slot2") as PanelContainer
 ]
 @onready var ammo_labels: Array[Label] = [
-	$BottomLeft/WeaponSlots/Slot0/VBox/AmmoLabel,
-	$BottomLeft/WeaponSlots/Slot1/VBox/AmmoLabel,
-	$BottomLeft/WeaponSlots/Slot2/VBox/AmmoLabel
+	get_node("BottomRight/WeaponSlots/Slot0/HBox/VBox/AmmoLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot1/HBox/VBox/AmmoLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot2/HBox/VBox/AmmoLabel") as Label
 ]
 @onready var name_labels: Array[Label] = [
-	$BottomLeft/WeaponSlots/Slot0/VBox/NameLabel,
-	$BottomLeft/WeaponSlots/Slot1/VBox/NameLabel,
-	$BottomLeft/WeaponSlots/Slot2/VBox/NameLabel
+	get_node("BottomRight/WeaponSlots/Slot0/HBox/VBox/NameLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot1/HBox/VBox/NameLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot2/HBox/VBox/NameLabel") as Label
+]
+@onready var ammo_bars: Array[ProgressBar] = [
+	get_node_or_null("BottomRight/WeaponSlots/Slot0/HBox/VBox/AmmoBar") as ProgressBar,
+	get_node_or_null("BottomRight/WeaponSlots/Slot1/HBox/VBox/AmmoBar") as ProgressBar,
+	get_node_or_null("BottomRight/WeaponSlots/Slot2/HBox/VBox/AmmoBar") as ProgressBar
 ]
 
+# --- Modulo 3: Resgate e Passageiros (Top-Right) ---
 @onready var cargo_label: Label = $TopRight/VBox/CargoContainer/CargoLabel
 @onready var cabin_full_alert: Label = $TopRight/VBox/CabinFullAlert
 @onready var passenger_pips_container: HBoxContainer = $TopRight/VBox/PassengerPips
+
+# --- Modulo 7: Reticula e Lock-On (CenterScreen) ---
 @onready var lock_indicator: PanelContainer = $CenterScreen/VBox/LockIndicator
 @onready var reticle_rect: ColorRect = $CenterScreen/VBox/ReticleRect
-@onready var compass_panel: PanelContainer = get_node_or_null("TopCenter/TacticalCompass") as PanelContainer
-@onready var compass_label: Label = get_node_or_null("TopCenter/TacticalCompass/CompassLabel") as Label
+@onready var lock_target_box: ColorRect = get_node_or_null("CenterScreen/VBox/LockIndicator/VBox/LockTargetBox") as ColorRect
 
+# --- Modulo 2: Bussola Tática e Rumo (Top-Center) ---
+@onready var compass_panel: PanelContainer = get_node_or_null("TopCenter/VBox/TacticalCompass") as PanelContainer if has_node("TopCenter/VBox/TacticalCompass") else get_node_or_null("TopCenter/TacticalCompass") as PanelContainer
+@onready var compass_label: Label = get_node_or_null("TopCenter/VBox/TacticalCompass/CompassLabel") as Label if has_node("TopCenter/VBox/TacticalCompass/CompassLabel") else get_node_or_null("TopCenter/TacticalCompass/CompassLabel") as Label
+@onready var heading_tape_rect: ColorRect = get_node_or_null("TopCenter/VBox/HeadingTape") as ColorRect if has_node("TopCenter/VBox/HeadingTape") else get_node_or_null("TopCenter/HeadingTape") as ColorRect
+
+# --- Modulo 4 & 5: Radar e Horizonte Artificial ---
+@onready var radar_widget: Control = get_node_or_null("BottomLeft/RadarPanel/Margin/TacticalRadar") as Control
+@onready var attitude_widget: Control = get_node_or_null("BottomCenter/AttitudeHorizon") as Control
 
 ## Indice da arma ativa atualmente na interface.
 var active_slot_index: int = 0
@@ -49,8 +72,11 @@ var current_cargo_count: int = 0
 ## Referencia rastreada da aeronave do jogador.
 var _tracked_player: Node3D = null
 
+## Referencia ao alvo atualmente travado pelo míssil Hellfire.
+var _locked_target: Node3D = null
 
-## Conecta o HUD aos eventos do EventBus e configura os estados visuais iniciais.
+
+## Conecta o HUD aos eventos do EventBus e inicializa o layout visual 1080p.
 ##
 ## Args:
 ##     Nenhum.
@@ -76,7 +102,7 @@ func _ready() -> void:
 	EventBus.target_lost.connect(_on_target_lost)
 
 
-## Atualiza os valores nominais e o shader segmentado da integridade estrutural.
+## Atualiza os valores nominais e o shader segmentado de 8 blocos da blindagem.
 ##
 ## Args:
 ##     current (float): Pontos de integridade restantes.
@@ -93,7 +119,7 @@ func _on_health_changed(current: float, max_health: float) -> void:
 		(health_bar.material as ShaderMaterial).set_shader_parameter("fill_ratio", ratio)
 
 
-## Atualiza a barra angular segmentada de combustivel e seu shader.
+## Atualiza a barra angular segmentada de combustivel e seu shader âmbar.
 ##
 ## Args:
 ##     current (float): Unidades restantes de combustivel.
@@ -123,7 +149,7 @@ func _on_weapon_selected(slot_index: int, _weapon_name: String) -> void:
 	_highlight_active_slot(slot_index)
 
 
-## Atualiza a contagem de municao no mostrador do slot correspondente.
+## Atualiza a contagem de municao e a barra segmentada do slot correspondente.
 ##
 ## Args:
 ##     slot_index (int): Indice do slot afetado.
@@ -135,6 +161,15 @@ func _on_weapon_selected(slot_index: int, _weapon_name: String) -> void:
 func _on_weapon_ammo_changed(slot_index: int, current: int, max_ammo: int) -> void:
 	if slot_index >= 0 and slot_index < ammo_labels.size():
 		ammo_labels[slot_index].text = "%d / %d" % [current, max_ammo]
+	
+	if slot_index >= 0 and slot_index < ammo_bars.size():
+		var bar: ProgressBar = ammo_bars[slot_index]
+		if bar != null:
+			bar.max_value = max_ammo
+			bar.value = current
+			if bar.material is ShaderMaterial:
+				var ratio: float = clampf(float(current) / maxf(1.0, float(max_ammo)), 0.0, 1.0)
+				(bar.material as ShaderMaterial).set_shader_parameter("fill_ratio", ratio)
 
 
 ## Notifica a contagem de sobreviventes a bordo, pips segmentados e ativa alerta de lotacao.
@@ -167,7 +202,7 @@ func _on_civilian_extracted(_total_rescued: int) -> void:
 	_update_passenger_pips(0, max_passenger_capacity)
 
 
-## Sincroniza a exibicao dos pips graficos de passageiros embarcados.
+## Sincroniza a exibicao dos pips graficos de passageiros embarcados em estilo militar.
 ##
 ## Args:
 ##     current (int): Quantidade de ocupantes atuais.
@@ -179,10 +214,9 @@ func _update_passenger_pips(current: int, total: int) -> void:
 	if passenger_pips_container == null:
 		return
 	
-	# Ajusta a quantidade de blocos indicadores para a capacidade total
 	while passenger_pips_container.get_child_count() < total:
 		var pip: ColorRect = ColorRect.new()
-		pip.custom_minimum_size = Vector2(16.0, 10.0)
+		pip.custom_minimum_size = Vector2(20.0, 12.0)
 		passenger_pips_container.add_child(pip)
 	
 	while passenger_pips_container.get_child_count() > total:
@@ -190,24 +224,24 @@ func _update_passenger_pips(current: int, total: int) -> void:
 		passenger_pips_container.remove_child(last_child)
 		last_child.queue_free()
 	
-	# Atualiza o estado de ativacao (aceso vs vazio)
 	for i in range(passenger_pips_container.get_child_count()):
 		var pip: Control = passenger_pips_container.get_child(i) as Control
 		if pip != null:
 			if i < current:
-				pip.modulate = Color(0.2, 0.9, 0.85, 1.0)
+				pip.modulate = Color(0.0, 0.95, 0.9, 1.0)
 			else:
 				pip.modulate = Color(0.2, 0.3, 0.4, 0.25)
 
 
-## Habilita o indicador visual de reticula de travamento do Hellfire.
+## Habilita o indicador visual de reticula de travamento e a moldura do alvo com losango.
 ##
 ## Args:
-##     _target (Node3D): Instancia do alvo adquirido.
+##     target (Node3D): Instancia do alvo adquirido.
 ##
 ## Returns:
 ##     void
-func _on_target_locked(_target: Node3D) -> void:
+func _on_target_locked(target: Node3D) -> void:
+	_locked_target = target
 	lock_indicator.visible = true
 	if reticle_rect != null and reticle_rect.material is ShaderMaterial:
 		(reticle_rect.material as ShaderMaterial).set_shader_parameter("is_locked", true)
@@ -221,6 +255,7 @@ func _on_target_locked(_target: Node3D) -> void:
 ## Returns:
 ##     void
 func _on_target_lost() -> void:
+	_locked_target = null
 	lock_indicator.visible = false
 	if reticle_rect != null and reticle_rect.material is ShaderMaterial:
 		(reticle_rect.material as ShaderMaterial).set_shader_parameter("is_locked", false)
@@ -236,15 +271,12 @@ func _on_target_lost() -> void:
 func _highlight_active_slot(active_idx: int) -> void:
 	for i in range(slot_panels.size()):
 		if i == active_idx:
-			slot_panels[i].modulate = Color(1.0, 0.85, 0.2, 1.0) # Ambar ativo
+			slot_panels[i].modulate = Color(1.0, 0.95, 0.35, 1.0)
 		else:
-			slot_panels[i].modulate = Color(0.6, 0.65, 0.7, 0.6) # Desativado / translucido
+			slot_panels[i].modulate = Color(0.55, 0.65, 0.72, 0.65)
 
 
 func _process(_delta: float) -> void:
-	if compass_label == null:
-		return
-	
 	if _tracked_player == null or not is_instance_valid(_tracked_player):
 		var players: Array[Node] = get_tree().get_nodes_in_group("player")
 		if players.size() > 0:
@@ -252,6 +284,9 @@ func _process(_delta: float) -> void:
 	
 	if _tracked_player != null and is_instance_valid(_tracked_player):
 		_update_tactical_compass(_tracked_player.global_position)
+		if heading_tape_rect != null and heading_tape_rect.material is ShaderMaterial:
+			var heading_yaw: float = _tracked_player.rotation.y
+			(heading_tape_rect.material as ShaderMaterial).set_shader_parameter("heading_offset", heading_yaw * 2.0)
 
 
 ## Atualiza o mostrador tatico de navegacao com indicacao cardinal e distancia.
@@ -268,7 +303,6 @@ func _update_tactical_compass(pos: Vector3) -> void:
 	var vanguard_pos: Vector3 = Vector3(800.0, 0.0, 950.0)
 	var midway_center: Vector3 = Vector3(0.0, 0.0, 0.0)
 	
-	# Se a cabine contem civis para desembarcar, prioriza a base de evacuacao USS Vanguard
 	if current_cargo_count > 0:
 		var dist_vanguard: float = Vector2(pos.x - vanguard_pos.x, pos.z - vanguard_pos.z).length()
 		var card_vanguard: String = get_cardinal_direction(pos, vanguard_pos)
@@ -277,7 +311,6 @@ func _update_tactical_compass(pos: Vector3) -> void:
 		compass_label.modulate = Color(1.0, 0.85, 0.2, 1.0)
 		return
 	
-	# Caso contrario, calcula a rota para o Atol Central de Midway
 	var dist_midway: float = Vector2(pos.x, pos.z).length()
 	if dist_midway > 450.0:
 		var card_midway: String = get_cardinal_direction(pos, midway_center)
