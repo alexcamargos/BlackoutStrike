@@ -154,4 +154,11 @@ Uma fragata automatizada de combate costeiro ancorada na saída da baía protege
 - [ ] **Loop Roguelite Integrado:** Destruição de crate concede seleção funcional de 3 boons com aplicação imediata de modificadores; falha na incursão reseta os boons e passageiros a bordo.
 - [ ] **Geração Semi-Procedural:** Posições dos abrigos e das defesas inimigas mudam a cada reinício de incursão.
 - [ ] **Confronto de Chefe:** O navio *Apex Bastion* opera suas duas fases de combate com torretas destruíveis antes de expor o reator.
-- [ ] **Direção Visual:** Shader de água com profundidade e espuma litorânea, iluminação direcional forte com sombras nítidas e efeitos de pós-processamento HDR/Bloom ativos.
+- [ ] **Contrato Visual:** Oito baselines do `10_VISUAL_CONTRACT.md` aprovados,
+  capturados em GPU Vulkan nas fixtures contratadas e comparados com SSIM >= 0,97
+  fora das máscaras autorizadas.
+- [ ] **Assets de Produção:** Todos os assets obrigatórios possuem arquivo, hash,
+  licença, canais de textura e LODs no manifesto. Cenas de distribuição não têm
+  geometria primitiva visível.
+- [ ] **Perfil de Execução:** Em 1920x1080 High na RTX 3060 ou equivalente, a rota
+  contratada mantém média >= 60 FPS e percentil de 1% >= 50 FPS.
