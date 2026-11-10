@@ -4,14 +4,22 @@
 [ext_resource type="Resource" uid="uid://rescue_shelter_res_01" path="res://scripts/data/rescue_shelter.tres" id="2_data"]
 [ext_resource type="PackedScene" uid="uid://civilian_entity_01" path="res://scenes/entities/npcs/civilian.tscn" id="3_civilian"]
 [ext_resource type="Script" path="res://scripts/components/health_component.gd" id="4_health"]
+[ext_resource type="Texture2D" uid="uid://bunker_concrete_normal_res_01" path="res://assets/textures/terrain/bunker_concrete_normal.tres" id="5_concrete_norm"]
+[ext_resource type="PackedScene" path="res://assets/models/military/satelliteDish.glb" id="6_satellite"]
+[ext_resource type="PackedScene" path="res://assets/models/military/barrels.glb" id="7_barrels"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bunker"]
 size = Vector3(4.0, 3.0, 4.0)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_concrete"]
-albedo_color = Color(0.360784, 0.388235, 0.419608, 1)
-metallic = 0.18
+albedo_color = Color(0.42, 0.44, 0.46, 1)
+metallic = 0.2
 roughness = 0.88
+normal_enabled = true
+normal_scale = 1.8
+normal_texture = ExtResource("5_concrete_norm")
+uv1_scale = Vector3(3, 3, 3)
+uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dark_concrete"]
 albedo_color = Color(0.28, 0.31, 0.34, 1)
@@ -79,6 +87,12 @@ mesh = SubResource("BoxMesh_door_frame")
 [node name="BlastDoor" type="MeshInstance3D" parent="ModelContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, -1.98)
 mesh = SubResource("BoxMesh_door")
+
+[node name="SatelliteDishModel" parent="ModelContainer" instance=ExtResource("6_satellite")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 1.1, 3.0, 0.8)
+
+[node name="BarrelsDefense" parent="ModelContainer" instance=ExtResource("7_barrels")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 0, -1.8)
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("4_health")
