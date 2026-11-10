@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "contract_status": "APPROVED",
+  "capture_environment": {
+    "engine": "Godot 4.3.x Forward+ / Vulkan",
+    "resolution": [1920, 1080],
+    "seed": 20261110,
+    "target_gpu": "NVIDIA RTX 3060 12 GB or equivalent"
+  },
+  "baselines": [
+    { "id": "VC-01", "file": "VC-01_spawn_carrier.png", "sha256": "5baeacfe9e06844ae04f4a07f035ea27fffe1734a6e9c8d2234dcc28ed9c6224", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-02", "file": "VC-02_low_flight_ocean.png", "sha256": "a3c0a41a7dadba837c6852ccd4e3cf96c08f27dd7a07d3523adda42b3caf12d2", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-03", "file": "VC-03_coastal_combat.png", "sha256": "e21550e613072c7a1674bc486b59bb8ad4d9f2e35106c3e3ae9f2c0ad4c6ceff", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-04", "file": "VC-04_rescue_suppressed.png", "sha256": "7d9cbea555a99e46c75d83328c2dcb6d948482f76679569c2f44dbd4a0e7194b", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-05", "file": "VC-05_boss_phase_2.png", "sha256": "d9d065ecc9b0ddabb45347b8bac4fefcc104faf952b7f90b840579a1ec8426b5", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-06", "file": "VC-06_hud_target_lock.png", "sha256": "aad93c0b8dc29f0b460390ccad759e98fd8ba540bf9ecabd53106e786fde7921", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-07", "file": "VC-07_sunset_island.png", "sha256": "6acc74882493205fad241ef87ed31121b645a0400a37ddaa3e23c121c62500ee", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-08", "file": "VC-08_explosion_water.png", "sha256": "962341621a0abc47815b63576a97e7619427c76de8c1c294cc516fabeb24a4dc", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] }
+  ],
+  "style_anchors": [
+    {
+      "file": "draft_concept_01.png",
+      "id": "ART-REF-001",
+      "sha256": "989cbe47955f4faa6ff59e3a332a230aaa898787a98f7066fd2852b3a53d4fc6",
+      "purpose": "Approved general visual style anchor; it is not a VC baseline and must not be used in visual comparison.",
+      "approval_status": "APPROVED_AS_STYLE_ANCHOR",
+      "approved_at": "2026-11-10"
+    }
+  ],
+  "world_map_references": [
+    {
+      "id": "WORLD-MAP-REF-001",
+      "file": "world_map_reference_01.png",
+      "sha256": "d48c45921f6654ca1404b33bb4048dee12ccbc20b8bb95b2574390116878ff97",
+      "purpose": "Approved macro geography and tactical-map composition reference; not a runtime map texture.",
+      "approval_status": "APPROVED_AS_WORLD_MAP_REFERENCE",
+      "approved_at": "2026-11-10"
+    }
+  ],
+  "assets": [
+    { "id": "MODEL_PLAYER_R9X_V1", "file": "assets/models/player/r9x_mohawk.glb", "sha256": null, "status": "MISSING" },
+    { "id": "MODEL_BOSS_APEX_V1", "file": "assets/models/boss/apex_bastion.glb", "sha256": null, "status": "MISSING" },
+    { "id": "MODEL_ENEMY_SET_V1", "file": null, "sha256": null, "status": "MANIFEST_REQUIRED" },
+    { "id": "MODEL_WORLD_SET_V1", "file": null, "sha256": null, "status": "MANIFEST_REQUIRED" }
+  ]
+}
