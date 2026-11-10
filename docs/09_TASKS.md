@@ -338,3 +338,31 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
   - **Arquivos:** `res://scenes/ui/hud.gd`, `res://scenes/ui/hud.tscn`, `res://tests/unit/test_hud_and_radio.gd`, `res://tests/unit/test_map_expansion_integration.gd`.
   - **Lógica:** Implementar indicador de navegação tática no topo do HUD exibindo direção cardinal (N, NE, E, SE, S, SW, W, NW) e distância métrica em tempo real até o Atol de Midway ou para retorno ao USS Vanguard quando houver civis na cabine.
   - **Critério de Aceite:** HUD guia com precisão matemática a navegação do jogador na escala de $2.500 \times 2.500\text{ m}$ com 174 testes GUT aprovados.
+
+---
+
+## Sprint 15: Contrato Visual e Gate de Assets de Produção
+
+- [ ] **TASK-150: Aprovar e Registrar os Oito Baselines Visuais**
+  - **Dependência:** Nenhuma.
+  - **Arquivos:** `res://assets/reference/visual_contract/VC-01_*.png` a `VC-08_*.png`, `res://assets/reference/visual_contract/manifest.json`.
+  - **Lógica:** O responsável fornece e aprova as oito imagens canônicas conforme `docs/10_VISUAL_CONTRACT.md`. Registrar SHA-256, aprovador, data, máscara justificada e alterar `contract_status` para `APPROVED`.
+  - **Critério de Aceite:** Os oito PNGs têm 1920x1080, hashes preenchidos e aprovação humana explícita; nenhum baseline é gerado ou aprovado autonomamente.
+
+- [ ] **TASK-151: Substituir Todas as Geometrias Provisórias por Assets de Produção**
+  - **Dependência:** TASK-150.
+  - **Arquivos:** cenas de produção em `res://scenes/`, assets declarados no manifesto.
+  - **Lógica:** Entregar modelos com partes, materiais, texturas e LODs exigidos pelo contrato. Remover primitives visíveis de todas as cenas de distribuição; preservá-las somente para colisores, triggers e testes.
+  - **Critério de Aceite:** `godot --headless -s res://tools/validate_visual_contract.gd` não reporta primitive mesh visível nem asset obrigatório ausente.
+
+- [ ] **TASK-152: Fixtures Vulkan e Comparação de Regressão por Imagem**
+  - **Dependência:** TASK-150, TASK-151.
+  - **Arquivos:** `res://tests/visual/`, pipeline de CI Windows/Vulkan.
+  - **Lógica:** Criar fixture determinística para VC-01 a VC-08, registrar câmera, estado e seed; capturar PNG e comparar contra os baselines usando SSIM e máscaras autorizadas.
+  - **Critério de Aceite:** Cada fixture atinge SSIM >= 0,97 fora das máscaras e preserva 1920x1080; diferenças fora da tolerância encerram a build como falha.
+
+- [ ] **TASK-153: Perfil de Desempenho Visual Contratual**
+  - **Dependência:** TASK-152.
+  - **Arquivos:** relatório de CI e fixtures de rota de 120 s.
+  - **Lógica:** Medir a rota contratada em Windows, Godot Forward+/Vulkan, preset High e GPU-alvo; registrar GPU, driver, engine, commit e frame times.
+  - **Critério de Aceite:** Média >= 60 FPS e percentil de 1% >= 50 FPS na configuração contratada.
