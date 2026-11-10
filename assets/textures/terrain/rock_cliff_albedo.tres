@@ -1,0 +1,18 @@
+[gd_resource type="NoiseTexture2D" load_steps=3 format=3 uid="uid://rock_cliff_albedo_res_01"]
+
+[sub_resource type="Gradient" id="Gradient_rock"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.18, 0.17, 0.16, 1, 0.28, 0.26, 0.24, 1, 0.38, 0.36, 0.34, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rock_diffuse"]
+noise_type = 3
+seed = 444
+frequency = 0.04
+fractal_octaves = 4
+
+[resource]
+width = 1024
+height = 1024
+seamless = true
+color_ramp = SubResource("Gradient_rock")
+noise = SubResource("FastNoiseLite_rock_diffuse")
