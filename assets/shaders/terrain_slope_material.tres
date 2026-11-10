@@ -1,0 +1,25 @@
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://terrain_slope_mat_pbr_01"]
+
+[ext_resource type="Shader" path="res://assets/shaders/terrain_slope_pbr.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" uid="uid://sand_albedo_noise_res_01" path="res://assets/textures/terrain/sand_albedo_noise.tres" id="2_sand_alb"]
+[ext_resource type="Texture2D" uid="uid://sand_normal_texture_res_01" path="res://assets/textures/terrain/sand_normal.tres" id="3_sand_norm"]
+[ext_resource type="Texture2D" uid="uid://grass_dirt_albedo_res_01" path="res://assets/textures/terrain/grass_dirt_albedo.tres" id="4_grass_alb"]
+[ext_resource type="Texture2D" uid="uid://grass_dirt_normal_res_01" path="res://assets/textures/terrain/grass_dirt_normal.tres" id="5_grass_norm"]
+[ext_resource type="Texture2D" uid="uid://rock_cliff_albedo_res_01" path="res://assets/textures/terrain/rock_cliff_albedo.tres" id="6_rock_alb"]
+[ext_resource type="Texture2D" uid="uid://rock_cliff_normal_res_01" path="res://assets/textures/terrain/rock_cliff_normal.tres" id="7_rock_norm"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_shader")
+shader_parameter/sand_albedo = ExtResource("2_sand_alb")
+shader_parameter/sand_normal = ExtResource("3_sand_norm")
+shader_parameter/grass_albedo = ExtResource("4_grass_alb")
+shader_parameter/grass_normal = ExtResource("5_grass_norm")
+shader_parameter/rock_albedo = ExtResource("6_rock_alb")
+shader_parameter/rock_normal = ExtResource("7_rock_norm")
+shader_parameter/uv_scale_sand = 0.08
+shader_parameter/uv_scale_grass = 0.04
+shader_parameter/uv_scale_rock = 0.035
+shader_parameter/beach_height_max = 0.45
+shader_parameter/grass_height_min = 0.95
+shader_parameter/slope_rock_threshold = 0.38
