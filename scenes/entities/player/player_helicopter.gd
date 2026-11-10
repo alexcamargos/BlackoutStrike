@@ -42,6 +42,10 @@ var aim_target_world: Vector3 = Vector3.ZERO
 var has_aim_target: bool = false
 
 
+## Fator de eficiencia aerodinamica e queima em voo tatica (garante ~4.5 min de autonomia).
+@export var flight_fuel_consumption_scale: float = 0.45
+
+
 ## Inicializa a entidade conectando sinais de subsistemas e publicando telemetria inicial.
 ##
 ## Args:
@@ -322,12 +326,13 @@ func _process_flight_controls(delta: float) -> void:
 	var input_dir: Vector2 = Input.get_vector("move_west", "move_east", "move_north", "move_south")
 	var is_descending: bool = Input.is_action_pressed("altitude_descend")
 	
-	# Gerenciamento de queima de combustivel
+	# Gerenciamento de queima de combustivel calibrado para ritmo de combate tatica
 	if fuel_component != null and not fuel_component.is_empty():
+		var scaled_delta: float = delta * flight_fuel_consumption_scale
 		if input_dir.length_squared() > 0.01:
-			fuel_component.consume_active(delta)
+			fuel_component.consume_active(scaled_delta)
 		else:
-			fuel_component.consume_passive(delta)
+			fuel_component.consume_passive(scaled_delta)
 	
 	# Calculo de aceleracao linear para inclinacao cosmética no espaco local
 	var current_h_vel: Vector3 = Vector3(velocity.x, 0.0, velocity.z)
