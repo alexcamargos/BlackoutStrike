@@ -229,7 +229,13 @@ func _orient_towards(target_pos: Vector3, delta: float) -> void:
 		
 		# 1. Corpo pai rotaciona suavemente primeiro (exceto STATIC_TURRET, cuja base permanece estática)
 		if not is_static:
-			parent_body.global_transform.basis = parent_body.global_transform.basis.slerp(target_basis, clampf(6.0 * delta, 0.0, 1.0))
+			var current_quat: Quaternion = parent_body.global_transform.basis.get_rotation_quaternion()
+			var target_quat: Quaternion = target_basis.get_rotation_quaternion()
+			var next_quat: Quaternion = current_quat.slerp(target_quat, clampf(6.0 * delta, 0.0, 1.0)).normalized()
+			if parent_body.scale.is_equal_approx(Vector3.ONE):
+				parent_body.global_transform.basis = Basis(next_quat)
+			else:
+				parent_body.global_transform.basis = Basis(next_quat).scaled(parent_body.scale)
 		
 		# 2. Apontamento angular da torreta desacoplada em direção ao alvo calculado após a rotação da base
 		if turret_node != null and is_instance_valid(turret_node):
@@ -239,7 +245,13 @@ func _orient_towards(target_pos: Vector3, delta: float) -> void:
 				turret_dir.y = 0.0
 			if turret_dir.length_squared() > 0.01:
 				var t_basis: Basis = Basis.looking_at(turret_dir.normalized(), Vector3.UP)
-				turret_node.global_transform.basis = turret_node.global_transform.basis.slerp(t_basis, clampf(8.0 * delta, 0.0, 1.0))
+				var current_turret_quat: Quaternion = turret_node.global_transform.basis.get_rotation_quaternion()
+				var target_turret_quat: Quaternion = t_basis.get_rotation_quaternion()
+				var next_turret_quat: Quaternion = current_turret_quat.slerp(target_turret_quat, clampf(8.0 * delta, 0.0, 1.0)).normalized()
+				if turret_node.scale.is_equal_approx(Vector3.ONE):
+					turret_node.global_transform.basis = Basis(next_turret_quat)
+				else:
+					turret_node.global_transform.basis = Basis(next_turret_quat).scaled(turret_node.scale)
 
 
 ## Dispara um projétil contra o alvo especificado.

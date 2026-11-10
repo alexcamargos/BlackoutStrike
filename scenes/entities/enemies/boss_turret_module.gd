@@ -60,7 +60,13 @@ func orient_towards(target_pos: Vector3, delta: float) -> void:
 	dir.y = 0.0
 	if dir.length_squared() > 0.01:
 		var target_basis: Basis = Basis.looking_at(dir.normalized(), Vector3.UP)
-		global_transform.basis = global_transform.basis.slerp(target_basis, clampf(4.0 * delta, 0.0, 1.0))
+		var current_quat: Quaternion = global_transform.basis.get_rotation_quaternion()
+		var target_quat: Quaternion = target_basis.get_rotation_quaternion()
+		var next_quat: Quaternion = current_quat.slerp(target_quat, clampf(4.0 * delta, 0.0, 1.0)).normalized()
+		if scale.is_equal_approx(Vector3.ONE):
+			global_transform.basis = Basis(next_quat)
+		else:
+			global_transform.basis = Basis(next_quat).scaled(scale)
 
 
 func _on_entity_destroyed() -> void:
