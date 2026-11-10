@@ -71,9 +71,16 @@ Power: 1.5
 
 ---
 
-## 5. Política de Placeholders Procedurais para Execução Autônoma (SDD / Headless)
+## 5. Política de Assets de Produção e Bloqueio de Placeholders
 
-Enquanto os pacotes externos `.glb` e `.wav`/`.ogg` listados nas seções 1 e 3 não estiverem importados localmente em `res://assets/`, os agentes autônomos devem construir todas as cenas `.tscn` utilizando **primitivas geométricas e materiais PBR nativos do Godot 4** serializados em texto plano:
-- **Fuselagem e Veículos:** Composição de `BoxMesh`, `CapsuleMesh` e `CylinderMesh` com `StandardMaterial3D` configurado (`metallic = 0.8`, `roughness = 0.25`, cores de facção contrastantes: cinza-azulado `#3B4D5E` para JTF Vanguard e antracite/vermelho `#22252A` / `#D9381E` para Aetheris).
-- **Projéteis e Explosões:** `SphereMesh` ou `BoxMesh` com `emission_enabled = true` e `emission_energy_multiplier = 2.5` para acionar o *Bloom* do `WorldEnvironment`.
-- **Áudio Seguro em Headless:** Os nós `AudioStreamPlayer` e `AudioStreamPlayer3D` devem verificar se o `stream` está atribuído antes de invocar `play()` (ou utilizar `AudioStreamGenerator` / recursos vazios válidos), garantindo zero erros ou avisos durante a execução dos testes via `godot --headless`.
+O inventário exato, hashes, LODs e contratos de geometria são definidos em
+`10_VISUAL_CONTRACT.md` e `assets/reference/visual_contract/manifest.json`.
+
+É proibido usar `BoxMesh`, `CapsuleMesh`, `CylinderMesh`, `SphereMesh`, `PlaneMesh`
+ou `QuadMesh` como geometria visível nas cenas de distribuição. Esses recursos só
+podem existir em `CollisionShape3D`, `Area3D`, gizmos ou fixtures dentro de `tests/`.
+Se um asset obrigatório estiver ausente, a feature fica bloqueada; ela não pode ser
+substituída por bloco, cápsula, cilindro, cor plana ou material provisório.
+
+Os nós `AudioStreamPlayer` e `AudioStreamPlayer3D` devem verificar se o `stream`
+está atribuído antes de invocar `play()`, garantindo zero erros em execução headless.
