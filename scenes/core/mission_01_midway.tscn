@@ -174,7 +174,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -250, 0.5, 120)
 [node name="ActiveEntities" type="Node3D" parent="."]
 
 [node name="PlayerHelicopter" parent="ActiveEntities" instance=ExtResource("5_player")]
-transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 1, 950)
+transform = Transform3D(0.764921, 0, -0.644124, 0, 1, 0, 0.644124, 0, 0.764921, 800, 1, 950)
 
 [node name="Enemies" type="Node3D" parent="ActiveEntities"]
 
@@ -182,10 +182,10 @@ transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 1, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -900, 0, -900)
 
 [node name="PatrolBoat_Channel1" parent="ActiveEntities/Enemies" instance=ExtResource("21_patrol_boat")]
-transform = Transform3D(0.7071, 0, -0.7071, 0, 1, 0, 0.7071, 0, 0.7071, 650, 0, 750)
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 650, 0, 750)
 
 [node name="PatrolBoat_Channel2" parent="ActiveEntities/Enemies" instance=ExtResource("21_patrol_boat")]
-transform = Transform3D(0.866, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866, 480, 0, 560)
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 480, 0, 560)
 
 [node name="NavalMine1" parent="ActiveEntities/Enemies" instance=ExtResource("22_naval_mine")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 700, 0, 820)

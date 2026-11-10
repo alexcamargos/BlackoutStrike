@@ -225,7 +225,7 @@ shape = SubResource("BoxShape3D_islet_east")
 [node name="TacticalBridges" type="Node3D" parent="."]
 
 [node name="BridgeSoutheastConnector" parent="TacticalBridges" instance=ExtResource("8_bridge")]
-transform = Transform3D(0.7071, 0, 0.7071, 0, 1, 0, -0.7071, 0, 0.7071, 620, 0, 600)
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 620, 0, 600)
 
 [node name="BridgeMainlandInlet" parent="TacticalBridges" instance=ExtResource("8_bridge")]
-transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 500, 0, 440)
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 500, 0, 440)
