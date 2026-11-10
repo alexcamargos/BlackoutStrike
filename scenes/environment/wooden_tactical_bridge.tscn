@@ -1,47 +1,151 @@
-[gd_scene load_steps=8 format=3 uid="uid://wooden_tactical_bridge_scene_01"]
+[gd_scene load_steps=12 format=3 uid="uid://wooden_tactical_bridge_scene_01"]
 
 [ext_resource type="Script" path="res://scenes/environment/wooden_tactical_bridge.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://wood_planks_albedo_res_01" path="res://assets/textures/terrain/wood_planks_albedo.tres" id="2_albedo"]
 [ext_resource type="Texture2D" uid="uid://wood_planks_normal_res_01" path="res://assets/textures/terrain/wood_planks_normal.tres" id="3_normal"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
-albedo_color = Color(0.85, 0.75, 0.65, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_timber"]
+albedo_color = Color(0.28, 0.22, 0.16, 1)
 albedo_texture = ExtResource("2_albedo")
-roughness = 0.85
+roughness = 0.88
 normal_enabled = true
 normal_scale = 1.6
 normal_texture = ExtResource("3_normal")
-uv1_scale = Vector3(8, 24, 1)
+uv1_scale = Vector3(2, 8, 2)
 uv1_triplanar = true
 
-[sub_resource type="BoxMesh" id="BoxMesh_deck"]
-material = SubResource("StandardMaterial3D_wood")
-size = Vector3(12, 0.4, 80)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pilings"]
+albedo_color = Color(0.2, 0.16, 0.12, 1)
+roughness = 0.92
+uv1_scale = Vector3(1, 4, 1)
+uv1_triplanar = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
 size = Vector3(12, 0.4, 80)
 
-[sub_resource type="BoxMesh" id="BoxMesh_railing"]
-material = SubResource("StandardMaterial3D_wood")
-size = Vector3(0.5, 0.8, 80)
+[sub_resource type="BoxMesh" id="BoxMesh_plank_deck"]
+material = SubResource("StandardMaterial3D_timber")
+size = Vector3(9.2, 0.25, 80)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_piling"]
+material = SubResource("StandardMaterial3D_pilings")
+top_radius = 0.32
+bottom_radius = 0.36
+height = 4.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_cross_beam"]
+material = SubResource("StandardMaterial3D_timber")
+size = Vector3(9.6, 0.35, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_curb_rail"]
+material = SubResource("StandardMaterial3D_timber")
+size = Vector3(0.35, 0.35, 80)
+
+[sub_resource type="BoxMesh" id="BoxMesh_top_handrail"]
+material = SubResource("StandardMaterial3D_timber")
+size = Vector3(0.12, 0.12, 80)
 
 [node name="WoodenTacticalBridge" type="StaticBody3D" groups=["world_static"]]
 collision_layer = 1
 collision_mask = 0
 script = ExtResource("1_script")
 
-[node name="BridgeDeckMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
-mesh = SubResource("BoxMesh_deck")
-
 [node name="BridgeDeckCol" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
 shape = SubResource("BoxShape3D_deck")
 
-[node name="LeftRailing" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.7, 1.1, 0)
-mesh = SubResource("BoxMesh_railing")
+[node name="VisualModel" type="Node3D" parent="."]
 
-[node name="RightRailing" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.7, 1.1, 0)
-mesh = SubResource("BoxMesh_railing")
+[node name="PlankDeck" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+mesh = SubResource("BoxMesh_plank_deck")
+
+[node name="CurbLeft" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 0.82, 0)
+mesh = SubResource("BoxMesh_curb_rail")
+
+[node name="CurbRight" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 0.82, 0)
+mesh = SubResource("BoxMesh_curb_rail")
+
+[node name="HandrailLeft" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 1.35, 0)
+mesh = SubResource("BoxMesh_top_handrail")
+
+[node name="HandrailRight" type="MeshInstance3D" parent="VisualModel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 1.35, 0)
+mesh = SubResource("BoxMesh_top_handrail")
+
+[node name="PilingsContainer" type="Node3D" parent="VisualModel"]
+
+[node name="PilingL1" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, -35)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR1" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, -35)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam1" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -35)
+mesh = SubResource("BoxMesh_cross_beam")
+
+[node name="PilingL2" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, -20)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR2" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, -20)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam2" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -20)
+mesh = SubResource("BoxMesh_cross_beam")
+
+[node name="PilingL3" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, -5)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR3" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, -5)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam3" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, -5)
+mesh = SubResource("BoxMesh_cross_beam")
+
+[node name="PilingL4" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, 10)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR4" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, 10)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam4" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 10)
+mesh = SubResource("BoxMesh_cross_beam")
+
+[node name="PilingL5" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, 25)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR5" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, 25)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam5" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 25)
+mesh = SubResource("BoxMesh_cross_beam")
+
+[node name="PilingL6" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, -1.2, 35)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="PilingR6" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -1.2, 35)
+mesh = SubResource("CylinderMesh_piling")
+
+[node name="Beam6" type="MeshInstance3D" parent="VisualModel/PilingsContainer"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 35)
+mesh = SubResource("BoxMesh_cross_beam")
