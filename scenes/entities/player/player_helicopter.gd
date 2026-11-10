@@ -20,6 +20,8 @@ const AUTOROTATION_DURATION: float = 3.0
 @onready var mesh_container: Node3D = $HelicopterMeshContainer
 @onready var main_rotor: Node3D = $HelicopterMeshContainer/MainRotor
 @onready var tail_rotor: Node3D = $HelicopterMeshContainer/TailRotor
+var aw101_main_rotor: Node3D = null
+var aw101_tail_rotor: Node3D = null
 @onready var rotor_wash_mesh: MeshInstance3D = get_node_or_null("RotorWashMesh") as MeshInstance3D
 @onready var vulcan_muzzle: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/VulcanMuzzle
 @onready var hydra_pod_left: Marker3D = $HelicopterMeshContainer/MuzzleMarkers/HydraPodLeft
@@ -71,6 +73,9 @@ func _ready() -> void:
 	
 	if rotor_wash_mesh != null:
 		rotor_wash_mesh.top_level = true
+	
+	aw101_main_rotor = find_child("AW101_propellar", true, false) as Node3D
+	aw101_tail_rotor = find_child("AW101_backrotor", true, false) as Node3D
 
 
 ## Interrompe fontes acusticas ao desanexar da arvore de cena prevenindo vazamentos no AudioServer.
@@ -372,6 +377,10 @@ func _process_flight_controls(delta: float) -> void:
 		main_rotor.rotate_y(35.0 * delta)
 	if tail_rotor != null:
 		tail_rotor.rotate_x(45.0 * delta)
+	if aw101_main_rotor != null:
+		aw101_main_rotor.rotate_y(35.0 * delta)
+	if aw101_tail_rotor != null:
+		aw101_tail_rotor.rotate_x(45.0 * delta)
 	
 	# Atualiza intensidade visual do rotor wash dinamicamente conforme cota de altitude (Y <= 1.8m maxima visibilidade)
 	update_rotor_wash(global_position.y)
@@ -441,6 +450,10 @@ func _process_autorotation(delta: float) -> void:
 	# Giro violento da fuselagem em torno do proprio eixo Y
 	if mesh_container != null:
 		mesh_container.rotate_y(14.0 * delta)
+	if aw101_main_rotor != null:
+		aw101_main_rotor.rotate_y(15.0 * delta)
+	if aw101_tail_rotor != null:
+		aw101_tail_rotor.rotate_x(10.0 * delta)
 	
 	# Desaceleracao horizontal e perda constante de altitude
 	velocity.x = move_toward(velocity.x, 0.0, 4.0 * delta)
