@@ -2,6 +2,11 @@
 
 Para atingir a qualidade visual de *Sky Force Anniversary / Reloaded*, os shaders utilizam o renderizador **Forward+** do Godot 4 com precisão matemática em espaço de visão (*view space*).
 
+Os shaders são aceitos apenas mediante as capturas VC-02, VC-03, VC-04 e VC-08 do
+`10_VISUAL_CONTRACT.md`. Os uniforms e texturas declarados nesta especificação são
+obrigatórios; a ausência de uma normal map, máscara ou textura de produção deve
+falhar a validação de assets, nunca resultar em cor plana ou primitive placeholder.
+
 ---
 
 ## 1. Shader do Oceano com Profundidade e Espuma (`ocean_pbr.gdshader`)
