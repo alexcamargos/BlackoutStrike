@@ -30,14 +30,17 @@ Ao destruir depósitos táticos da Aetheris ou hackear repetidoras de dados na i
 
 ---
 
-## 3. Direção de Arte e Identidade Visual (Estilo Sky Force)
+## 3. Direção de Arte e Identidade Visual
 
-O visual do jogo funde a clareza tática e a perspectiva dos anos 90 com a renderização de alto impacto dos jogos modernos de tiro aéreo (*Sky Force Anniversary / Reloaded*):
+O visual do jogo é governado pelo contrato mensurável em
+[`10_VISUAL_CONTRACT.md`](10_VISUAL_CONTRACT.md). Referências a jogos externos são
+somente contexto criativo e não constituem critério de aceite.
 
 ### 3.1. Iluminação e Renderização PBR
 - **Sol Tropical Inclemente:** Iluminação direcional primária quente com sombras em cascata nítidas e profundas projetadas pelas falésias e prédios sobre o mar.
 - **Materiais Metálicos Desgastados:** Fuselagem da aeronave e blindagem dos tanques com canais metálicos (~0.8) e rugosidade calibrada (0.2 a 0.4), gerando brilhos especulares intensos durante as curvas e rolagens.
-- **Pós-Processamento Intenso:** Efeito *Bloom/Glow* nos projéteis de plasma/traçantes, lasers de mira das torretas e núcleos das explosões.
+- **Pós-Processamento:** Os valores de Glow, SSAO, névoa e tonemap são os valores
+  numéricos estabelecidos no Contrato Visual.
 
 ### 3.2. Água Hiper-Estilizada
 - Oceano dinâmico em degradê: turquesa translúcido nas faixas de areia branca da praia, aprofundando para azul-marinho denso nas trincheiras oceânicas.
