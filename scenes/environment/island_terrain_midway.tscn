@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://rock_cliff_albedo_res_01" path="res://assets/textures/terrain/rock_cliff_albedo.tres" id="6_rock_albedo"]
 [ext_resource type="Texture2D" uid="uid://rock_cliff_normal_res_01" path="res://assets/textures/terrain/rock_cliff_normal.tres" id="7_rock_norm"]
 [ext_resource type="PackedScene" uid="uid://wooden_tactical_bridge_scene_01" path="res://scenes/environment/wooden_tactical_bridge.tscn" id="8_bridge"]
+[ext_resource type="PackedScene" path="res://assets/models/military/rock_largeA.glb" id="9_rock_a"]
+[ext_resource type="PackedScene" path="res://assets/models/military/rock_largeB.glb" id="10_rock_b"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beach"]
 albedo_color = Color(0.85, 0.78, 0.58, 1)
@@ -229,3 +231,20 @@ transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 
 
 [node name="BridgeMainlandInlet" parent="TacticalBridges" instance=ExtResource("8_bridge")]
 transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 500, 0, 440)
+
+[node name="CoastalRocks" type="Node3D" parent="."]
+
+[node name="RockOutcrop_Channel1" parent="CoastalRocks" instance=ExtResource("9_rock_a")]
+transform = Transform3D(14, 0, 0, 0, 10, 0, 0, 0, 14, 650, -0.3, 620)
+
+[node name="RockOutcrop_Channel2" parent="CoastalRocks" instance=ExtResource("10_rock_b")]
+transform = Transform3D(16, 0, 0, 0, 12, 0, 0, 0, 16, 580, -0.2, 570)
+
+[node name="RockOutcrop_IsletEast" parent="CoastalRocks" instance=ExtResource("9_rock_a")]
+transform = Transform3D(18, 0, 0, 0, 14, 0, 0, 0, 18, 880, -0.3, 210)
+
+[node name="RockOutcrop_BridgeSouth" parent="CoastalRocks" instance=ExtResource("10_rock_b")]
+transform = Transform3D(12, 0, 0, 0, 8, 0, 0, 0, 12, 600, -0.2, 630)
+
+[node name="RockOutcrop_SouthCoast" parent="CoastalRocks" instance=ExtResource("9_rock_a")]
+transform = Transform3D(15, 0, 0, 0, 10, 0, 0, 0, 15, 450, -0.2, 450)
