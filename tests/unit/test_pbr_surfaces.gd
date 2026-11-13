@@ -154,6 +154,8 @@ func test_island_props_multimesh_instancing() -> void:
 	assert_not_null(palms.multimesh, "Palms deve possuir um MultiMesh atribuido.")
 	assert_gt(palms.multimesh.instance_count, 0, "Deve haver palmeiras instanciadas no MultiMesh.")
 	assert_eq(palms.multimesh.transform_format, MultiMesh.TRANSFORM_3D, "Formato de transform do MultiMesh deve ser TRANSFORM_3D.")
+	for palm_pos: Vector3 in props_node.get("_palm_positions"):
+		assert_gt(palm_pos.y, 0.15, "Nenhuma palmeira pode ser posicionada sobre o mar (y <= 0.15).")
 	
 	assert_not_null(containers.multimesh, "Containers deve possuir um MultiMesh atribuido.")
 	assert_gt(containers.multimesh.instance_count, 0, "Deve haver conteineres instanciados no MultiMesh.")
@@ -237,6 +239,32 @@ func test_mission_midway_lighting_and_atmosphere_calibration() -> void:
 	var rot_deg: Vector3 = sun.rotation_degrees
 	assert_almost_eq(rot_deg.x, -55.0, 1.0, "Elevacao do sol deve ser calibrada a 55 graus (pitch -55 deg).")
 	assert_almost_eq(rot_deg.y, -40.0, 1.0, "Azimute do sol deve ser calibrado a -40 graus.")
+
+
+func test_sunset_preset_pbr_materials_and_terrain3d_ready() -> void:
+	assert_true(ClassDB.class_exists(&"Terrain3D"), "Plugin Terrain3D deve estar carregado e registrado no ClassDB.")
+
+	var terrain_mat: ShaderMaterial = load("res://assets/shaders/terrain_slope_material.tres") as ShaderMaterial
+	assert_not_null(terrain_mat, "terrain_slope_material.tres deve carregar.")
+	assert_not_null(terrain_mat.get_shader_parameter("sand_arm"), "sand_arm PBR deve estar atribuido.")
+	assert_not_null(terrain_mat.get_shader_parameter("grass_arm"), "grass_arm PBR deve estar atribuido.")
+	assert_not_null(terrain_mat.get_shader_parameter("rock_arm"), "rock_arm PBR deve estar atribuido.")
+
+	var sunset_env: Environment = load("res://scenes/core/world_environment_sunset.tres") as Environment
+	assert_not_null(sunset_env, "world_environment_sunset.tres deve existir e ser valido.")
+	assert_eq(sunset_env.background_mode, Environment.BG_SKY, "Preset sunset deve usar PanoramaSky.")
+
+	var scene: PackedScene = load("res://scenes/core/mission_01_midway.tscn") as PackedScene
+	var mission_node: Node3D = scene.instantiate() as Node3D
+	add_child_autofree(mission_node)
+
+	assert_not_null(mission_node.get_node_or_null("PortComplexA"), "PortComplexA deve estar instanciado na Missao 1.")
+	assert_not_null(mission_node.get_node_or_null("CoastalNatureProps"), "CoastalNatureProps deve estar instanciado na Missao 1.")
+
+	mission_node.call("apply_sunset_preset")
+	var we: WorldEnvironment = mission_node.get_node("WorldEnvironment") as WorldEnvironment
+	assert_eq(we.environment, sunset_env, "apply_sunset_preset deve alternar para world_environment_sunset.tres.")
+
 
 
 
