@@ -12,7 +12,7 @@
       "target_dir": "assets/models/characters",
       "installed_version": "672074b73b",
       "installed_format": "glb",
-      "last_checked": "2026-11-09T12:31:21Z"
+      "last_checked": "2026-11-12T20:39:19Z"
     },
     {
       "id": "kenney_vehicles",
@@ -23,7 +23,7 @@
       "target_dir": "assets/models/vehicles",
       "installed_version": "81f9d77bc7",
       "installed_format": "glb",
-      "last_checked": "2026-11-09T12:31:26Z"
+      "last_checked": "2026-11-12T20:39:20Z"
     },
     {
       "id": "kenney_military",
@@ -34,7 +34,7 @@
       "target_dir": "assets/models/military",
       "installed_version": "36a64be063",
       "installed_format": "glb",
-      "last_checked": "2026-11-09T12:31:41Z"
+      "last_checked": "2026-11-12T20:39:20Z"
     },
     {
       "id": "kenney_watercraft",
@@ -45,7 +45,127 @@
       "target_dir": "assets/models/boss",
       "installed_version": "0a7953e9b7",
       "installed_format": "glb",
-      "last_checked": "2026-11-09T12:31:47Z"
+      "last_checked": "2026-11-12T20:39:21Z"
+    },
+    {
+      "id": "ph_coast_sand_01",
+      "name": "Poly Haven Coast Sand 01 (Textura PBR Areia)",
+      "provider": "polyhaven",
+      "polyhaven_id": "coast_sand_01",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/terrain/pbr_sand",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:22Z"
+    },
+    {
+      "id": "ph_aerial_grass_rock",
+      "name": "Poly Haven Aerial Grass Rock (Textura PBR Encosta)",
+      "provider": "polyhaven",
+      "polyhaven_id": "aerial_grass_rock",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/terrain/pbr_grass",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:23Z"
+    },
+    {
+      "id": "ph_cliff_side",
+      "name": "Poly Haven Cliff Side (Textura PBR Falesia)",
+      "provider": "polyhaven",
+      "polyhaven_id": "cliff_side",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/terrain/pbr_cliff",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:23Z"
+    },
+    {
+      "id": "ph_rusty_corrugated_iron",
+      "name": "Poly Haven Rusty Corrugated Iron (Chapa Industrial)",
+      "provider": "polyhaven",
+      "polyhaven_id": "rusty_corrugated_iron",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/industrial/rusty_corrugated_iron",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:24Z"
+    },
+    {
+      "id": "ph_rusty_metal_02",
+      "name": "Poly Haven Rusty Metal 02 (Aco Desgastado)",
+      "provider": "polyhaven",
+      "polyhaven_id": "rusty_metal_02",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/industrial/rusty_metal_02",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:25Z"
+    },
+    {
+      "id": "ph_brushed_concrete",
+      "name": "Poly Haven Brushed Concrete (Pier e Docas)",
+      "provider": "polyhaven",
+      "polyhaven_id": "brushed_concrete",
+      "asset_type": "texture",
+      "resolution": "1k",
+      "target_dir": "assets/textures/industrial/brushed_concrete",
+      "installed_version": "1k-cc0",
+      "installed_format": "texture",
+      "last_checked": "2026-11-12T20:39:26Z"
+    },
+    {
+      "id": "ph_belfast_sunset_puresky",
+      "name": "Poly Haven Belfast Sunset Puresky (HDRI Sunset)",
+      "provider": "polyhaven",
+      "polyhaven_id": "belfast_sunset_puresky",
+      "asset_type": "hdri",
+      "resolution": "1k",
+      "target_dir": "assets/textures/sky",
+      "installed_version": "1k-cc0",
+      "installed_format": "hdri",
+      "last_checked": "2026-11-12T20:39:26Z"
+    },
+    {
+      "id": "ph_coastal_cliff_01",
+      "name": "Poly Haven Coastal Cliff 01 (Falesia Rochosa 3D)",
+      "provider": "polyhaven",
+      "polyhaven_id": "coastal_cliff_01",
+      "asset_type": "model",
+      "resolution": "1k",
+      "target_dir": "assets/models/environment/coastal_cliff_01",
+      "installed_version": "1k-cc0",
+      "installed_format": "model",
+      "last_checked": "2026-11-12T20:39:27Z"
+    },
+    {
+      "id": "ph_coast_rocks_01",
+      "name": "Poly Haven Coast Rocks 01 (Rochas Costeiras 3D)",
+      "provider": "polyhaven",
+      "polyhaven_id": "coast_rocks_01",
+      "asset_type": "model",
+      "resolution": "1k",
+      "target_dir": "assets/models/environment/coast_rocks_01",
+      "installed_version": "1k-cc0",
+      "installed_format": "model",
+      "last_checked": "2026-11-12T20:39:29Z"
+    },
+    {
+      "id": "ph_fern_02",
+      "name": "Poly Haven Fern 02 (Vegetacao Tropical 3D)",
+      "provider": "polyhaven",
+      "polyhaven_id": "fern_02",
+      "asset_type": "model",
+      "resolution": "1k",
+      "target_dir": "assets/models/environment/fern_02",
+      "installed_version": "1k-cc0",
+      "installed_format": "model",
+      "last_checked": "2026-11-12T20:39:30Z"
     }
   ]
 }

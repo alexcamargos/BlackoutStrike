@@ -86,7 +86,81 @@ function Get-RemoteVersion {
             return "UNKNOWN"
         }
     }
+    elseif ($Asset.provider -eq "polyhaven") {
+        return "1k-cc0"
+    }
     return "UNKNOWN"
+}
+
+function Sync-PolyHavenAsset {
+    param (
+        [PSCustomObject]$Asset,
+        [string]$TargetDir
+    )
+
+    $phId = $Asset.polyhaven_id
+    $res = if ($Asset.resolution) { $Asset.resolution } else { "1k" }
+    $apiUrl = "https://api.polyhaven.com/files/$phId"
+    Write-Host "  -> Consultando Poly Haven API: $apiUrl" -ForegroundColor Cyan
+    $files = Invoke-RestMethod -Uri $apiUrl -Headers @{"User-Agent"="BlackoutStrike"} -Method Get -TimeoutSec 20
+
+    if (-not (Test-Path $TargetDir)) {
+        New-Item -ItemType Directory -Force -Path $TargetDir | Out-Null
+    }
+
+    $downloaded = 0
+    if ($Asset.asset_type -eq "texture") {
+        foreach ($channel in @("Diffuse", "nor_gl", "arm")) {
+            $chObj = $files.$channel
+            if ($chObj -and $chObj.$res -and $chObj.$res.jpg) {
+                $url = $chObj.$res.jpg.url
+                $fileName = [System.IO.Path]::GetFileName($url)
+                $dest = Join-Path $TargetDir $fileName
+                Write-Host "     Baixando $fileName..." -ForegroundColor DarkCyan
+                Invoke-WebRequest -Uri $url -OutFile $dest -UserAgent "BlackoutStrike" -TimeoutSec 60
+                $downloaded++
+            }
+        }
+    }
+    elseif ($Asset.asset_type -eq "hdri") {
+        if ($files.hdri -and $files.hdri.$res -and $files.hdri.$res.hdr) {
+            $url = $files.hdri.$res.hdr.url
+            $fileName = [System.IO.Path]::GetFileName($url)
+            $dest = Join-Path $TargetDir $fileName
+            Write-Host "     Baixando $fileName..." -ForegroundColor DarkCyan
+            Invoke-WebRequest -Uri $url -OutFile $dest -UserAgent "BlackoutStrike" -TimeoutSec 60
+            $downloaded++
+        }
+    }
+    elseif ($Asset.asset_type -eq "model") {
+        $gltfInfo = $files.gltf.$res.gltf
+        if ($gltfInfo) {
+            $mainUrl = $gltfInfo.url
+            $mainName = [System.IO.Path]::GetFileName($mainUrl)
+            $mainDest = Join-Path $TargetDir $mainName
+            Write-Host "     Baixando $mainName..." -ForegroundColor DarkCyan
+            Invoke-WebRequest -Uri $mainUrl -OutFile $mainDest -UserAgent "BlackoutStrike" -TimeoutSec 60
+            $downloaded++
+
+            if ($gltfInfo.include) {
+                foreach ($prop in $gltfInfo.include.PSObject.Properties) {
+                    $relPath = $prop.Name
+                    $incUrl = $prop.Value.url
+                    $incDest = Join-Path $TargetDir $relPath
+                    $incParent = Split-Path -Parent $incDest
+                    if (-not (Test-Path $incParent)) {
+                        New-Item -ItemType Directory -Force -Path $incParent | Out-Null
+                    }
+                    Write-Host "     Baixando $relPath..." -ForegroundColor DarkCyan
+                    Invoke-WebRequest -Uri $incUrl -OutFile $incDest -UserAgent "BlackoutStrike" -TimeoutSec 60
+                    $downloaded++
+                }
+            }
+        }
+    }
+
+    Write-Host "  -> Importados $downloaded arquivos Poly Haven para $TargetDir" -ForegroundColor Green
+    return $downloaded
 }
 
 function Download-AssetArchive {
@@ -190,7 +264,12 @@ foreach ($asset in $Manifest.assets) {
     Write-Host "`nProcessando: $($asset.name)..." -ForegroundColor White
 
     $targetFullPath = Join-Path $ProjectRoot $asset.target_dir
-    $hasLocalFiles = (Test-Path $targetFullPath) -and ((Get-ChildItem -Path $targetFullPath -File -Filter "*.$Format").Count -gt 0)
+    if ($asset.provider -eq "polyhaven") {
+        $hasLocalFiles = (Test-Path $targetFullPath) -and ((Get-ChildItem -Path $targetFullPath -File).Count -gt 0)
+    }
+    else {
+        $hasLocalFiles = (Test-Path $targetFullPath) -and ((Get-ChildItem -Path $targetFullPath -File -Filter "*.$Format").Count -gt 0)
+    }
 
     $remoteVer = Get-RemoteVersion -Asset $asset
     $installedVer = $asset.installed_version
@@ -226,14 +305,25 @@ foreach ($asset in $Manifest.assets) {
             $extractFolder = Join-Path $ScratchDir "extracted"
 
             try {
-                Download-AssetArchive -Asset $asset -DestinationZip $zipFile
-                $count = Extract-AssetModels -Asset $asset -ZipPath $zipFile -ExtractDir $extractFolder -TargetDir $targetFullPath -DesiredFormat $Format
+                if ($asset.provider -eq "polyhaven") {
+                    $count = Sync-PolyHavenAsset -Asset $asset -TargetDir $targetFullPath
+                    if ($count -gt 0) {
+                        $asset.installed_version = $remoteVer
+                        $asset.installed_format = $asset.asset_type
+                        $asset.last_checked = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssZ")
+                        $ManifestModified = $true
+                    }
+                }
+                else {
+                    Download-AssetArchive -Asset $asset -DestinationZip $zipFile
+                    $count = Extract-AssetModels -Asset $asset -ZipPath $zipFile -ExtractDir $extractFolder -TargetDir $targetFullPath -DesiredFormat $Format
 
-                if ($count -gt 0) {
-                    $asset.installed_version = $remoteVer
-                    $asset.installed_format = $Format
-                    $asset.last_checked = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssZ")
-                    $ManifestModified = $true
+                    if ($count -gt 0) {
+                        $asset.installed_version = $remoteVer
+                        $asset.installed_format = $Format
+                        $asset.last_checked = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssZ")
+                        $ManifestModified = $true
+                    }
                 }
             }
             catch {
