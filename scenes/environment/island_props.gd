@@ -6,6 +6,10 @@
 class_name IslandProps
 extends Node3D
 
+const CONTAINER_GLB_PATH: String = "res://assets/models/boss/cargo-container-a.glb"
+const CONTAINER_MAT_PATH: String = "res://assets/materials/mat_container_red_weathered.tres"
+const CRANE_MAT_PATH: String = "res://assets/materials/mat_painted_crane_red.tres"
+
 ## Referencias aos nos de MultiMeshInstance3D na arvore da cena.
 @export var palms_instance: MultiMeshInstance3D
 @export var containers_instance: MultiMeshInstance3D
@@ -345,8 +349,8 @@ func _add_quad_to_surface(st: SurfaceTool, p0: Vector3, p1: Vector3, p2: Vector3
 ##     Nenhuma excecao levantada.
 func _setup_palms() -> void:
 	_palm_positions.clear()
-	# Palmeiras distribuidas na faixa costeira e perimetro da ilha
-	var base_coords: Array[Vector3] = [
+	# Palmeiras distribuidas na faixa costeira e perimetro real da malha organica do Atol
+	var candidate_coords: Array[Vector3] = [
 		Vector3(-120.0, 0.3, -40.0),
 		Vector3(-118.0, 0.3, -25.0),
 		Vector3(-119.0, 0.3, 10.0),
@@ -371,46 +375,43 @@ func _setup_palms() -> void:
 		Vector3(-70.0, 0.3, 105.0),
 		Vector3(-100.0, 0.4, -5.0),
 		Vector3(100.0, 0.4, -5.0),
-		# Bosques tropicais nos ilheus de aproximacao do Sudeste (rota do USS Vanguard)
-		Vector3(660.0, 0.3, 660.0),
-		Vector3(695.0, 0.3, 670.0),
-		Vector3(675.0, 0.3, 705.0),
-		Vector3(665.0, 0.3, 690.0),
-		Vector3(540.0, 0.3, 510.0),
-		Vector3(575.0, 0.3, 535.0),
-		Vector3(555.0, 0.3, 550.0),
-		Vector3(580.0, 0.3, 505.0),
-		# Costa Sudeste de desembarque (choke points e estuario)
-		Vector3(480.0, 0.3, 420.0),
-		Vector3(505.0, 0.3, 410.0),
-		Vector3(460.0, 0.3, 445.0),
-		Vector3(520.0, 0.3, 450.0),
-		Vector3(430.0, 0.3, 390.0),
-		Vector3(410.0, 0.3, 420.0),
-		Vector3(380.0, 0.3, 430.0),
-		# Ilheu Leste
-		Vector3(830.0, 0.3, 165.0),
-		Vector3(865.0, 0.3, 195.0),
-		Vector3(845.0, 0.3, 175.0),
-		Vector3(870.0, 0.3, 160.0),
-		# Faixa litoranea Sul e Leste
+		# Peninsula Sudeste (terreno firme da malha organica)
+		Vector3(330.0, 0.3, 180.0),
+		Vector3(380.0, 0.3, 180.0),
+		Vector3(430.0, 0.3, 180.0),
+		Vector3(480.0, 0.3, 180.0),
+		Vector3(330.0, 0.3, 230.0),
+		Vector3(380.0, 0.3, 230.0),
+		Vector3(430.0, 0.3, 230.0),
+		Vector3(480.0, 0.3, 230.0),
+		Vector3(280.0, 0.3, 280.0),
+		Vector3(330.0, 0.3, 280.0),
+		Vector3(380.0, 0.3, 310.0),
+		Vector3(460.0, 0.3, 380.0),
+		Vector3(380.0, 0.3, 380.0),
+		# Costa Leste e Nordeste
+		Vector3(330.0, 0.3, -120.0),
+		Vector3(380.0, 0.3, -150.0),
+		Vector3(330.0, 0.3, -70.0),
+		Vector3(280.0, 0.3, -70.0),
+		Vector3(180.0, 0.3, -270.0),
+		Vector3(130.0, 0.3, -270.0),
+		# Faixa litoranea Sul, Oeste e Noroeste
 		Vector3(300.0, 0.3, 310.0),
 		Vector3(260.0, 0.3, 315.0),
-		Vector3(220.0, 0.3, 305.0),
-		Vector3(160.0, 0.3, 310.0),
-		Vector3(-140.0, 0.3, 310.0),
 		Vector3(-280.0, 0.3, 290.0),
 		Vector3(-340.0, 0.3, 280.0),
-		Vector3(510.0, 0.3, 220.0),
-		Vector3(515.0, 0.3, 140.0),
-		Vector3(505.0, 0.3, 30.0),
-		Vector3(520.0, 0.3, -80.0),
-		Vector3(510.0, 0.3, -190.0),
-		Vector3(500.0, 0.3, -280.0)
+		Vector3(-420.0, 0.3, 230.0),
+		Vector3(-470.0, 0.3, 180.0),
+		Vector3(-470.0, 0.3, 30.0),
+		Vector3(-470.0, 0.3, -170.0),
+		Vector3(-470.0, 0.3, -260.0),
+		Vector3(-370.0, 0.3, -320.0),
+		Vector3(-170.0, 0.3, -320.0)
 	]
-	
-	_palm_positions.append_array(base_coords)
-	
+
+	_palm_positions = _filter_and_snap_palms_to_terrain(candidate_coords)
+
 	var mm: MultiMesh = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.instance_count = _palm_positions.size()
@@ -424,6 +425,40 @@ func _setup_palms() -> void:
 		mm.set_instance_transform(i, Transform3D(basis, pos))
 	
 	palms_instance.multimesh = mm
+
+
+## Filtra coordenadas sobre o mar e ajusta a altura Y das palmeiras a malha do terreno.
+##
+## Args:
+##     candidates (Array[Vector3]): Coordenadas candidatas no plano XZ.
+##
+## Returns:
+##     Array[Vector3]: Coordenadas validadas em terra firme (y > 0.2m).
+func _filter_and_snap_palms_to_terrain(candidates: Array[Vector3]) -> Array[Vector3]:
+	var terrain_mesh: ArrayMesh = load("res://scenes/environment/organic_island_mesh.res") as ArrayMesh
+	if terrain_mesh == null or terrain_mesh.get_surface_count() == 0:
+		return candidates
+
+	var mdt: MeshDataTool = MeshDataTool.new()
+	if mdt.create_from_surface(terrain_mesh, 0) != OK:
+		return candidates
+
+	# Agrupa vertices por celulas de 25m para consulta rapida de altura sem varrer todos os triangulos
+	var cell_size: float = 25.0
+	var grid_heights: Dictionary = {}
+	for i in range(mdt.get_vertex_count()):
+		var v: Vector3 = mdt.get_vertex(i)
+		var key: Vector2i = Vector2i(int(floor(v.x / cell_size)), int(floor(v.z / cell_size)))
+		if not grid_heights.has(key) or v.y < float(grid_heights[key]):
+			grid_heights[key] = v.y
+
+	var valid: Array[Vector3] = []
+	for p in candidates:
+		var key: Vector2i = Vector2i(int(floor(p.x / cell_size)), int(floor(p.z / cell_size)))
+		var surface_y: float = float(grid_heights.get(key, -999.0))
+		if surface_y > 0.2:
+			valid.append(Vector3(p.x, surface_y - 0.05, p.z))
+	return valid
 
 
 ## Configura e popula o MultiMesh de conteineres logisticos.
@@ -470,7 +505,8 @@ func _setup_containers() -> void:
 	var mm: MultiMesh = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.instance_count = _container_positions.size()
-	mm.mesh = _build_container_mesh()
+	var container_mesh: Mesh = _extract_first_mesh_from_scene(CONTAINER_GLB_PATH)
+	mm.mesh = container_mesh if container_mesh != null else _build_container_mesh()
 	
 	for i in range(_container_positions.size()):
 		var pos: Vector3 = _container_positions[i]
@@ -479,11 +515,15 @@ func _setup_containers() -> void:
 	
 	containers_instance.multimesh = mm
 	
-	var container_mat: StandardMaterial3D = StandardMaterial3D.new()
-	container_mat.albedo_color = Color(0.18, 0.32, 0.42, 1.0)
-	container_mat.metallic = 0.5
-	container_mat.roughness = 0.6
-	containers_instance.material_override = container_mat
+	var container_mat: Material = load(CONTAINER_MAT_PATH) as Material
+	if container_mat != null:
+		containers_instance.material_override = container_mat
+	else:
+		var fallback_mat: StandardMaterial3D = StandardMaterial3D.new()
+		fallback_mat.albedo_color = Color(0.18, 0.32, 0.42, 1.0)
+		fallback_mat.metallic = 0.5
+		fallback_mat.roughness = 0.6
+		containers_instance.material_override = fallback_mat
 
 
 ## Configura e popula o MultiMesh de guindastes portuarios nos ancoradouros.
@@ -523,8 +563,44 @@ func _setup_cranes() -> void:
 	
 	cranes_instance.multimesh = mm
 	
-	var steel_mat: StandardMaterial3D = StandardMaterial3D.new()
-	steel_mat.albedo_color = Color(0.22, 0.25, 0.28, 1.0)
-	steel_mat.metallic = 0.75
-	steel_mat.roughness = 0.45
-	cranes_instance.material_override = steel_mat
+	var crane_mat: Material = load(CRANE_MAT_PATH) as Material
+	if crane_mat != null:
+		cranes_instance.material_override = crane_mat
+	else:
+		var steel_mat: StandardMaterial3D = StandardMaterial3D.new()
+		steel_mat.albedo_color = Color(0.22, 0.25, 0.28, 1.0)
+		steel_mat.metallic = 0.75
+		steel_mat.roughness = 0.45
+		cranes_instance.material_override = steel_mat
+
+
+## Extrai a primeira malha encontrada em uma cena .glb/.gltf.
+##
+## Args:
+##     scene_path (String): Caminho res:// do arquivo de modelo 3D.
+##
+## Returns:
+##     Mesh: Primeira malha encontrada ou null se indisponivel.
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func _extract_first_mesh_from_scene(scene_path: String) -> Mesh:
+	if not ResourceLoader.exists(scene_path):
+		return null
+	var packed: PackedScene = load(scene_path) as PackedScene
+	if packed == null:
+		return null
+	var root: Node = packed.instantiate()
+	var found: Mesh = _find_mesh_recursive(root)
+	root.free()
+	return found
+
+
+func _find_mesh_recursive(node: Node) -> Mesh:
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		return (node as MeshInstance3D).mesh
+	for child in node.get_children():
+		var m: Mesh = _find_mesh_recursive(child)
+		if m != null:
+			return m
+	return null
