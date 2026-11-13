@@ -104,6 +104,10 @@ weapon_cycle_next={
 3d_physics/layer_7="Civilians"
 3d_physics/layer_8="Zones_Trigger"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="forward_plus"
