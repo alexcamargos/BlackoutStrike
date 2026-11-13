@@ -8,10 +8,17 @@ extends Node3D
 ## Sinal emitido quando a inicializacao da missao estiver concluida.
 signal mission_ready()
 
-## Referencias aos nós principais da missao.
+const SUNSET_ENV_PATH: String = "res://scenes/core/world_environment_sunset.tres"
+
+## Ativa o preset visual de por do sol (VC-07) mantendo o contrato padrao intacto quando falso.
+@export var use_sunset_preset: bool = false
+
+## Referencias aos nos principais da missao.
 @onready var spawn_director: SpawnDirector = $SpawnDirector
 @onready var player_helicopter: PlayerHelicopter = $ActiveEntities/PlayerHelicopter
 @onready var boss: BossApexBastion = get_node_or_null("ActiveEntities/Enemies/BossApexBastion") as BossApexBastion
+@onready var world_environment_node: WorldEnvironment = get_node_or_null("WorldEnvironment") as WorldEnvironment
+@onready var sun_light_node: DirectionalLight3D = get_node_or_null("DirectionalLight3D") as DirectionalLight3D
 
 var _verification_frame_count: int = 0
 var _is_verification_capture: bool = false
@@ -31,7 +38,10 @@ func _ready() -> void:
 	for arg: String in OS.get_cmdline_args():
 		if arg == "--capture-verification":
 			_is_verification_capture = true
-			break
+		elif arg == "--sunset":
+			use_sunset_preset = true
+	if use_sunset_preset:
+		apply_sunset_preset()
 	if GameState != null:
 		GameState.start_new_run()
 	
@@ -50,6 +60,27 @@ func _ready() -> void:
 		)
 	
 	mission_ready.emit()
+
+
+## Aplica o preset de iluminacao e atmosfera de por do sol (VC-07) para comparacao visual.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+##
+## Raises:
+##     Nenhuma excecao levantada.
+func apply_sunset_preset() -> void:
+	if world_environment_node != null and ResourceLoader.exists(SUNSET_ENV_PATH):
+		var sunset_env: Environment = load(SUNSET_ENV_PATH) as Environment
+		if sunset_env != null:
+			world_environment_node.environment = sunset_env
+	if sun_light_node != null:
+		sun_light_node.rotation_degrees = Vector3(-20.0, -55.0, 0.0)
+		sun_light_node.light_color = Color(1.0, 0.72, 0.42, 1.0)
+		sun_light_node.light_energy = 1.65
 
 
 func _process(_delta: float) -> void:

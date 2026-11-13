@@ -1,0 +1,49 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://world_environment_sunset_01"]
+
+[ext_resource type="Texture2D" path="res://assets/textures/sky/belfast_sunset_puresky_1k.hdr" id="1_hdri"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_sunset"]
+panorama = ExtResource("1_hdri")
+energy_multiplier = 1.15
+
+[sub_resource type="Sky" id="Sky_sunset"]
+sky_material = SubResource("PanoramaSkyMaterial_sunset")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_sunset")
+ambient_light_source = 3
+ambient_light_sky_contribution = 0.45
+ambient_light_energy = 0.5
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_exposure = 1.05
+tonemap_white = 4.5
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 2.0
+ssao_power = 1.5
+glow_enabled = true
+glow_levels/1 = 0.0
+glow_levels/2 = 0.8
+glow_levels/3 = 1.2
+glow_levels/4 = 0.4
+glow_intensity = 0.85
+glow_strength = 1.05
+glow_bloom = 0.18
+glow_blend_mode = 0
+glow_hdr_threshold = 1.15
+fog_enabled = true
+fog_light_color = Color(0.28, 0.24, 0.34, 1)
+fog_sun_scatter = 0.35
+fog_depth_begin = 140.0
+fog_depth_end = 1100.0
+fog_density = 0.0008
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.0025
+volumetric_fog_albedo = Color(0.32, 0.26, 0.36, 1)
+volumetric_fog_emission = Color(0.18, 0.12, 0.16, 1)
+volumetric_fog_emission_energy = 0.12
+volumetric_fog_length = 700.0
+volumetric_fog_anisotropy = 0.4
+volumetric_fog_sky_affect = 0.85

@@ -26,6 +26,8 @@
 [ext_resource type="PackedScene" uid="uid://enemy_mercenary_squad_scene_01" path="res://scenes/entities/enemies/mercenary_squad.tscn" id="24_merc"]
 [ext_resource type="PackedScene" uid="uid://supply_pickup_01" path="res://scenes/roguelite/supply_pickup.tscn" id="25_supply"]
 [ext_resource type="PackedScene" uid="uid://tactical_road_network_scene_01" path="res://scenes/environment/tactical_road_network.tscn" id="26_roads"]
+[ext_resource type="PackedScene" uid="uid://port_complex_a_scene_01" path="res://scenes/environment/port_complex_a.tscn" id="27_port"]
+[ext_resource type="PackedScene" uid="uid://coastal_nature_props_scene_01" path="res://scenes/environment/coastal_nature_props.tscn" id="28_nature"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ocean"]
 render_priority = 0
@@ -80,6 +82,11 @@ target_node = NodePath("../ActiveEntities/PlayerHelicopter")
 [node name="TacticalRoadNetwork" parent="." instance=ExtResource("26_roads")]
 
 [node name="IslandProps" parent="." instance=ExtResource("15_props")]
+
+[node name="PortComplexA" parent="." instance=ExtResource("27_port")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.5, 130)
+
+[node name="CoastalNatureProps" parent="." instance=ExtResource("28_nature")]
 
 [node name="USS_Vanguard" parent="." instance=ExtResource("19_vanguard")]
 transform = Transform3D(0.7649, 0, -0.6441, 0, 1, 0, 0.6441, 0, 0.7649, 800, 0, 950)
