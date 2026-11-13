@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://hud_ui_main_01"]
+[gd_scene load_steps=32 format=3 uid="uid://hud_ui_main_01"]
 
 [ext_resource type="Script" path="res://scenes/ui/hud.gd" id="1_hud"]
 [ext_resource type="Shader" path="res://assets/shaders/military_segmented_bar.gdshader" id="2_bar_shader"]
@@ -17,99 +17,115 @@
 [ext_resource type="Texture2D" path="res://assets/textures/ui/icon_missile.svg" id="15_icon_missile"]
 [ext_resource type="Texture2D" path="res://assets/textures/ui/icon_aircraft.svg" id="16_icon_aircraft"]
 [ext_resource type="Script" path="res://scenes/ui/hud_canopy_framing.gd" id="17_canopy"]
+[ext_resource type="Shader" path="res://assets/shaders/chamfer_panel.gdshader" id="18_chamfer_shader"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_health"]
 shader = ExtResource("2_bar_shader")
 shader_parameter/fill_ratio = 1.0
-shader_parameter/segment_count = 8
+shader_parameter/segment_count = 10
 shader_parameter/segment_gap = 0.16
-shader_parameter/slant = 0.32
-shader_parameter/active_color = Color(0, 0.9, 0.85, 1)
-shader_parameter/warning_color = Color(1, 0.25, 0.2, 1)
-shader_parameter/background_color = Color(0.04, 0.08, 0.14, 0.75)
-shader_parameter/border_color = Color(0.12, 0.3, 0.42, 0.85)
-shader_parameter/empty_segment_color = Color(0.03, 0.06, 0.1, 0.6)
-shader_parameter/empty_border_color = Color(0.15, 0.28, 0.38, 0.65)
+shader_parameter/slant = -0.32
+shader_parameter/active_color = Color(0.196, 0.839, 1, 1)
+shader_parameter/warning_color = Color(0.851, 0.22, 0.118, 1)
+shader_parameter/background_color = Color(0.04, 0.1, 0.17, 0.78)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 0.85)
+shader_parameter/empty_segment_color = Color(0.04, 0.1, 0.17, 0.55)
+shader_parameter/empty_border_color = Color(0.196, 0.839, 1, 0.45)
 shader_parameter/warning_threshold = 0.25
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fuel"]
 shader = ExtResource("2_bar_shader")
 shader_parameter/fill_ratio = 1.0
-shader_parameter/segment_count = 8
+shader_parameter/segment_count = 10
 shader_parameter/segment_gap = 0.16
-shader_parameter/slant = 0.32
-shader_parameter/active_color = Color(1, 0.75, 0.15, 1)
-shader_parameter/warning_color = Color(1, 0.25, 0.2, 1)
-shader_parameter/background_color = Color(0.04, 0.08, 0.14, 0.75)
-shader_parameter/border_color = Color(0.35, 0.28, 0.12, 0.85)
-shader_parameter/empty_segment_color = Color(0.06, 0.05, 0.03, 0.6)
-shader_parameter/empty_border_color = Color(0.28, 0.22, 0.1, 0.65)
+shader_parameter/slant = -0.32
+shader_parameter/active_color = Color(1, 0.827, 0.353, 1)
+shader_parameter/warning_color = Color(1, 0.71, 0.18, 1)
+shader_parameter/background_color = Color(0.04, 0.1, 0.17, 0.78)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 0.85)
+shader_parameter/empty_segment_color = Color(0.04, 0.1, 0.17, 0.55)
+shader_parameter/empty_border_color = Color(1, 0.827, 0.353, 0.4)
 shader_parameter/warning_threshold = 0.2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clean"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_heading"]
 shader = ExtResource("4_heading_shader")
-shader_parameter/cyan_color = Color(0, 0.9, 0.85, 0.85)
+shader_parameter/cyan_color = Color(0.196, 0.839, 1, 0.95)
 shader_parameter/heading_offset = 0.0
 shader_parameter/thickness = 0.015
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_radar"]
 shader = ExtResource("5_radar_shader")
-shader_parameter/background_color = Color(0.015, 0.08, 0.22, 0.75)
-shader_parameter/ring_color = Color(0, 0.9, 0.85, 0.6)
-shader_parameter/sweep_color = Color(0, 0.9, 0.85, 0.35)
+shader_parameter/background_color = Color(0.025, 0.08, 0.18, 0.82)
+shader_parameter/ring_color = Color(0.196, 0.839, 1, 0.7)
+shader_parameter/sweep_color = Color(0.196, 0.839, 1, 0.32)
 shader_parameter/sweep_speed = 1.8
 shader_parameter/ring_thickness = 0.006
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_attitude"]
 shader = ExtResource("7_attitude_shader")
-shader_parameter/line_color = Color(0, 0.9, 0.85, 0.8)
+shader_parameter/line_color = Color(0.196, 0.839, 1, 0.9)
 shader_parameter/pitch_offset = 0.0
 shader_parameter/roll_angle = 0.0
 shader_parameter/thickness = 0.008
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_chamfer_slot0"]
+shader = ExtResource("18_chamfer_shader")
+shader_parameter/fill_color = Color(0.05, 0.14, 0.24, 0.86)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 1)
+shader_parameter/border_width = 2.0
+shader_parameter/chamfer_size = 14.0
+shader_parameter/panel_size = Vector2(305, 52)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_chamfer_slot1"]
+shader = ExtResource("18_chamfer_shader")
+shader_parameter/fill_color = Color(0.04, 0.1, 0.17, 0.65)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 0.35)
+shader_parameter/border_width = 1.2
+shader_parameter/chamfer_size = 14.0
+shader_parameter/panel_size = Vector2(305, 52)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_chamfer_slot2"]
+shader = ExtResource("18_chamfer_shader")
+shader_parameter/fill_color = Color(0.04, 0.1, 0.17, 0.65)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 0.35)
+shader_parameter/border_width = 1.2
+shader_parameter/chamfer_size = 14.0
+shader_parameter/panel_size = Vector2(305, 52)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ammo_bar"]
 shader = ExtResource("2_bar_shader")
 shader_parameter/fill_ratio = 1.0
-shader_parameter/segment_count = 10
-shader_parameter/segment_gap = 0.15
-shader_parameter/slant = 0.3
-shader_parameter/active_color = Color(0, 0.88, 0.82, 1)
-shader_parameter/warning_color = Color(1, 0.3, 0.2, 1)
-shader_parameter/background_color = Color(0.04, 0.08, 0.14, 0.75)
-shader_parameter/border_color = Color(0.12, 0.3, 0.42, 0.85)
-shader_parameter/empty_segment_color = Color(0.03, 0.06, 0.1, 0.6)
-shader_parameter/empty_border_color = Color(0.15, 0.28, 0.38, 0.65)
+shader_parameter/segment_count = 8
+shader_parameter/segment_gap = 0.16
+shader_parameter/slant = -0.32
+shader_parameter/active_color = Color(0.196, 0.839, 1, 1)
+shader_parameter/warning_color = Color(0.851, 0.22, 0.118, 1)
+shader_parameter/background_color = Color(0.04, 0.1, 0.17, 0.78)
+shader_parameter/border_color = Color(0.196, 0.839, 1, 0.85)
+shader_parameter/empty_segment_color = Color(0.04, 0.1, 0.17, 0.55)
+shader_parameter/empty_border_color = Color(0.196, 0.839, 1, 0.45)
 shader_parameter/warning_threshold = 0.2
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_reticle"]
 shader = ExtResource("3_reticle_shader")
 shader_parameter/is_locked = false
-shader_parameter/search_color = Color(0, 0.9, 0.85, 0.75)
-shader_parameter/locked_color = Color(1, 0.25, 0.15, 1)
+shader_parameter/search_color = Color(0.196, 0.839, 1, 0.85)
+shader_parameter/locked_color = Color(0.851, 0.22, 0.118, 1)
 shader_parameter/corner_size = 0.22
-shader_parameter/thickness = 0.012
-shader_parameter/circle_radius = 0.36
+shader_parameter/thickness = 0.01
+shader_parameter/circle_radius = 0.34
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lock_box"]
 shader = ExtResource("9_lock_shader")
-shader_parameter/lock_color = Color(1, 0.25, 0.15, 1)
-shader_parameter/corner_len = 0.32
-shader_parameter/thickness = 0.04
+shader_parameter/lock_color = Color(0.851, 0.22, 0.118, 1)
+shader_parameter/corner_len = 0.34
+shader_parameter/thickness = 0.055
 shader_parameter/pulse_speed = 4.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clean"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_module"]
-bg_color = Color(0.02, 0.07, 0.14, 0.82)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0.88, 0.82, 0.55)
-corner_radius_top_left = 4
-corner_radius_top_right = 14
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 14
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -133,106 +149,126 @@ script = ExtResource("17_canopy")
 
 [node name="TopLeft" type="MarginContainer" parent="."]
 layout_mode = 0
-offset_left = 58.0
+offset_left = 54.0
 offset_top = 22.0
-offset_right = 380.0
-offset_bottom = 110.0
+offset_right = 352.0
+offset_bottom = 92.0
+mouse_filter = 2
 
 [node name="VBox" type="VBoxContainer" parent="TopLeft"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 16
+mouse_filter = 2
 
 [node name="HealthBar" type="ProgressBar" parent="TopLeft/VBox"]
 material = SubResource("ShaderMaterial_health")
-custom_minimum_size = Vector2(280, 24)
+custom_minimum_size = Vector2(215, 22)
 layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_clean")
 max_value = 1000.0
 value = 1000.0
 show_percentage = false
 
 [node name="ShieldBadge" type="TextureRect" parent="TopLeft/VBox/HealthBar"]
 layout_mode = 0
-offset_left = -34.0
+offset_left = -30.0
 offset_top = -1.0
 offset_right = -6.0
-offset_bottom = 25.0
+offset_bottom = 23.0
+mouse_filter = 2
 texture = ExtResource("10_icon_shield")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="HealthLabel" type="Label" parent="TopLeft/VBox/HealthBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+layout_mode = 0
+offset_left = 220.0
+offset_top = 1.0
+offset_right = 304.0
+offset_bottom = 22.0
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 0.92)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 12
-text = "ARMOR: 1000 / 1000"
-horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+text = "1000 / 1000"
+horizontal_alignment = 0
 vertical_alignment = 1
 
 [node name="FuelBar" type="ProgressBar" parent="TopLeft/VBox"]
 material = SubResource("ShaderMaterial_fuel")
-custom_minimum_size = Vector2(280, 22)
+custom_minimum_size = Vector2(195, 20)
 layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_clean")
 value = 100.0
 show_percentage = false
 
 [node name="FuelBadge" type="TextureRect" parent="TopLeft/VBox/FuelBar"]
 layout_mode = 0
-offset_left = -34.0
+offset_left = -30.0
 offset_top = -1.0
 offset_right = -6.0
-offset_bottom = 23.0
+offset_bottom = 21.0
+mouse_filter = 2
 texture = ExtResource("11_icon_fuel")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="FuelLabel" type="Label" parent="TopLeft/VBox/FuelBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+layout_mode = 0
+offset_left = 200.0
+offset_top = 0.0
+offset_right = 272.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(1, 0.88, 0.55, 0.92)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 10
 text = "FUEL: 100%"
-horizontal_alignment = 1
+horizontal_alignment = 0
 vertical_alignment = 1
 
-[node name="TopCenter" type="MarginContainer" parent="."]
+[node name="TopCenter" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -260.0
-offset_top = 14.0
+offset_top = 4.0
 offset_right = 260.0
-offset_bottom = 84.0
+offset_bottom = 78.0
 grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+alignment = 0
 
 [node name="HeadingTape" type="ColorRect" parent="TopCenter"]
 material = SubResource("ShaderMaterial_heading")
-custom_minimum_size = Vector2(460, 36)
+custom_minimum_size = Vector2(480, 38)
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_filter = 2
 
 [node name="TacticalCompass" type="PanelContainer" parent="TopCenter"]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_horizontal = 4
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
 [node name="CompassLabel" type="Label" parent="TopCenter/TacticalCompass"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0.95, 0.85, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.196, 0.839, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
 text = "▲ ATOL DE MIDWAY [NW] 950m"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -242,78 +278,91 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
-offset_top = 22.0
-offset_right = -24.0
-offset_bottom = 112.0
+offset_left = -296.0
+offset_top = 18.0
+offset_right = -22.0
+offset_bottom = 96.0
 grow_horizontal = 0
+mouse_filter = 2
 
 [node name="VBox" type="VBoxContainer" parent="TopRight"]
 layout_mode = 2
-theme_override_constants/separation = 4
+mouse_filter = 2
+theme_override_constants/separation = 3
 
 [node name="CargoContainer" type="PanelContainer" parent="TopRight/VBox"]
-custom_minimum_size = Vector2(260, 36)
+custom_minimum_size = Vector2(268, 24)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_module")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
-[node name="PassengerBadge" type="TextureRect" parent="TopRight/VBox/CargoContainer"]
+[node name="HBox" type="HBoxContainer" parent="TopRight/VBox/CargoContainer"]
 layout_mode = 2
-offset_left = 12.0
-offset_top = 6.0
-offset_right = 44.0
-offset_bottom = 30.0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="PassengerBadge" type="TextureRect" parent="TopRight/VBox/CargoContainer/HBox"]
+custom_minimum_size = Vector2(28, 22)
+layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("12_icon_passengers")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CargoLabel" type="Label" parent="TopRight/VBox/CargoContainer"]
+[node name="CargoLabel" type="Label" parent="TopRight/VBox/CargoContainer/HBox"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 0.95)
 theme_override_font_sizes/font_size = 11
 text = "PASSENGERS: 0 / 5"
-horizontal_alignment = 1
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="PassengerPips" type="HBoxContainer" parent="TopRight/VBox"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 6
-alignment = 1
+alignment = 2
 
 [node name="CabinFullAlert" type="Label" parent="TopRight/VBox"]
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.22, 0.15, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.851, 0.22, 0.118, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
 text = ">>> CABIN FULL <<<"
-horizontal_alignment = 1
+horizontal_alignment = 2
 
 [node name="BottomLeft" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -215.0
-offset_right = 215.0
+offset_left = 30.0
+offset_top = -204.0
+offset_right = 210.0
 offset_bottom = -24.0
 grow_vertical = 0
+mouse_filter = 2
 
 [node name="RadarPanel" type="PanelContainer" parent="BottomLeft"]
-custom_minimum_size = Vector2(190, 190)
+custom_minimum_size = Vector2(180, 180)
 layout_mode = 2
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
 [node name="Margin" type="MarginContainer" parent="BottomLeft/RadarPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
+mouse_filter = 2
 
 [node name="TacticalRadar" type="ColorRect" parent="BottomLeft/RadarPanel/Margin"]
 material = SubResource("ShaderMaterial_radar")
 custom_minimum_size = Vector2(180, 180)
 layout_mode = 2
+mouse_filter = 2
 script = ExtResource("6_radar_widget")
 
 [node name="BottomCenter" type="MarginContainer" parent="."]
@@ -323,17 +372,19 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -140.0
+offset_left = -135.0
 offset_top = -104.0
-offset_right = 140.0
+offset_right = 135.0
 offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 
 [node name="AttitudeHorizon" type="ColorRect" parent="BottomCenter"]
 material = SubResource("ShaderMaterial_attitude")
-custom_minimum_size = Vector2(260, 84)
+custom_minimum_size = Vector2(270, 88)
 layout_mode = 2
+mouse_filter = 2
 script = ExtResource("8_attitude_widget")
 
 [node name="CenterAircraft" type="TextureRect" parent="BottomCenter/AttitudeHorizon"]
@@ -349,6 +400,7 @@ offset_right = 16.0
 offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("16_icon_aircraft")
 expand_mode = 1
 stretch_mode = 5
@@ -360,187 +412,283 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -330.0
-offset_top = -195.0
-offset_right = -24.0
-offset_bottom = -22.0
+offset_left = -326.0
+offset_top = -194.0
+offset_right = -20.0
+offset_bottom = -18.0
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 2
 
 [node name="WeaponSlots" type="VBoxContainer" parent="BottomRight"]
 layout_mode = 2
-theme_override_constants/separation = 6
+mouse_filter = 2
+theme_override_constants/separation = 7
 alignment = 2
 
 [node name="Slot0" type="PanelContainer" parent="BottomRight/WeaponSlots"]
-custom_minimum_size = Vector2(295, 48)
+custom_minimum_size = Vector2(305, 52)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_module")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
-[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot0"]
+[node name="Backdrop" type="ColorRect" parent="BottomRight/WeaponSlots/Slot0"]
+material = SubResource("ShaderMaterial_chamfer_slot0")
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="BottomRight/WeaponSlots/Slot0"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot0/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot0/HBox"]
+[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox"]
 custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("13_icon_vulcan")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot0/HBox"]
+[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
+mouse_filter = 2
+theme_override_constants/separation = 3
 alignment = 1
 
-[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot0/HBox/VBox"]
+[node name="HeaderRow" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 10
 text = "[1] VULCAN 20MM"
 
-[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot0/HBox/VBox"]
-material = SubResource("ShaderMaterial_ammo_bar")
-custom_minimum_size = Vector2(175, 12)
+[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox/HeaderRow"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.196, 0.839, 1, 0.95)
+theme_override_font_sizes/font_size = 10
+text = "1200 / 1200"
+horizontal_alignment = 2
+
+[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox"]
+material = SubResource("ShaderMaterial_ammo_bar")
+custom_minimum_size = Vector2(175, 13)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_clean")
 max_value = 1200.0
 value = 1200.0
 show_percentage = false
 
-[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot0/HBox/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "1200 / 1200"
-
 [node name="Slot1" type="PanelContainer" parent="BottomRight/WeaponSlots"]
-custom_minimum_size = Vector2(295, 48)
+custom_minimum_size = Vector2(305, 52)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_module")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
-[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot1"]
+[node name="Backdrop" type="ColorRect" parent="BottomRight/WeaponSlots/Slot1"]
+material = SubResource("ShaderMaterial_chamfer_slot1")
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="BottomRight/WeaponSlots/Slot1"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot1/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot1/HBox"]
+[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox"]
 custom_minimum_size = Vector2(34, 34)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("14_icon_rocket")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot1/HBox"]
+[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
+mouse_filter = 2
+theme_override_constants/separation = 3
 alignment = 1
 
-[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot1/HBox/VBox"]
+[node name="HeaderRow" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 10
 text = "[2] HYDRA 70"
 
-[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot1/HBox/VBox"]
-material = SubResource("ShaderMaterial_ammo_bar")
-custom_minimum_size = Vector2(175, 12)
+[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox/HeaderRow"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.196, 0.839, 1, 0.95)
+theme_override_font_sizes/font_size = 10
+text = "32 / 32"
+horizontal_alignment = 2
+
+[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox"]
+material = SubResource("ShaderMaterial_ammo_bar")
+custom_minimum_size = Vector2(175, 13)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_clean")
 max_value = 32.0
 value = 32.0
 show_percentage = false
 
-[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot1/HBox/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "32 / 32"
-
 [node name="Slot2" type="PanelContainer" parent="BottomRight/WeaponSlots"]
-custom_minimum_size = Vector2(295, 48)
+custom_minimum_size = Vector2(305, 52)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_module")
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
-[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot2"]
+[node name="Backdrop" type="ColorRect" parent="BottomRight/WeaponSlots/Slot2"]
+material = SubResource("ShaderMaterial_chamfer_slot2")
 layout_mode = 2
-theme_override_constants/separation = 8
+mouse_filter = 2
+
+[node name="Margin" type="MarginContainer" parent="BottomRight/WeaponSlots/Slot2"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 6
+
+[node name="HBox" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot2/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
 alignment = 1
 
-[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot2/HBox"]
-custom_minimum_size = Vector2(40, 28)
+[node name="IconRect" type="TextureRect" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox"]
+custom_minimum_size = Vector2(36, 28)
 layout_mode = 2
+mouse_filter = 2
 texture = ExtResource("15_icon_missile")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot2/HBox"]
+[node name="VBox" type="VBoxContainer" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
+mouse_filter = 2
+theme_override_constants/separation = 3
 alignment = 1
 
-[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot2/HBox/VBox"]
+[node name="HeaderRow" type="HBoxContainer" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.75, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 10
 text = "[3] HELLFIRE"
 
-[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot2/HBox/VBox"]
-material = SubResource("ShaderMaterial_ammo_bar")
-custom_minimum_size = Vector2(175, 12)
+[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox/HeaderRow"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.196, 0.839, 1, 0.95)
+theme_override_font_sizes/font_size = 10
+text = "6 / 6"
+horizontal_alignment = 2
+
+[node name="AmmoBar" type="ProgressBar" parent="BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox"]
+material = SubResource("ShaderMaterial_ammo_bar")
+custom_minimum_size = Vector2(175, 13)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxEmpty_clean")
 max_value = 6.0
 value = 6.0
 show_percentage = false
 
-[node name="AmmoLabel" type="Label" parent="BottomRight/WeaponSlots/Slot2/HBox/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "6 / 6"
-
-[node name="CenterScreen" type="CenterContainer" parent="."]
+[node name="CenterScreen" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -160.0
-offset_right = 160.0
-offset_bottom = 160.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="VBox" type="VBoxContainer" parent="CenterScreen"]
-layout_mode = 2
-alignment = 1
-theme_override_constants/separation = 6
+[node name="ReticleCenter" type="CenterContainer" parent="CenterScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
-[node name="ReticleRect" type="ColorRect" parent="CenterScreen/VBox"]
-material = SubResource("ShaderMaterial_reticle")
-custom_minimum_size = Vector2(220, 220)
-layout_mode = 2
-size_flags_horizontal = 4
-
-[node name="LockIndicator" type="PanelContainer" parent="CenterScreen/VBox"]
+[node name="ReticleRect" type="ColorRect" parent="CenterScreen/ReticleCenter"]
 visible = false
-custom_minimum_size = Vector2(180, 70)
+material = SubResource("ShaderMaterial_reticle")
+custom_minimum_size = Vector2(280, 280)
 layout_mode = 2
+mouse_filter = 2
+
+[node name="LockIndicator" type="PanelContainer" parent="CenterScreen"]
+visible = false
+custom_minimum_size = Vector2(140, 88)
+layout_mode = 0
+offset_left = 890.0
+offset_top = 496.0
+offset_right = 1030.0
+offset_bottom = 584.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_clean")
 
-[node name="VBox" type="VBoxContainer" parent="CenterScreen/VBox/LockIndicator"]
+[node name="VBox" type="VBoxContainer" parent="CenterScreen/LockIndicator"]
 layout_mode = 2
-alignment = 1
+mouse_filter = 2
 theme_override_constants/separation = 2
+alignment = 1
 
-[node name="LockTargetBox" type="ColorRect" parent="CenterScreen/VBox/LockIndicator/VBox"]
+[node name="LockTargetBox" type="ColorRect" parent="CenterScreen/LockIndicator/VBox"]
 material = SubResource("ShaderMaterial_lock_box")
-custom_minimum_size = Vector2(64, 48)
+custom_minimum_size = Vector2(72, 62)
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_filter = 2
 
-[node name="LockLabel" type="Label" parent="CenterScreen/VBox/LockIndicator/VBox"]
+[node name="LockLabel" type="Label" parent="CenterScreen/LockIndicator/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.25, 0.15, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.851, 0.22, 0.118, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 11
 text = "[ LOCK ACQUIRED ]"
 horizontal_alignment = 1
 vertical_alignment = 1

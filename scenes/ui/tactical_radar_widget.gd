@@ -27,15 +27,19 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	var center: Vector2 = size * 0.5
 	
-	# 1. Marcador da aeronave do jogador no centro (triangulo ciano)
+	# 1. Marcador da aeronave do jogador no centro (triangulo ciano vazado estilo VC-06)
 	var player_points: PackedVector2Array = PackedVector2Array([
-		center + Vector2(0, -7),
-		center + Vector2(5, 6),
-		center + Vector2(0, 3),
-		center + Vector2(-5, 6)
+		center + Vector2(0, -8),
+		center + Vector2(6, 6),
+		center + Vector2(-6, 6),
+		center + Vector2(0, -8)
 	])
-	draw_colored_polygon(player_points, Color(0.0, 0.95, 0.9, 1.0))
-	draw_polyline(player_points, Color(1.0, 1.0, 1.0, 0.9), 1.2)
+	draw_colored_polygon(PackedVector2Array([
+		center + Vector2(0, -8),
+		center + Vector2(6, 6),
+		center + Vector2(-6, 6)
+	]), Color(0.04, 0.10, 0.17, 0.85))
+	draw_polyline(player_points, Color(0.196, 0.839, 1.0, 1.0), 1.8)
 	
 	# Se nao houver jogador instanciado (ex: teste unitario do HUD), plota contatos de demonstracao
 	if _tracked_player == null or not is_instance_valid(_tracked_player):

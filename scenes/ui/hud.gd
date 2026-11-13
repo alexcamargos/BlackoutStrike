@@ -25,31 +25,41 @@ extends Control
 	get_node("BottomRight/WeaponSlots/Slot1") as PanelContainer,
 	get_node("BottomRight/WeaponSlots/Slot2") as PanelContainer
 ]
+@onready var slot_backdrops: Array[ColorRect] = [
+	get_node_or_null("BottomRight/WeaponSlots/Slot0/Backdrop") as ColorRect,
+	get_node_or_null("BottomRight/WeaponSlots/Slot1/Backdrop") as ColorRect,
+	get_node_or_null("BottomRight/WeaponSlots/Slot2/Backdrop") as ColorRect
+]
+@onready var slot_contents: Array[Control] = [
+	get_node_or_null("BottomRight/WeaponSlots/Slot0/Margin") as Control,
+	get_node_or_null("BottomRight/WeaponSlots/Slot1/Margin") as Control,
+	get_node_or_null("BottomRight/WeaponSlots/Slot2/Margin") as Control
+]
 @onready var ammo_labels: Array[Label] = [
-	get_node("BottomRight/WeaponSlots/Slot0/HBox/VBox/AmmoLabel") as Label,
-	get_node("BottomRight/WeaponSlots/Slot1/HBox/VBox/AmmoLabel") as Label,
-	get_node("BottomRight/WeaponSlots/Slot2/HBox/VBox/AmmoLabel") as Label
+	get_node("BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox/HeaderRow/AmmoLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox/HeaderRow/AmmoLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox/HeaderRow/AmmoLabel") as Label
 ]
 @onready var name_labels: Array[Label] = [
-	get_node("BottomRight/WeaponSlots/Slot0/HBox/VBox/NameLabel") as Label,
-	get_node("BottomRight/WeaponSlots/Slot1/HBox/VBox/NameLabel") as Label,
-	get_node("BottomRight/WeaponSlots/Slot2/HBox/VBox/NameLabel") as Label
+	get_node("BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox/HeaderRow/NameLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox/HeaderRow/NameLabel") as Label,
+	get_node("BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox/HeaderRow/NameLabel") as Label
 ]
 @onready var ammo_bars: Array[ProgressBar] = [
-	get_node_or_null("BottomRight/WeaponSlots/Slot0/HBox/VBox/AmmoBar") as ProgressBar,
-	get_node_or_null("BottomRight/WeaponSlots/Slot1/HBox/VBox/AmmoBar") as ProgressBar,
-	get_node_or_null("BottomRight/WeaponSlots/Slot2/HBox/VBox/AmmoBar") as ProgressBar
+	get_node_or_null("BottomRight/WeaponSlots/Slot0/Margin/HBox/VBox/AmmoBar") as ProgressBar,
+	get_node_or_null("BottomRight/WeaponSlots/Slot1/Margin/HBox/VBox/AmmoBar") as ProgressBar,
+	get_node_or_null("BottomRight/WeaponSlots/Slot2/Margin/HBox/VBox/AmmoBar") as ProgressBar
 ]
 
 # --- Modulo 3: Resgate e Passageiros (Top-Right) ---
-@onready var cargo_label: Label = $TopRight/VBox/CargoContainer/CargoLabel
+@onready var cargo_label: Label = $TopRight/VBox/CargoContainer/HBox/CargoLabel
 @onready var cabin_full_alert: Label = $TopRight/VBox/CabinFullAlert
 @onready var passenger_pips_container: HBoxContainer = $TopRight/VBox/PassengerPips
 
 # --- Modulo 7: Reticula e Lock-On (CenterScreen) ---
-@onready var lock_indicator: PanelContainer = $CenterScreen/VBox/LockIndicator
-@onready var reticle_rect: ColorRect = $CenterScreen/VBox/ReticleRect
-@onready var lock_target_box: ColorRect = get_node_or_null("CenterScreen/VBox/LockIndicator/VBox/LockTargetBox") as ColorRect
+@onready var lock_indicator: PanelContainer = $CenterScreen/LockIndicator
+@onready var reticle_rect: ColorRect = $CenterScreen/ReticleCenter/ReticleRect
+@onready var lock_target_box: ColorRect = get_node_or_null("CenterScreen/LockIndicator/VBox/LockTargetBox") as ColorRect
 
 # --- Modulo 2: Bussola Tática e Rumo (Top-Center) ---
 @onready var compass_panel: PanelContainer = get_node_or_null("TopCenter/VBox/TacticalCompass") as PanelContainer if has_node("TopCenter/VBox/TacticalCompass") else get_node_or_null("TopCenter/TacticalCompass") as PanelContainer
@@ -215,8 +225,13 @@ func _update_passenger_pips(current: int, total: int) -> void:
 		return
 	
 	while passenger_pips_container.get_child_count() < total:
-		var pip: ColorRect = ColorRect.new()
-		pip.custom_minimum_size = Vector2(20.0, 12.0)
+		var pip: Panel = Panel.new()
+		pip.custom_minimum_size = Vector2(18.0, 14.0)
+		var style: StyleBoxFlat = StyleBoxFlat.new()
+		style.bg_color = Color(0.196, 0.839, 1.0, 1.0)
+		style.border_color = Color(0.196, 0.839, 1.0, 0.95)
+		style.set_border_width_all(1)
+		pip.add_theme_stylebox_override("panel", style)
 		passenger_pips_container.add_child(pip)
 	
 	while passenger_pips_container.get_child_count() > total:
@@ -228,9 +243,9 @@ func _update_passenger_pips(current: int, total: int) -> void:
 		var pip: Control = passenger_pips_container.get_child(i) as Control
 		if pip != null:
 			if i < current:
-				pip.modulate = Color(0.0, 0.95, 0.9, 1.0)
+				pip.modulate = Color(1.0, 1.0, 1.0, 1.0)
 			else:
-				pip.modulate = Color(0.2, 0.3, 0.4, 0.25)
+				pip.modulate = Color(0.25, 0.45, 0.55, 0.30)
 
 
 ## Habilita o indicador visual de reticula de travamento e a moldura do alvo com losango.
@@ -261,7 +276,7 @@ func _on_target_lost() -> void:
 		(reticle_rect.material as ShaderMaterial).set_shader_parameter("is_locked", false)
 
 
-## Modifica a modulacao de cor para distinguir o armamento ativo dos inativos.
+## Modifica a borda e o contraste para distinguir o armamento ativo dos inativos conforme VC-06.
 ##
 ## Args:
 ##     active_idx (int): Indice do slot a ser enfatizado.
@@ -270,10 +285,19 @@ func _on_target_lost() -> void:
 ##     void
 func _highlight_active_slot(active_idx: int) -> void:
 	for i in range(slot_panels.size()):
-		if i == active_idx:
-			slot_panels[i].modulate = Color(1.0, 0.95, 0.35, 1.0)
-		else:
-			slot_panels[i].modulate = Color(0.55, 0.65, 0.72, 0.65)
+		var is_active: bool = (i == active_idx)
+		if i < slot_backdrops.size() and slot_backdrops[i] != null and slot_backdrops[i].material is ShaderMaterial:
+			var smat: ShaderMaterial = slot_backdrops[i].material as ShaderMaterial
+			if is_active:
+				smat.set_shader_parameter("border_color", Color(0.196, 0.839, 1.0, 1.0))
+				smat.set_shader_parameter("border_width", 2.0)
+				smat.set_shader_parameter("fill_color", Color(0.05, 0.14, 0.24, 0.86))
+			else:
+				smat.set_shader_parameter("border_color", Color(0.196, 0.839, 1.0, 0.35))
+				smat.set_shader_parameter("border_width", 1.2)
+				smat.set_shader_parameter("fill_color", Color(0.04, 0.10, 0.17, 0.65))
+		if i < slot_contents.size() and slot_contents[i] != null:
+			slot_contents[i].modulate = Color(1.0, 1.0, 1.0, 1.0) if is_active else Color(0.75, 0.85, 0.92, 0.55)
 
 
 func _process(_delta: float) -> void:
@@ -287,6 +311,32 @@ func _process(_delta: float) -> void:
 		if heading_tape_rect != null and heading_tape_rect.material is ShaderMaterial:
 			var heading_yaw: float = _tracked_player.rotation.y
 			(heading_tape_rect.material as ShaderMaterial).set_shader_parameter("heading_offset", heading_yaw * 2.0)
+	
+	_update_target_lock_position()
+
+
+## Atualiza a posicao do marcador de lock-on em tela sobre o alvo travado.
+##
+## Args:
+##     Nenhum.
+##
+## Returns:
+##     void
+func _update_target_lock_position() -> void:
+	if lock_indicator == null or not lock_indicator.visible:
+		return
+	var cam: Camera3D = get_viewport().get_camera_3d()
+	if cam != null and _locked_target != null and is_instance_valid(_locked_target) and not cam.is_position_behind(_locked_target.global_position):
+		var screen_pos: Vector2 = cam.unproject_position(_locked_target.global_position)
+		var vp_size: Vector2 = get_viewport_rect().size
+		var half_size: Vector2 = lock_indicator.size * 0.5
+		lock_indicator.position = Vector2(
+			clampf(screen_pos.x - half_size.x, 24.0, vp_size.x - lock_indicator.size.x - 24.0),
+			clampf(screen_pos.y - half_size.y, 24.0, vp_size.y - lock_indicator.size.y - 24.0)
+		)
+	else:
+		var vp_size: Vector2 = get_viewport_rect().size
+		lock_indicator.position = (vp_size - lock_indicator.size) * 0.5
 
 
 ## Atualiza o mostrador tatico de navegacao com indicacao cardinal e distancia.
