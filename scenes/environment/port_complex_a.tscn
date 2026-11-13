@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://port_complex_a_scene_01"]
+
+[ext_resource type="Script" path="res://scenes/environment/port_complex_a.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/models/boss/cargo-container-a.glb" id="1_cont_a"]
+[ext_resource type="PackedScene" path="res://assets/models/boss/cargo-container-b.glb" id="2_cont_b"]
+[ext_resource type="PackedScene" path="res://assets/models/boss/cargo-container-c.glb" id="3_cont_c"]
+[ext_resource type="PackedScene" path="res://assets/models/boss/ship-cargo-a.glb" id="4_ship_a"]
+[ext_resource type="PackedScene" path="res://assets/models/military/barrels_rail.glb" id="5_barrels"]
+
+[node name="PortComplexA" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="ContainerStack_Red_1" parent="." instance=ExtResource("1_cont_a")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -6, 0, -3)
+
+[node name="ContainerStack_Red_2" parent="." instance=ExtResource("1_cont_a")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -6, 2.4, -3)
+
+[node name="ContainerStack_Steel_1" parent="." instance=ExtResource("2_cont_b")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, -1.5, 0, -3)
+
+[node name="ContainerStack_Rust_1" parent="." instance=ExtResource("3_cont_c")]
+transform = Transform3D(0, 0, 2.2, 0, 2.2, 0, -2.2, 0, 0, 5, 0, -2)
+
+[node name="BarrelsRail_1" parent="." instance=ExtResource("5_barrels")]
+transform = Transform3D(2.0, 0, 0, 0, 2.0, 0, 0, 0, 2.0, 9, 0, 2)
+
+[node name="DockedCargoShip" parent="." instance=ExtResource("4_ship_a")]
+transform = Transform3D(2.4, 0, 0, 0, 2.4, 0, 0, 0, 2.4, 0, -0.4, 14)
+
+[node name="MaterialOverrides" type="Node" parent="."]
+editor_description = "Marcador documental: os modelos abaixo utilizam materiais PBR triplanares em cena."
