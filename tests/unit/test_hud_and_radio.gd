@@ -302,3 +302,25 @@ func test_hud_weapon_bay_ammo_bars_synchronization() -> void:
 	assert_almost_eq(fill_ratio, 0.5, 0.01, "O shader da barra de municao deve refletir fill_ratio de 50%.")
 
 
+func test_hud_vc06_style_guide_compliance() -> void:
+	var health_mat: ShaderMaterial = hud.health_bar.material as ShaderMaterial
+	var fuel_mat: ShaderMaterial = hud.fuel_bar.material as ShaderMaterial
+	assert_lt(float(health_mat.get_shader_parameter("slant")), 0.0, "Segmentos devem inclinar para a direita (/) conforme VC-06.")
+	assert_almost_eq(float(fuel_mat.get_shader_parameter("warning_threshold")), 0.2, 0.01, "Alerta de combustivel deve ativar abaixo de 20%.")
+	var fuel_warn: Color = fuel_mat.get_shader_parameter("warning_color")
+	assert_almost_eq(fuel_warn.r, 1.0, 0.02, "fuel_warning deve usar token #FFB52E.")
+	assert_almost_eq(fuel_warn.g, 0.71, 0.02, "fuel_warning deve usar token #FFB52E.")
+	assert_true(hud.health_bar.get_theme_stylebox("fill") is StyleBoxEmpty, "ProgressBar fill deve ser StyleBoxEmpty para evitar duplo desenho de UV.")
+	assert_true(hud.fuel_bar.get_theme_stylebox("fill") is StyleBoxEmpty, "FuelBar fill deve ser StyleBoxEmpty para evitar duplo desenho de UV.")
+
+	assert_eq(hud.slot_backdrops.size(), 3, "Os 3 slots de armas devem possuir backdrops chanfrados a 45 graus.")
+	EventBus.weapon_selected.emit(2, "Hellfire")
+	var active_mat: ShaderMaterial = hud.slot_backdrops[2].material as ShaderMaterial
+	var inactive_mat: ShaderMaterial = hud.slot_backdrops[0].material as ShaderMaterial
+	var active_border: Color = active_mat.get_shader_parameter("border_color")
+	var inactive_border: Color = inactive_mat.get_shader_parameter("border_color")
+	assert_almost_eq(active_border.a, 1.0, 0.05, "Slot ativo deve exibir borda ciano em brilho maximo.")
+	assert_lt(inactive_border.a, 0.5, "Slots inativos devem exibir borda atenuada.")
+	assert_false(hud.reticle_rect.visible, "A reticula central sobre o helicoptero deve permanecer oculta na interface padrao.")
+
+

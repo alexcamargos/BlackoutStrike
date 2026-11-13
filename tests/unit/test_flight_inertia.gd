@@ -209,6 +209,8 @@ func test_r9x_mohawk_pbr_model_and_articulation() -> void:
 	
 	var tail_blur: MeshInstance3D = helicopter.get_node_or_null("HelicopterMeshContainer/TailRotor/TailRotorBlurDisk") as MeshInstance3D
 	assert_not_null(tail_blur, "TailRotor deve possuir TailRotorBlurDisk para blur estético.")
+	assert_false(main_blur.visible, "MainRotorBlurDisk primitivo deve permanecer oculto sobre as pas 3D reais.")
+	assert_false(tail_blur.visible, "TailRotorBlurDisk primitivo deve permanecer oculto sobre as pas 3D reais.")
 
 
 func test_r9x_weapon_muzzle_alignment_during_cosmetic_tilt() -> void:
