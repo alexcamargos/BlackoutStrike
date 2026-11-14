@@ -18,6 +18,8 @@ func _ready() -> void:
 	
 	if target == null:
 		_find_target()
+	if is_instance_valid(target):
+		global_position = _follow_position()
 
 
 func _physics_process(delta: float) -> void:
@@ -25,14 +27,11 @@ func _physics_process(delta: float) -> void:
 		_find_target()
 		return
 	
-	var target_pos: Vector3 = target.global_position
-	var desired_pos: Vector3 = Vector3(
-		target_pos.x,
-		target_pos.y + camera_height,
-		target_pos.z + camera_distance_z
-	)
-	
-	global_position = global_position.lerp(desired_pos, follow_smoothness * delta)
+	global_position = global_position.lerp(_follow_position(), follow_smoothness * delta)
+
+
+func _follow_position() -> Vector3:
+	return target.global_position + Vector3(0.0, camera_height, camera_distance_z)
 
 
 func _find_target() -> void:
