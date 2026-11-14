@@ -37,7 +37,7 @@ height = 6.0
 radius = 3.5
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fuselage"]
-size = Vector3(1.8, 1.2, 4.2)
+size = Vector3(2.6, 2.2, 7)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vanguard_hull"]
 albedo_color = Color(0.164706, 0.219608, 0.278431, 1)
@@ -136,12 +136,13 @@ collision_mask = 173
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.6, -1.6)
 shape = SubResource("BoxShape3D_fuselage")
 
 [node name="HelicopterMeshContainer" type="Node3D" parent="."]
 
 [node name="R9X_Mohawk_MilitaryModel" parent="HelicopterMeshContainer" instance=ExtResource("16_mohawk_model")]
-transform = Transform3D(-0.28, 0, 0, 0, 0.28, 0, 0, 0, -0.28, 0, -0.35, 0.15)
+transform = Transform3D(-0.56, 0, 0, 0, 0.56, 0, 0, 0, -0.56, 0, 1.788, 0.15)
 
 [node name="FuselageMesh" type="MeshInstance3D" parent="HelicopterMeshContainer"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.2)
@@ -170,16 +171,16 @@ mesh = SubResource("CylinderMesh_tail_blur")
 [node name="MuzzleMarkers" type="Node3D" parent="HelicopterMeshContainer"]
 
 [node name="VulcanMuzzle" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.32, -1.95)
+position = Vector3(0, 0.48, -5.65)
 
 [node name="HydraPodLeft" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, -0.15, -0.4)
+position = Vector3(-1.45, 0.55, -1.4)
 
 [node name="HydraPodRight" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, -0.15, -0.4)
+position = Vector3(1.45, 0.55, -1.4)
 
 [node name="HellfireHardpoint" type="Marker3D" parent="HelicopterMeshContainer/MuzzleMarkers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.38, 0.1)
+position = Vector3(0, 0.38, -3.35)
 
 [node name="FlightMovementController" type="Node" parent="."]
 script = ExtResource("2_flight")

@@ -345,7 +345,15 @@ func _process_flight_controls(delta: float) -> void:
 	previous_horizontal_velocity = current_h_vel
 	
 	if flight_controller != null:
-		velocity = flight_controller.compute_velocity(velocity, input_dir, is_descending, global_position.y, delta)
+		var look_ahead_velocity: Vector3 = current_h_vel
+		if look_ahead_velocity.length_squared() < 4.0 and input_dir.length_squared() > 0.01:
+			look_ahead_velocity = Vector3(input_dir.x, 0.0, input_dir.y) * 2.0
+		var minimum_cruise_y: float = flight_controller.update_cruise_clearance(
+			get_world_3d().direct_space_state, global_position, look_ahead_velocity, is_descending, delta
+		)
+		velocity = flight_controller.compute_velocity(
+			velocity, input_dir, is_descending, global_position.y, delta, minimum_cruise_y
+		)
 	
 	move_and_slide()
 	
