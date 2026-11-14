@@ -8,18 +8,18 @@
     "target_gpu": "NVIDIA RTX 3060 12 GB or equivalent"
   },
   "baselines": [
-    { "id": "VC-01", "file": "VC-01_spawn_carrier.png", "sha256": "5baeacfe9e06844ae04f4a07f035ea27fffe1734a6e9c8d2234dcc28ed9c6224", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-02", "file": "VC-02_low_flight_ocean.png", "sha256": "a3c0a41a7dadba837c6852ccd4e3cf96c08f27dd7a07d3523adda42b3caf12d2", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-03", "file": "VC-03_coastal_combat.png", "sha256": "e21550e613072c7a1674bc486b59bb8ad4d9f2e35106c3e3ae9f2c0ad4c6ceff", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-04", "file": "VC-04_rescue_suppressed.png", "sha256": "7d9cbea555a99e46c75d83328c2dcb6d948482f76679569c2f44dbd4a0e7194b", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-05", "file": "VC-05_boss_phase_2.png", "sha256": "d9d065ecc9b0ddabb45347b8bac4fefcc104faf952b7f90b840579a1ec8426b5", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-06", "file": "VC-06_hud_target_lock.png", "sha256": "aad93c0b8dc29f0b460390ccad759e98fd8ba540bf9ecabd53106e786fde7921", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-07", "file": "VC-07_sunset_island.png", "sha256": "6acc74882493205fad241ef87ed31121b645a0400a37ddaa3e23c121c62500ee", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
-    { "id": "VC-08", "file": "VC-08_explosion_water.png", "sha256": "962341621a0abc47815b63576a97e7619427c76de8c1c294cc516fabeb24a4dc", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] }
+    { "id": "VC-01", "file": "baselines/VC-01_spawn_carrier.png", "sha256": "5baeacfe9e06844ae04f4a07f035ea27fffe1734a6e9c8d2234dcc28ed9c6224", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-02", "file": "baselines/VC-02_low_flight_ocean.png", "sha256": "a3c0a41a7dadba837c6852ccd4e3cf96c08f27dd7a07d3523adda42b3caf12d2", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-03", "file": "baselines/VC-03_coastal_combat.png", "sha256": "e21550e613072c7a1674bc486b59bb8ad4d9f2e35106c3e3ae9f2c0ad4c6ceff", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-04", "file": "baselines/VC-04_rescue_suppressed.png", "sha256": "7d9cbea555a99e46c75d83328c2dcb6d948482f76679569c2f44dbd4a0e7194b", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-05", "file": "baselines/VC-05_boss_phase_2.png", "sha256": "d9d065ecc9b0ddabb45347b8bac4fefcc104faf952b7f90b840579a1ec8426b5", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-06", "file": "baselines/VC-06_hud_target_lock.png", "sha256": "aad93c0b8dc29f0b460390ccad759e98fd8ba540bf9ecabd53106e786fde7921", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-07", "file": "baselines/VC-07_sunset_island.png", "sha256": "6acc74882493205fad241ef87ed31121b645a0400a37ddaa3e23c121c62500ee", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] },
+    { "id": "VC-08", "file": "baselines/VC-08_explosion_water.png", "sha256": "962341621a0abc47815b63576a97e7619427c76de8c1c294cc516fabeb24a4dc", "generated_from": "ART-REF-001", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-10", "masks": [] }
   ],
   "style_anchors": [
     {
-      "file": "draft_concept_01.png",
+      "file": "anchors/art_ref_001.png",
       "id": "ART-REF-001",
       "sha256": "989cbe47955f4faa6ff59e3a332a230aaa898787a98f7066fd2852b3a53d4fc6",
       "purpose": "Approved general visual style anchor; it is not a VC baseline and must not be used in visual comparison.",
@@ -30,12 +30,39 @@
   "world_map_references": [
     {
       "id": "WORLD-MAP-REF-001",
-      "file": "world_map_reference_01.png",
+      "file": "maps/world_map_reference_01.png",
       "sha256": "d48c45921f6654ca1404b33bb4048dee12ccbc20b8bb95b2574390116878ff97",
       "purpose": "Approved macro geography and tactical-map composition reference; not a runtime map texture.",
-      "approval_status": "APPROVED_AS_WORLD_MAP_REFERENCE",
+      "approval_status": "SUPERSEDED_BY_WORLD_MAP_REF_002",
       "approved_at": "2026-11-10"
+    },
+    {
+      "id": "WORLD-MAP-REF-002",
+      "file": "maps/world_map_reference_02.png",
+      "sha256": "50a25cfb25f69a8e5975a6c7f660b4c2a3fe7ce1f88a5cde59ecad494e9fa35f",
+      "purpose": "Revision candidate adding macro detail derived from the five sector build references.",
+      "approval_status": "APPROVED_AS_WORLD_MAP_REFERENCE",
+      "approved_by": "project_owner",
+      "approved_at": "2026-11-14",
+      "supersedes": "WORLD-MAP-REF-001"
     }
+  ],
+  "sector_build_references": [
+    { "id": "SR-01", "file": "sectors/sector_central_midway_reference_01.png", "sha256": "be7ef512c7b8ed2a00d4c704d25e22010d10accfced003abca3f53e102cfaa35", "sector": "central_midway", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "SR-02", "file": "sectors/sector_vanguard_reference_01.png", "sha256": "70936fa4634add22480d955c2afb2ad0b177f73224001df0245747165a9bdf8f", "sector": "vanguard", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "SR-03", "file": "sectors/sector_apex_bastion_reference_01.png", "sha256": "ba331230eddc6071a44e76b1444b2eea51235f14bda83a44dc88ddc548d804ea", "sector": "apex_bastion", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "SR-04", "file": "sectors/sector_north_platform_reference_01.png", "sha256": "42837c6d4f1a934d04988876cca9adbd44d280025e69b40728b233f6fd7c67fe", "sector": "north_platform", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "SR-05", "file": "sectors/sector_east_reefs_reference_01.png", "sha256": "5cb69959c95f39d1d46685dce52334827d3936f7933405d886726b5d33abde5c", "sector": "east_reefs", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" }
+  ],
+  "construction_visual_references": [
+    { "id": "CR-01", "file": "construction/construction_terrestrial_reference_01.png", "sha256": "19fd0d0c0a026d5b38d350a86502b5cd74b9d0a08334c7de49c36b4f07c1a897", "scope": "central_midway", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "CR-02", "file": "construction/construction_naval_reference_01.png", "sha256": "b19f92529ddd2fa5c8b8c676d9b5721792ce34f2842a87cedd8521c978f23339", "scope": "vanguard_north_apex", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "CR-03", "file": "construction/construction_sigint_reefs_reference_01.png", "sha256": "3df7248e8ee442e91accbaf5696eaaaddd2d4526c1d75232ccc773214e5bce00", "scope": "east_reefs", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" }
+  ],
+  "vehicle_visual_references": [
+    { "id": "VR-01", "file": "vehicles/vehicle_ground_reference_01.png", "sha256": "cdaac31188b6838b7ac4567a46605b187d8d7411334154ceffec6a65f3b3b038", "scope": "ground", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "VR-02", "file": "vehicles/vehicle_air_reference_01.png", "sha256": "3060715e427b0e7cc70c33bd6c023a613c2dc7bcf189e6ba531b69c1dc3797c6", "scope": "air", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" },
+    { "id": "VR-03", "file": "vehicles/vehicle_maritime_reference_01.png", "sha256": "da92b6d98e75f8fab9f375b5a278d27bdf30bf6390a4cbf7c95393086e1247ac", "scope": "maritime", "approval_status": "APPROVED", "approved_by": "project_owner", "approved_at": "2026-11-14" }
   ],
   "assets": [
     { "id": "MODEL_PLAYER_R9X_V1", "file": "assets/models/player/r9x_mohawk.glb", "sha256": null, "status": "MISSING" },
