@@ -27,3 +27,7 @@ O repositório organiza suas especificações em `docs/` seguindo uma sequência
 | **10** | [`docs/10_VISUAL_CONTRACT.md`](docs/10_VISUAL_CONTRACT.md) | **Contrato Visual** | Baselines aprovados, assets obrigatórios, materiais, ambiente de captura e critérios objetivos de aceitação visual. |
 | **11** | [`docs/11_VISUAL_STYLE_GUIDE.md`](docs/11_VISUAL_STYLE_GUIDE.md) | **Guia de Estilo** | Âncora visual aprovada, tokens de design, regras de composição e checklist de arte para implementação. |
 | **12** | [`docs/12_WORLD_MAP_REFERENCE.md`](docs/12_WORLD_MAP_REFERENCE.md) | **Referência de Mapa** | Geografia macro aprovada e mapeamento visual dos setores canônicos de Midway. |
+| **13** | [`docs/13_SECTOR_BUILD_REFERENCES.md`](docs/13_SECTOR_BUILD_REFERENCES.md) | **Pranchas de Setor** | Referências visuais detalhadas para construir os cinco setores canônicos. |
+| **14** | [`docs/14_CONSTRUCTION_VISUAL_LIBRARY.md`](docs/14_CONSTRUCTION_VISUAL_LIBRARY.md) | **Biblioteca de Construções** | Guia visual e técnico das famílias de construção do Atol, offshore e SIGINT. |
+| **15** | [`docs/15_VEHICLE_VISUAL_LIBRARY.md`](docs/15_VEHICLE_VISUAL_LIBRARY.md) | **Biblioteca de Veículos** | Guia visual e técnico para veículos terrestres, aéreos, drones e embarcações. |
+| **16** | [`docs/16_VISUAL_REFERENCE_INDEX.md`](docs/16_VISUAL_REFERENCE_INDEX.md) | **Índice Visual Integrado** | Ordem de consulta, organização e precedência das referências visuais aprovadas. |
