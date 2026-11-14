@@ -20,6 +20,7 @@ A correta configuração da matriz de física 3D previne varreduras de colisão 
 | **6** | `Enemy_Projectiles` | Tiros de torretas antiaéreas e mísseis teleguiados hostis. |
 | **7** | `Civilians` | Especialistas aguardando evacuação no solo. |
 | **8** | `Zones_Trigger` | Áreas de pouso de helipontos, caixas de reabastecimento e volumes de resgate. |
+| **9** | `Flight_Clearance` | Superfícies de `World_Static` no setor de apoio do Vanguard incluídas na consulta de altura de cruzeiro. |
 
 ---
 

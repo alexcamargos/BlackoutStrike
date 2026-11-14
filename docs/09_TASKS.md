@@ -345,7 +345,7 @@ Este arquivo coordena as iterações de desenvolvimento para agentes autônomos.
 
 - [ ] **TASK-150: Aprovar e Registrar os Oito Baselines Visuais**
   - **Dependência:** Nenhuma.
-  - **Arquivos:** `res://assets/reference/visual_contract/VC-01_*.png` a `VC-08_*.png`, `res://assets/reference/visual_contract/manifest.json`.
+  - **Arquivos:** `res://assets/reference/visual_contract/baselines/VC-01_*.png` a `VC-08_*.png`, `res://assets/reference/visual_contract/manifest.json`.
   - **Lógica:** O responsável fornece e aprova as oito imagens canônicas conforme `docs/10_VISUAL_CONTRACT.md`. Registrar SHA-256, aprovador, data, máscara justificada e alterar `contract_status` para `APPROVED`.
   - **Critério de Aceite:** Os oito PNGs têm 1920x1080, hashes preenchidos e aprovação humana explícita; nenhum baseline é gerado ou aprovado autonomamente.
 

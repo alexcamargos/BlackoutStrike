@@ -12,6 +12,7 @@ Construir uma fatia vertical jogável para Windows baseada na primeira missão (
 - **Altitude:** 
   - Altitude de Cruzeiro: $Y = 4.0$ m (padrão de navegação e combate).
   - Altitude de Resgate / Pouso: $Y = 0.8$ m (acionada ao segurar o botão de descida ou pairar em zonas de resgate).
+  - No setor de apoio do Vanguard, o cruzeiro antecipa os obstáculos sólidos ao longo do deslocamento e eleva a cota alvo com folga. A transição vertical segue a velocidade de voo existente. Ao segurar a descida, o piloto pode pousar sobre superfícies sólidas e encontra resistência ao atingir um obstáculo lateral.
 - **Parâmetros de Movimento:**
   - Aceleração: $18.0\,m/s^2$.
   - Velocidade Máxima de Cruzeiro: $22.0\,m/s$.
