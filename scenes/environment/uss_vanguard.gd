@@ -1,3 +1,4 @@
+@tool
 class_name USSVanguard
 extends Node3D
 
@@ -10,10 +11,20 @@ extends Node3D
 @export var radar_rotation_speed: float = 1.2
 @export var nav_lights_pulse_speed: float = 2.0
 
-@onready var radar_dish: Node3D = get_node_or_null("Superstructure/RadarMast/RadarDish") as Node3D
+const VanguardGeometry = preload("res://scenes/environment/vanguard_geometry.gd")
+
+@onready var geometry: VanguardGeometry = $Meshes
+@onready var radar_dish: Node3D = get_node_or_null("Meshes/Superstructure/RadarMast/RadarDish") as Node3D
 @onready var nav_light_deck: OmniLight3D = get_node_or_null("Lighting/DeckFloodLight") as OmniLight3D
 
 var _light_pulse_time: float = 0.0
+
+
+func _ready() -> void:
+	var deck_collider: CollisionShape3D = $StaticBody3D/CollisionShape_Deck
+	deck_collider.shape = geometry.create_deck_collider()
+	if Engine.is_editor_hint():
+		set_process(false)
 
 
 func _process(delta: float) -> void:
