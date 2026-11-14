@@ -12,7 +12,7 @@ Nenhuma build de distribuição é visualmente aceita sem todos os baselines des
 contrato aprovados. Uma imagem somente pode ser marcada como aprovada pelo
 responsável do projeto; um agente não pode criar ou autoaprovar um baseline.
 
-`ART-REF-001`, em `assets/reference/visual_contract/draft_concept_01.png`, foi
+`ART-REF-001`, em `assets/reference/visual_contract/anchors/art_ref_001.png`, foi
 aprovada como âncora de estilo geral. Sua aplicação está definida em
 `11_VISUAL_STYLE_GUIDE.md`; ela não substitui os baselines de fixture desta seção.
 
@@ -40,14 +40,14 @@ As imagens abaixo devem ser entregues pelo responsável em PNG sem perdas, 1920 
 
 | ID | Arquivo | Estado e composição fixa |
 | --- | --- | --- |
-| VC-01 | `VC-01_spawn_carrier.png` | Spawn no USS Vanguard; helicóptero entre 7% e 13% da área útil. |
-| VC-02 | `VC-02_low_flight_ocean.png` | Voo a Y=1.2 sobre oceano; rotor wash visível. |
-| VC-03 | `VC-03_coastal_combat.png` | Combate costeiro com 1 tanque, traçantes e espuma. |
-| VC-04 | `VC-04_rescue_suppressed.png` | Civil suprimido; anel integral vermelho. |
-| VC-05 | `VC-05_boss_phase_2.png` | Apex Bastion na fase 2; CIWS, emissivo do núcleo e casco legíveis. |
-| VC-06 | `VC-06_hud_target_lock.png` | HUD 1080p com trava de alvo e barras sem corte. |
-| VC-07 | `VC-07_sunset_island.png` | Ilha, praia, falésia e props de escala. |
-| VC-08 | `VC-08_explosion_water.png` | Explosão naval e splash; partículas mascaradas na comparação. |
+| VC-01 | `baselines/VC-01_spawn_carrier.png` | Spawn no USS Vanguard; helicóptero entre 7% e 13% da área útil. |
+| VC-02 | `baselines/VC-02_low_flight_ocean.png` | Voo a Y=1.2 sobre oceano; rotor wash visível. |
+| VC-03 | `baselines/VC-03_coastal_combat.png` | Combate costeiro com 1 tanque, traçantes e espuma. |
+| VC-04 | `baselines/VC-04_rescue_suppressed.png` | Civil suprimido; anel integral vermelho. |
+| VC-05 | `baselines/VC-05_boss_phase_2.png` | Apex Bastion na fase 2; CIWS, emissivo do núcleo e casco legíveis. |
+| VC-06 | `baselines/VC-06_hud_target_lock.png` | HUD 1080p com trava de alvo e barras sem corte. |
+| VC-07 | `baselines/VC-07_sunset_island.png` | Ilha, praia, falésia e props de escala. |
+| VC-08 | `baselines/VC-08_explosion_water.png` | Explosão naval e splash; partículas mascaradas na comparação. |
 
 Para cada baseline, a implementação deve registrar em uma cena de fixture a câmera,
 posição do jogador, estado da missão e seed. A diferença é avaliada por SSIM >= 0,97

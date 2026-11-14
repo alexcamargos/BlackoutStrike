@@ -4,7 +4,7 @@
 
 `ART-REF-001` é a âncora artística aprovada do projeto:
 
-- Arquivo: `res://assets/reference/visual_contract/draft_concept_01.png`
+- Arquivo: `res://assets/reference/visual_contract/anchors/art_ref_001.png`
 - SHA-256: `989cbe47955f4faa6ff59e3a332a230aaa898787a98f7066fd2852b3a53d4fc6`
 - Papel: define linguagem de materiais, paleta, composição, densidade de cenário e
   hierarquia de leitura.

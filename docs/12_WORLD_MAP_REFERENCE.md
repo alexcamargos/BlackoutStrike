@@ -7,10 +7,24 @@ Midway. Ela orienta a tela de mapa, briefing, seleção de missão e composiçã
 horizonte; não altera coordenadas, colisão, limites jogáveis ou o contrato de spawn
 em `03_SPEC.md`.
 
-- Arquivo: `res://assets/reference/visual_contract/world_map_reference_01.png`
+- Arquivo: `res://assets/reference/visual_contract/maps/world_map_reference_01.png`
 - SHA-256: `d48c45921f6654ca1404b33bb4048dee12ccbc20b8bb95b2574390116878ff97`
 - Origem: representação original, gerada a partir do Guia de Estilo e da geografia
   documentada; não é cópia cartográfica de Urban Strike.
+
+### Revisão de detalhamento setorial
+
+`WORLD-MAP-REF-002` é a revisão candidata do mapa macro, criada após as pranchas de
+setor. Ela preserva a composição de `WORLD-MAP-REF-001` e acrescenta: anel viário,
+distritos de resgate, depósito de combustível e torres SAM no Atol; rotas seguras e
+perímetro de minas no encontro do Apex; heliponto/canais na Plataforma Norte;
+marcadores SIGINT, recifes perigosos e áreas de pouso no Leste; e logística/corredor
+de retorno no USS Vanguard.
+
+- Arquivo: `res://assets/reference/visual_contract/maps/world_map_reference_02.png`
+- SHA-256: `50a25cfb25f69a8e5975a6c7f660b4c2a3fe7ce1f88a5cde59ecad494e9fa35f`
+- Estado: referência macro ativa aprovada pelo responsável em 2026-11-14. Ela
+  substitui `WORLD-MAP-REF-001`, que permanece somente como histórico.
 
 ## 2. Leitura geográfica obrigatória
 
