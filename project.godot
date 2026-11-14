@@ -103,6 +103,7 @@ weapon_cycle_next={
 3d_physics/layer_6="Enemy_Projectiles"
 3d_physics/layer_7="Civilians"
 3d_physics/layer_8="Zones_Trigger"
+3d_physics/layer_9="Flight_Clearance"
 
 [editor_plugins]
 
