@@ -125,7 +125,7 @@ func is_point_near_prop(point: Vector3, threshold: float) -> bool:
 ##
 ## Raises:
 ##     Nenhuma excecao levantada.
-func _build_palm_mesh() -> Mesh:
+static func build_palm_mesh() -> Mesh:
 	var st: SurfaceTool = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
@@ -415,7 +415,7 @@ func _setup_palms() -> void:
 	var mm: MultiMesh = MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.instance_count = _palm_positions.size()
-	mm.mesh = _build_palm_mesh()
+	mm.mesh = build_palm_mesh()
 	
 	for i in range(_palm_positions.size()):
 		var pos: Vector3 = _palm_positions[i]
